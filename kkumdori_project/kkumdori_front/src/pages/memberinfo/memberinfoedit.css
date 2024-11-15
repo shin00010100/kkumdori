@@ -1,0 +1,178 @@
+/* 기본 레이아웃 */
+.member-info-edit {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 20px;
+}
+
+/* 제목 스타일 */
+h2 {
+  text-align: center;
+  font-size: 34px;
+  margin-bottom: 30px;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* 폼 그룹 스타일 */
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.form-group:last-child {
+  border-bottom: none;
+}
+
+.form-group label {
+  font-size: 18px;
+  font-weight: 600;
+  color: #444;
+  display: block;
+}
+
+.form-group p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* 기본 입력 필드 스타일 */
+.input-text,
+.input-email,
+.input-tel,
+.input-address,
+.input-date {
+  width: 100%;
+  padding: 14px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+
+}
+
+/* 입력 필드 포커스 시 */
+.input-text:focus,
+.input-email:focus,
+.input-tel:focus,
+.input-address:focus,
+.input-date:focus {
+  border-color: rgb(163, 156, 231);
+  outline: none;
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+
+/* 수정 버튼 스타일 */
+.edit-btn-name, .edit-btn-birth, .edit-btn-email, .edit-btn-phone, .edit-btn-address, .edit-btn-password {
+  background-color: rgb(163, 156, 231);
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.edit-btn-name:hover, .edit-btn-birth:hover, .edit-btn-email:hover, .edit-btn-phone:hover, .edit-btn-address:hover, .edit-btn-password:hover {
+  background-color: rgb(147, 138, 223);
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 수정 완료 버튼 스타일 */
+.submit-btn-name, .submit-btn-birth, .submit-btn-email, .submit-btn-phone, .submit-btn-address {
+  background-color: rgb(163, 156, 231);
+  color: white;
+  margin-top: 15px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submit-btn-name:hover, .submit-btn-birth:hover, .submit-btn-email:hover, .submit-btn-phone:hover, .submit-btn-address:hover {
+  background-color: rgb(147, 138, 223);
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* 회원탈퇴 버튼 스타일 */
+.delete-account-btn {
+  padding: 12px 20px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-account-btn:hover {
+  background-color: #e60000;
+}
+
+/* 수정된 폼 내 div 스타일 */
+.form-group div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.form-group div button {
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
+.form-group div p {
+  flex-grow: 1;
+}
+
+/* 반응형 */
+@media screen and (max-width: 768px) {
+  .member-info-edit {
+    padding: 20px;
+  }
+
+  .form-group input,
+  .form-group button {
+    font-size: 18px;
+  }
+
+  h2 {
+    font-size: 26px;
+  }
+
+  .input-container {
+    flex-direction: column;
+  }
+
+  .input-container .input-field {
+    margin-bottom: 20px;
+  }
+}

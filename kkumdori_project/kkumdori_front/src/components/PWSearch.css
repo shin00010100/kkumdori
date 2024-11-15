@@ -1,0 +1,177 @@
+/* PW 검색 페이지 레이아웃 */
+
+.pwsearch-body-page * {
+  box-sizing: border-box;
+  font-family: 'SUIT-Medium';
+}
+
+.pwsearch-body-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;  
+  margin: 0 auto;
+  min-width: 800px;
+  max-width: 60%;
+} 
+
+.pwsearchpage > div {
+  margin-bottom: 3px; 
+  width: 100%; 
+}
+
+.pwsearchpage {
+    width: 800px;
+    min-height: 1000px;
+    min-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    position: relative;
+    top: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .titleWrappw {
+  text-align: left;
+  font-size: 44px;
+  font-weight: 700;
+  color: rgb(163, 156, 231);
+  margin: 20px 0px 10px 30px;  
+}
+  
+  /* 이름과 휴대폰 번호, 이메일 주소를 묶는 부모 영역 */
+  .inputGroup-pw {
+    display: 100%;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: flex-start;
+    margin-bottom: 50px;
+    padding: 15px; /* 사각형 영역 안쪽 여백 */
+    border: 2px solid #a39ce7; /* 경계선 색 */
+    border-radius: 10px; /* 둥근 모서리 */
+    background-color: #f5f5f5; /* 배경 색 */
+  }
+  
+  /* 텍스트 스타일 */
+  .contentNum-pw {
+    width: 180px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+    margin-left: 6%;
+  }
+  
+  .contentRow-pw {
+    margin-top: 20px;
+  }
+  
+  /* 우측 정렬을 위한 추가 클래스 */
+  .rightAlign-pw {
+    justify-content: flex-end; /* 우측 정렬 */
+  }
+  
+  /* 버튼 스타일 */
+   /* 버튼 스타일 */
+   .sendNum-pw {
+    width: 15%;
+    height: 30px;
+    background-color: rgb(163, 156, 231);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  .check-pw {
+    width: 8%;
+    height: 30px;
+    background-color: rgb(163, 156, 231);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 10px;
+  
+  }
+  
+  .sendNum-pw:hover, .check-pw:hover {
+    background-color: rgb(138, 132, 195);
+  }
+  
+  /* 사진과 텍스트를 나란히 왼쪽 정렬 */
+  .kkumdoriImages-sign {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-size: 28px; /* 폰트 크기 증가 */
+    font-weight: 700; /* 두껍게 */
+    color: rgb(163, 156, 231);
+  }
+  
+  .kkumdoriImages-sign img {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .kkumdoriImages-sign img:hover {
+    transform: scale(1.1);
+  }
+  
+  .kkumdoriImages-sign span {
+    font-size: 20px;
+    line-height: 60px;
+    color: #262626;
+  }
+
+  .input-field2-sign {
+    width: 32%;
+    max-width: 500px;
+    height: 30px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+/* 링크 스타일링 */
+.loginfindpw a {
+    color: inherit; /* 부모 요소의 색상 상속 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+  }
+  
+  /* 링크 클릭 상태에서도 색상 변경 방지 */
+  .loginfindpw a:visited,
+  .loginfindpw a:active,
+  .loginfindpw a:hover {
+    color: inherit; /* 링크 클릭, 방문, hover 상태에서도 색상 변경하지 않음 */
+    text-decoration: none; /* 밑줄 제거 */
+  }
+
+  .contentRow-pw.rightAlign-pw {
+    margin-bottom: 30px;
+  }
+  
+  .pwsearch_email_select {
+    height: 30px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    margin-left: 8px;
+}
+  

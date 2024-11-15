@@ -1,0 +1,145 @@
+/* 전체 배송지 관리 컨테이너 */
+.delivery-address-manager {
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  padding: 30px;
+  max-width: 900px;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 20px;
+}
+
+/* 배송지 목록 스타일 */
+.delivery-address-manager .address-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 각 배송지 항목 */
+.delivery-address-manager .address-item {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.delivery-address-manager .address-item:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* 배송지 정보 부분 */
+.delivery-address-manager .address-info {
+  margin-bottom: 20px;
+}
+
+/* 라벨 스타일 */
+.delivery-address-manager .address-label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* 입력 필드 스타일 */
+.delivery-address-manager .address-input,
+.delivery-address-manager .address-select {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0 18px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.delivery-address-manager .address-input:focus,
+.delivery-address-manager .address-select:focus {
+  outline: none;
+  border-color: #ffa500;
+  background-color: #fff;
+}
+
+/* 기본 배송지 체크박스 */
+.delivery-address-manager .default-checkbox {
+  margin-top: 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.delivery-address-manager .default-checkbox input {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  accent-color: #ff7f00;
+}
+
+.delivery-address-manager .default-checkbox label {
+  color: #333;
+}
+
+.delivery-address-manager .default-label {
+  font-size: 14px;
+  color: #ff7f00;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* 버튼 스타일 */
+.delivery-address-manager .edit-btn,
+.delivery-address-manager .delete-btn {
+  padding: 12px 18px;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.delivery-address-manager .edit-btn {
+  background-color: #ff7f00;
+  color: white;
+}
+
+.delivery-address-manager .edit-btn:hover {
+  background-color: #e67200;
+  transform: scale(1.05);
+}
+
+.delivery-address-manager .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.delivery-address-manager .delete-btn:hover {
+  background-color: #e53935;
+  transform: scale(1.05);
+}
+
+.delivery-address-manager .edit-btn:focus,
+.delivery-address-manager .delete-btn:focus {
+  outline: none;
+}
+
+/* 배송지 항목에 기본배송지 문구 표시 */
+.delivery-address-manager .address-item .default-label {
+  font-size: 14px;
+  color: #ff7f00;
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+
+/* 기본 배송지 항목에 강조 효과 */
+.delivery-address-manager .address-item.is-default {
+  border: 2px solid #ff7f00;
+  background-color: #fff8e1;
+}

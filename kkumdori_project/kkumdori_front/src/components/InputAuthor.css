@@ -1,0 +1,13 @@
+.inputAuthor {
+    margin-bottom: 1em;
+}
+
+.inputAuthor h3 {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.inputAuthor input {
+    width: 200px;
+    padding: 5px;
+}

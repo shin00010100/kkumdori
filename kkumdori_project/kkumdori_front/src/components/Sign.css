@@ -1,0 +1,209 @@
+ 
+.register-page * {
+    box-sizing: border-box;
+    font-family: 'SUIT-Medium';
+  }
+  
+.register-page div h5 {
+    margin-bottom: 3px; 
+    color: rgb(107, 107, 107);
+  }
+
+.register-page > div {
+    margin-bottom: 3px; 
+    width: 100%;
+  }
+  
+.register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;  
+    margin: 0;
+  }  
+  
+.register-page form {
+    width: 600px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+  }
+
+/* select 박스 스타일 */
+.register_email_select, .register_bank {
+    height: 30px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+/*버튼 스타일 */
+.address-search-btn {
+    width: 25%;
+    height: 30px;
+    background-color: rgb(163, 156, 231);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+} 
+
+
+/* 각 입력 필드 스타일 */
+.input-field-sign  {
+    width: 70%;
+    max-width: 500px;
+    height: 30px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    margin-right: 8px;
+}
+
+.input-field-sign:focus,.input-field2-sign:focus, .input-field3-sign:focus, select:focus, .postcodify {
+    border-color: #9e30f4;  /* 클릭했을 때 테두리 색 */
+    outline: none;  /* 기본 outline 제거 */
+}
+
+.postcodify_postcode5:focus,
+.postcodify_address:focus,
+.postcodify_details:focus {
+    border-color: #9e30f4;  
+    outline: none;
+}
+
+.postcodify_address, .postcodify_details, .postcodify_extra_info {
+    width: 70%;
+    max-width: 500px;
+    height: 30px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+.postcodify_postcode5 {
+    width: 25%;
+    max-width: 500px;
+    height: 30px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+
+/* 아이디 중복 확인 버튼 스타일 */
+.dupIdCheck {
+    background-color: rgb(163, 156, 231);
+    color: #f7f5f5;
+    width: 70px;
+    height: 30px;
+    font-size: 13px;
+    margin-left: 10px;
+    cursor: pointer;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+}
+
+/* 제목 스타일 */
+.register_title {
+    text-align: center;
+    color: rgb(163, 156, 231);
+}
+
+
+/* 회원가입 폼 전체 스타일 */
+.register {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 가입하기 버튼 */
+.sbtn-sign {
+    background-color: rgb(163, 156, 231);
+    color: white;
+    width: 400px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    margin-top: 40px;  /* 가입하기 버튼과 약간의 간격 추가 */
+    margin-bottom: 50px; /* 버튼 아래쪽 여백 추가 */
+    cursor: pointer;
+}
+.sbtn-sign:hover, .dupIdCheck:hover, .address-search-btn:hover, .TOSbtn:hover, .TOSbtn2:hover {
+    background-color: rgb(138, 132, 195);
+  }
+
+/* @media (max-width: 768px) {
+    form {
+        width: 90%;
+    }
+
+    .input-field, .input-field2, select, button {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #sbtn-sign {
+        width: 100%;
+        max-width: 100%;
+    }
+} */
+
+/* 약관 동의 섹션 배경색 수정 */
+.terms-section {
+    background-color: #e9f5ff; /* 밝은 파란색 */
+    padding: 20px;  /* 내부 여백을 조금 더 추가 */
+    border-radius: 10px; /* 둥근 모서리 */
+    margin-top: 50px;  /* 다른 섹션과의 간격을 늘림 */
+    margin-bottom: 20px; /* 아래쪽 여백 추가 */
+    position: relative;
+    top: -5px; /* 섹션이 너무 위로 튀어나온 부분을 조정 */
+}
+
+/* 약관 동의 섹션 내부 텍스트 색상 */
+.terms-section h5 {
+    color: rgb(107, 107, 107);  /* 제목 색상 */
+    margin-bottom: 10px;  /* 제목과 내용 간격 조정 */
+}
+
+/* 약관 동의 버튼 스타일 */
+.terms-section button {
+    background-color: rgb(163, 156, 231); /* 버튼 배경색 */
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    font-size: 14px;
+    margin-top: 15px; /* 버튼 위쪽 여백 추가 */
+    cursor: pointer;
+}
+
+.terms-agree {
+    color: #777; /* 초기 상태 - 연한 색 */
+    cursor: pointer;
+  }
+  
+  .terms-agree.checked {
+    color: #000; /* 클릭 후 색상 */
+  }
+
+  .sign-error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 40px;
+  }
+  

@@ -1,0 +1,296 @@
+.mypage{
+  width: 800px;
+  min-height: 100%;
+  min-width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 auto;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  position: relative;
+  top: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: rgb(228, 223, 255);
+}
+
+.mypage-content {
+  min-width: 1200px;
+}
+
+/* 레이아웃을 위한 중앙 정렬 */
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 녹색 텍스트 */
+.green {
+  color: #24855b;
+}
+
+.wrap {
+  background-color: #F8F8F8;
+}
+
+/* 주문내역 검색 창 */
+.mypage-searchform {
+  width: 400px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 5px;
+}
+
+.searchbtn {
+  background-color: rgb(163, 156, 231);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* 상품 박스 */
+.summaryContainer {
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 20px;
+  margin: 10 auto;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+}
+
+.productImage {
+  flex: 0 0 150px;
+}
+
+.productImage img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.productDetails {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.productName, .productPrice, .productQuantity {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.productName {
+  font-weight: bold;
+}
+
+.productPrice {
+  color: #e67e22;
+}
+
+.productQuantity {
+  color: #7f8c8d;
+}
+
+.productActions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.actionBtn {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.actionBtn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+}
+
+.actionBtn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* 모바일 반응형 */
+@media screen and (max-width: 768px) {
+  .item {
+      flex-direction: column;
+      align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      padding: 20px 0;
+  }
+
+  .productImage {
+      flex: 0 0 120px;
+  }
+
+  .productDetails {
+      padding-left: 0;
+  }
+
+  .productActions {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+}
+
+/* 배송 상태 */
+.shippingStatusContainer {
+  padding: 21px 16px;
+  background-color: white;
+  margin-bottom: 10px;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 20px;
+}
+
+.shippingStatusContainer .title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.shippingStatusContainer .status {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 21px;
+}
+
+.shippingStatusContainer .item {
+  display: flex;
+}
+
+.shippingStatusContainer .number {
+  font-size: 31px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.shippingStatusContainer .text {
+  font-size: 12px;
+  font-weight: normal;
+  color: #c2c2c2;
+  text-align: center;
+}
+
+.shippingStatusContainer .icon {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  width: 16px;
+  height: 16px;
+}
+
+/* 목록 컨테이너 */
+.listContainer {
+  background-color: #ffffff;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  background-color: rgb(228, 223, 255);
+}
+
+.listContainer .item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  height: 56px;
+  padding: 15px;
+  transition: background-color 0.2s ease;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 20px;
+}
+
+.listContainer .item:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+.listContainer .icon {
+  margin-right: 14px;
+  font-size: 18px;
+}
+
+.listContainer .text {
+  font-size: 16px;
+}
+
+.listContainer .right {
+  margin-left: auto;
+}
+
+.listContainer .smallLight {
+  font-size: 14px;
+  color: #c2c2c2;
+}
+
+.listContainer .smallLight > span {
+  margin-left: 10px;
+}
+
+.listContainer .right .blct {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+/* 공지사항, 고객센터 */
+.infoContainer {
+  background-color: white;
+  display: flex;
+  height: 100px;
+  margin-bottom: 10px;
+  background-color: rgb(228, 223, 255);
+}
+
+.infoContainer .item {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 13px;
+  text-decoration: none;
+  color: black;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 20px;
+  background-color: white;
+}
+
+.infoContainer .item > div:first-child {
+  margin-bottom: 2px;
+}

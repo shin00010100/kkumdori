@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // React Router 추가
 
 import Layout from './components/layout/Layout.js';
+import PrivateRoute from './components/privateroute/PrivateRoute.js';
 
 import OneToOne from './pages/otoboard/onetoone/OneToOne.js';
 import OneToOneBoard from './pages/otoboard/onetooneboard/OneToOneBoard.js';
@@ -44,12 +45,28 @@ const App = () => (
         <Route path="/onetoone" element={<OneToOne />} /> {/* 1:1 문의 페이지 */}
         
         {/* admin */}
-        <Route path='/admin' element={<AdminMain />} /> {/* 관리자 대시보드 */}
-        <Route path='/new' element={<NewBoard />} /> {/* 새 게시판 작성 */}
-        <Route path='/edit' element={<EditBoard />} /> {/* 게시판 수정 */}
-        <Route path='/banner' element={<EditBanner />} /> {/* 배너 수정 */}
-        <Route path='/send' element={<SendMessage />} /> {/* 메시지 전송 */}
-        <Route path='/regist' element={<RegistGoods />} /> {/* 상품 등록 */}
+        <Route path="/admin" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < AdminMain/>
+          </PrivateRoute>
+        } />
+        <Route path="/editbanner" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < EditBanner/>
+          </PrivateRoute>
+        } />
+        <Route path="/sendmessage" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < SendMessage/>
+          </PrivateRoute>
+        } />
+        <Route path="/registgoods" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < RegistGoods/>
+          </PrivateRoute>
+        } />
+        <Route path='/newboard' element={<NewBoard />} /> {/* 새 게시판 작성 */}
+        <Route path='/editboard' element={<EditBoard />} /> {/* 게시판 수정 */}
         
         {/* logins */}
         <Route path="/login" element={<Login />} /> {/* 로그인 페이지 */}

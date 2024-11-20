@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Link 컴포넌트를 추가
 import './Header.css';
+import { getUserRole } from '../../utils/auth';
 
-const Header = () => (
-  <>
+const Header = () => {
+  const userRole = getUserRole();
+  return(
+  <div>
     {/* 이달의 추천상품 광고 배너 */}
     <div className="banner">
       <p>이달의 추천상품 광고 배너</p>
@@ -28,8 +31,11 @@ const Header = () => (
         </div>
 
         <div className="nav-links">
-          <Link to="/Login"><a>로그인</a></Link>
-          <Link to="sign"><a href="#signup">회원가입</a></Link>
+          {userRole === "admin" && (
+            <Link to="/admin">관리자</Link>
+          )}
+          <Link to="/Login">로그인</Link>
+          <Link to="sign">회원가입</Link>
           <a href="#community">커뮤니티</a>
         </div>
       </div>
@@ -74,7 +80,8 @@ const Header = () => (
         </ul>
       </div>
     </header>
-  </>
+  </div>
 );
+}
 
 export default Header;

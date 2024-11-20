@@ -1,0 +1,320 @@
+  /* MakeStar 컨테이너 */
+  .text-center {
+    text-align: center;
+    padding: 40px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(163, 156, 231);
+    width: 100%;
+    max-width: 600px;
+    margin: 40px auto;
+  }
+  
+  /* 제목 스타일 */
+  .text-center p {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  /* 별점 영역 */
+  .flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .w-8 {
+    width: 32px;
+  }
+  
+  .h-8 {
+    height: 32px;
+  }
+  
+  .mt-2 {
+    margin-top: 8px;
+  }
+  
+  .cursor-pointer {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .cursor-pointer:hover {
+    transform: scale(1.1);
+  }
+  
+  /* 별점 색상 */
+  svg path {
+    transition: fill 0.3s ease;
+  }
+  
+  /* 리뷰 입력 필드 */
+  .star-textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    margin-top: 15px;
+    resize: none;
+    background-color: #f8f8f8;
+    color: #333;
+  }
+  
+  .star-textarea:focus {
+    border-color: rgb(163, 156, 231);
+    outline: none;
+    background-color: #fff;
+  }
+  
+  /* 파일 업로드 */
+  .mt-5 {
+    margin-top: 20px;
+  }
+  
+  .rounded-md {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  .bg-gray-50 {
+    background-color: #f9f9f9;
+  }
+  
+  .p-4 {
+    padding: 16px;
+  }
+  
+  .w-24 {
+    width: 96px;
+  }
+  
+  .h-24 {
+    height: 96px;
+  }
+  
+  .cursor-pointer svg {
+    fill: rgb(163, 156, 231);
+  }
+  
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  input[type="file"] {
+    display: none;
+  }
+  
+  /* 미리보기 이미지 */
+  .star-img {
+    max-width: 100%;
+    max-height: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    object-fit: cover;
+  }
+  
+  /* 제출 버튼 */
+  .make-star-submit-btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    background-color: rgb(163, 156, 231);
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .make-star-submit-btn:hover {
+    background-color: rgb(147, 138, 223);
+  }
+  
+  /* 작은 화면에서 반응형 */
+  @media (max-width: 768px) {
+    .text-center {
+      padding: 20px;
+    }
+  
+    .w-8 {
+      width: 24px;
+    }
+  
+    .h-8 {
+      height: 24px;
+    }
+  
+
+  
+    .star-textarea {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+
+  /* 상품 정보 스타일 */
+.star-product-info img {
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.star-product-info h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-top: 15px;
+}
+
+.star-product-info p {
+  font-size: 14px;
+  color: #666;
+}
+
+/* 상세 리뷰 작성 영역 */
+.star-textarea {
+  margin-top: 10px;
+  width: 475px;
+  height: 200px;
+}
+
+/* 파일 업로드 */
+.mt-5 {
+    margin-top: 20px;
+  }
+  
+  .rounded-md {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  .bg-gray-50 {
+    background-color: #f9f9f9;
+  }
+  
+  .p-4 {
+    padding: 16px;
+  }
+  
+  .w-24 {
+    width: 96px;
+  }
+  
+  .h-24 {
+    height: 96px;
+  }
+  
+  .cursor-pointer svg {
+    fill: rgb(163, 156, 231);
+  }
+  
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* 기본 설정 */
+input[type="file"] {
+    display: none;
+  }
+  
+  label[for="upload"] {
+    cursor: pointer;
+    display: block;
+    width: 555px;
+    height: 50px;
+    text-align: center;
+    background-color: #e7f1ff;  
+    padding: 20px;  
+    border-radius: 10px;
+    border: 2px dashed #89c7ff; 
+    color: #4a90e2;  
+    font-size: 16px;  
+    font-weight: bold;
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  
+    margin-top: 20px;
+  }
+  
+  /* hover 상태 */
+  label[for="upload"]:hover {
+    background-color: #d0e5ff; 
+    border-color: #4a90e2; 
+  }
+  
+  /* 클릭 상태 (active) */
+  label[for="upload"]:active {
+    transform: scale(0.98);  
+  }
+  
+  /* 드래그 앤 드롭 활성화 상태 */
+  input[type="file"]:active + .input-container,
+  .input-container:hover {
+    background-color: #d0e5ff;  
+    border-color: #4a90e2; 
+  }
+  
+  /* 상품 정보 스타일 */
+.star-product-info {
+  display: flex;
+  align-items: center; /* 이미지와 텍스트를 수평 정렬 */
+  gap: 20px; /* 이미지와 텍스트 사이 간격 */
+}
+
+.star-product-info img {
+  width: 100px; /* 이미지 크기 조정 */
+  height: 100px; /* 이미지 크기 조정 */
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.star-product-info .text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.star-product-info h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.star-product-info p {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* 작은 화면에서 반응형 */
+@media (max-width: 768px) {
+  .star-product-info {
+    flex-direction: column; /* 모바일에서는 세로 배치 */
+    align-items: flex-start; /* 왼쪽 정렬 */
+  }
+
+  .star-product-info img {
+    width: 80px; /* 모바일 화면에서 이미지 크기 줄이기 */
+    height: 80px; /* 모바일 화면에서 이미지 크기 줄이기 */
+  }
+
+  .star-product-info h2 {
+    font-size: 16px; /* 모바일 화면에서 제목 크기 줄이기 */
+  }
+
+  .star-product-info p {
+    font-size: 12px; /* 모바일 화면에서 날짜 크기 줄이기 */
+  }
+}
+
+  
+  

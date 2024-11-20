@@ -1,0 +1,157 @@
+/* 게시판 컨테이너 */
+.board-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(163, 156, 231);
+}
+
+/* 제목 */
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* 버튼 스타일 */
+.buttons {
+    display: flex;
+    justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+    margin-bottom: 30px;
+}
+
+.write-button,
+.sort-button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.write-button {
+    background-color: rgb(163, 156, 231);
+    color: white;
+}
+
+.sort-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.write-button:hover {
+    background-color: rgb(147, 138, 223);
+    transform: scale(1.05);
+}
+
+.sort-button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+/* 날짜 선택기 컨테이너 */
+.date-picker-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.date-picker-container label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+}
+
+.date-picker-container input {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* 게시글 목록 */
+.post-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.post-item {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid gray;
+    border-radius: 8px;
+    background: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.post-item h3 {
+    margin: 0 0 10px;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.post-date {
+    margin: 0 0 15px;
+    font-size: 14px;
+    color: #888;
+}
+
+.post-content {
+    font-size: 16px;
+    color: #555;
+}
+
+/* 날짜 선택 버튼 */
+.filter-button {
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #5a6268;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+    .board-container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .write-button,
+    .sort-button {
+        width: 100%;
+    }
+
+    .date-picker-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+}

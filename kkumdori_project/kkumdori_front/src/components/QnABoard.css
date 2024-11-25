@@ -1,0 +1,92 @@
+.board-container {
+    max-width: 800px;
+    width: 90%;
+    padding: 20px;
+    margin: 0 auto; /* 화면 중앙 정렬 */
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.date-filter {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.date-input {
+    margin-left: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 20px; /* 날짜 입력 간격 */
+}
+
+.search-filter {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    margin-left: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 200px; /* 검색 입력 필드 너비 */
+}
+
+.post-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.post-list li {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.post-list li:hover {
+    background-color: #f9f9f9;
+}
+
+.post-list h3 {
+    margin: 0 0 5px 0;
+    color: #007BFF;
+}
+
+.post-list p {
+    margin: 5px 0;
+}

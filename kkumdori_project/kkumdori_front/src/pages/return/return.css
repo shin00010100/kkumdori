@@ -1,0 +1,233 @@
+/* 전체 페이지 */
+.return-exchange-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff; /* 배경 색 */
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 20px;
+  }
+  
+  /* 페이지 제목 */
+  .return-exchange-header {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  /* 상품 정보 영역 */
+  .product-info {
+    display: flex;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  .product-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+  }
+  
+  .product-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .product-details p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  /* 폼 레이아웃 */
+  .return-exchange-form-group {
+    margin-bottom: 20px;
+  }
+  
+  .return-exchange-label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+  
+  /* 입력 필드 */
+  .return-exchange-input,
+  .return-exchange-textarea,
+  .return-exchange-select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    color: #333;
+    box-sizing: border-box;
+  }
+  
+  .return-exchange-input:disabled,
+  .return-exchange-textarea:disabled {
+    background-color: #f0f0f0;
+  }
+  
+  .return-exchange-textarea {
+    resize: vertical;
+  }
+  
+  .return-exchange-input::placeholder,
+  .return-exchange-textarea::placeholder {
+    color: #aaa;
+    font-style: italic;
+  }
+  
+  /* 라디오 버튼 그룹 */
+  .return-exchange-radio-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  
+  .return-exchange-radio {
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .return-exchange-radio-input {
+    margin-right: 5px;
+  }
+  
+  /* 선택 필드 (옵션) */
+  .return-exchange-select {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 12px;
+    font-size: 16px;
+    color: #333;
+    border-radius: 6px;
+  }
+  
+  /* 버튼 스타일 */
+  .return-exchange-button,
+  .return-exchange-cancel {
+    width: 48%; /* 버튼을 48% 너비로 설정 */
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    box-sizing: border-box; /* 버튼의 크기를 일정하게 유지 */
+  }
+  
+  .return-exchange-button {
+    background-color: rgb(163, 156, 231);
+    color: #fff;
+  }
+  
+  .return-exchange-button:hover {
+    background-color: rgb(147, 138, 223);
+  }
+  
+  .return-exchange-button:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+  }
+  
+  .return-exchange-cancel {
+    background-color: #ccc;
+    color: #333;
+  }
+  
+  .return-exchange-cancel:hover {
+    background-color: #aaa;
+  }
+  
+  /* 버튼 그룹을 가로로 정렬 */
+  .return-exchange-buttons {
+    display: flex;
+    justify-content: center; /* 버튼을 중앙에 배치 */
+    gap: 20px; /* 버튼 간격 */
+    margin-top: 20px;
+  }
+  
+  /* 메시지 입력 칸 디자인 */
+  .return-exchange-textarea {
+    height: 120px;
+    line-height: 1.5;
+  }
+  
+  /* 우편번호 찾기 버튼 */
+  .postcode-btn {
+    padding: 10px;
+    background-color: #ff8c00;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .postcode-btn:hover {
+    background-color: #e07b00;
+  }
+  
+  .return-exchange-form-group select {
+    height: 50px;
+  }
+  
+  /* 모바일 대응 */
+  @media (max-width: 600px) {
+    .return-exchange-container {
+      padding: 20px;
+      margin: 20px;
+    }
+  
+    .return-exchange-header {
+      font-size: 20px;
+    }
+  
+    .product-info {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .product-image {
+      margin-bottom: 10px;
+    }
+  
+    /* 모바일에서는 버튼의 크기와 너비를 일정하게 유지 */
+    .return-exchange-button,
+    .return-exchange-cancel {
+      font-size: 16px;
+      padding: 14px;
+      width: 48%; /* 버튼 크기 통일 */
+    }
+  
+    /* 버튼 그룹이 세로로 표시되지 않도록 수정 */
+    .return-exchange-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+  }
+  
+ 
+  
+
+  
+  

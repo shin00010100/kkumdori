@@ -1,0 +1,157 @@
+/* 비밀번호 재설정 페이지 레이아웃 */
+
+.repwsearch-body-page * {
+  box-sizing: border-box;
+  font-family: 'SUIT-Medium';
+}
+
+.repwsearch-body-page div > div {
+  margin-bottom: 3px; 
+  width: 100%;
+}
+
+.repwsearch-body-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh; /* 페이지 높이를 80vh로 설정 */
+  margin: 0 auto;
+  min-width: 800px;
+  max-width: 60%;
+  padding: 5px 0; /* 위아래 여백을 추가로 줄임 */
+}
+
+.repwsearchpage {
+    width: 800px;
+    min-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 0 auto; /* 상하 여백을 완전히 제거 */
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    position: relative;
+    top: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.titleWraprepw {
+  text-align: left;
+  font-size: 44px;
+  font-weight: 700;
+  color: rgb(163, 156, 231);
+  margin: 20px 0px 10px 30px;
+}
+
+/* 사진과 텍스트를 나란히 왼쪽 정렬 */
+.kkumdoriImages {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 28px; 
+  font-weight: 700; 
+  color: rgb(163, 156, 231);
+}
+
+.kkumdoriImages-sign img {
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.kkumdoriImages-sign img:hover {
+  transform: scale(1.1);
+}
+
+.kkumdoriImages-sign span {
+  font-size: 20px;
+  line-height: 60px;
+  color: #262626;
+}
+
+/* 입력 필드 스타일 */
+.inputGroup-repw {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 50px;
+  padding: 15px;
+  border: 2px solid #a39ce7;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+
+.contentNum-repw {
+  width: 180px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 20px;
+  margin-left: 6%;
+}
+
+/* 입력 필드 */
+.input-field3-sign {
+  width: 40%;
+  max-width: 500px;
+  height: 30px;
+  border: 1px solid rgb(163, 156, 231);
+  border-radius: 5px;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  margin-left:40px;
+}
+
+/* 우측 정렬을 위한 추가 클래스 */
+.rightAlign-repw {
+  justify-content: flex-end;
+}
+
+/* 버튼 스타일 */
+.repw-btn {
+    width: 8%;
+    height: 30px;
+    background-color: rgb(163, 156, 231);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 50px;
+}
+
+.repw-btn:hover {
+  background-color: rgb(138, 132, 195);
+}
+
+/* 링크 스타일링 */
+.loginfindrepw a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.loginfindrepw a:visited,
+.loginfindrepw a:active,
+.loginfindrepw a:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+.input-field4:focus {
+  border-color: #9e30f4;  /* 클릭했을 때 테두리 색 */
+  outline: none;  /* 기본 outline 제거 */
+}
+
+.repw-error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  margin-left: 40px;
+}

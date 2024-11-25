@@ -1,0 +1,203 @@
+/* 게시판 컨테이너 */
+.faq-board-container {
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(163, 156, 231);
+}
+
+/* 제목 */
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* 게시글 목록 */
+.faq-post-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.faq-post-item {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    background: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.faq-post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.faq-post-item h3 {
+    margin: 0 0 10px;
+    color: #333;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.faq-post-date {
+    margin: 0 0 15px;
+    font-size: 14px;
+    color: #888;
+}
+
+.faq-post-content {
+    font-size: 16px;
+    color: #555;
+}
+
+/* 페이지 버튼 */
+.faq-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.faq-pagination-button {
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin: 0 10px;
+}
+
+.faq-pagination-button:hover {
+    background-color: #5a6268;
+}
+
+.faq-pagination-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 페이지 번호 */
+.faq-pagination-number {
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0 5px;
+    border-radius: 5px;
+}
+
+.faq-pagination-number:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.faq-pagination-number.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* 날짜 필터 스타일 */
+.faq-date-filter {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.faq-date-filter label {
+    font-size: 14px;
+}
+
+.faq-date-filter input {
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 150px;
+}
+
+.faq-date-filter input[type="date"] {
+    cursor: pointer;
+}
+
+/* 조회수 스타일 */
+.faq-post-views {
+    font-size: 14px;
+    color: #888;
+}
+
+/* 상단 텍스트 버튼 */
+.faq-nav-buttons {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.faq-nav-button {
+    background: none;
+    border: none;
+    color: #B6B5FF;
+    font-size: 16px;
+    font-weight: bold;
+    margin-right: 20px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.faq-nav-button:hover {
+    color: #0056b3;
+}
+
+/* 검색창 컨테이너 */
+.faq-search-container {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 검색 입력 필드 */
+.faq-search-input {
+    width: 20%; /* 버튼을 제외한 전체 너비 */
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.faq-search-input:focus {
+    border-color: #007bff;
+}
+
+/* 검색 버튼 */
+.faq-search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.faq-search-button:hover {
+    background-color: #0056b3;
+}

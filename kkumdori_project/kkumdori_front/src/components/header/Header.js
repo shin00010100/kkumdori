@@ -2,8 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom'; // Link 컴포넌트를 추가
 import './Header.css';
 import { getUserRole } from '../../utils/auth';
+import { useAuth } from '../../utils/AuthContext';
 
 const Header = () => {
+  const { isAuth, user, logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+    alert("로그아웃되었습니다.");
+  };
   const userRole = getUserRole();
   return(
   <div>
@@ -34,8 +40,18 @@ const Header = () => {
           {userRole === "admin" && (
             <Link to="/admin">관리자</Link>
           )}
-          <Link to="/Login">로그인</Link>
-          <Link to="sign">회원가입</Link>
+
+        {isAuth ? (
+          <>
+            <span>안녕하세요, {userRole === "admin" ? "관리자" : "사용자"}님</span>
+            <button onClick={logout}>로그아웃</button>
+          </>
+        ) : (
+          <>
+            <Link to="/Login">로그인</Link>
+            <Link to="sign">회원가입</Link>
+          </>
+        )}
           <a href="#community">커뮤니티</a>
         </div>
       </div>

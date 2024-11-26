@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // React Router 추가
+import { AuthProvider } from './utils/AuthContext.js';
 
 import Layout from './components/layout/Layout.js';
 import PrivateRoute from './components/privateroute/PrivateRoute.js';
@@ -33,6 +34,7 @@ import Wishlist from './pages/mypage/wishlist/Wishlist.js';
 import ReturnExchangePage from './pages/mypage/return/Return.js';
 
 const App = () => (
+  <AuthProvider>
   <Router> {/* Router로 감싸기 */}
     <Layout>
       <Routes>
@@ -87,6 +89,7 @@ const App = () => (
       </Routes>
     </Layout>
   </Router>
+  </AuthProvider>
 );
 
 export default App;

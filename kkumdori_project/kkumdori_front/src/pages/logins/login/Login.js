@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import HorizonLine from "../../../utils/HorizontalLine.js";
 import "./Login.css";
 import { Link, useNavigate } from 'react-router-dom'; // useNavigate로 변경
-import { getUserRole, isAuthenticated, login } from "../../../utils/auth.js";
+import { useAuth } from "../../../utils/AuthContext.js";
 
 export default function Login() {
   const [id, setId] = useState(""); // 아이디 상태
   const [password, setPassword] = useState(""); // 비밀번호 상태
   const [error, setError] = useState(""); // 오류 메시지 상태
   const navigate = useNavigate(); // useHistory 대신 useNavigate 사용
+  const [isInitialRender, setIsInitialRender] = useState(true); // 초기 렌더링 여부
+  const { isAuth, login } = useAuth(); // AuthContext에서 상태와 함수 가져오기
 
   // 아이디 변경 시 오류 메시지 초기화
   const handleIdChange = (e) => {
@@ -22,28 +24,6 @@ export default function Login() {
     setError(""); // 비밀번호 변경 시 오류 메시지 초기화
   };
 
-  // // 로그인 버튼 클릭 시 호출되는 함수
-  // const handleLogin = () => {
-  //   // 임시로 하드코딩된 아이디와 비밀번호
-  //   const validId = "testuser";
-  //   const validPassword = "password123!";
-  
-  //   if (!id && !password) {
-  //     setError("아이디와 비밀번호를 모두 입력해 주세요.");
-  //   } else if (!id) {
-  //     setError("아이디를 입력해 주세요.");
-  //   } else if (!password) {
-  //     setError("비밀번호를 입력해 주세요.");
-  //   } else if (id === validId && password === validPassword) {
-  //     // 로그인 성공
-  //     alert("로그인에 성공하였습니다.");
-  //     navigate("/main"); // 로그인 성공 후 대시보드로 이동
-  //   } else {
-  //     // 로그인 실패
-  //     setError("아이디 또는 비밀번호가 잘못 되었습니다.\n아이디와 비밀번호를 정확히 입력해 주세요.");
-  //   }
-  // };
-
   const validateInputs = () => {
     if (!id && !password) return "아이디와 비밀번호를 모두 입력해 주세요.";
     if (!id) return "아이디를 입력해 주세요.";
@@ -51,7 +31,7 @@ export default function Login() {
     return null;
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const errorMessage = validateInputs();
     if (errorMessage) {
       setError(errorMessage);
@@ -59,22 +39,26 @@ export default function Login() {
     }
   
     try {
-      login(id, password);
+      await login(id, password); // AuthContext의 login 함수 호출 (async 대기)
       alert("로그인에 성공하였습니다.");
-      const userRole = getUserRole();
-      console.log(`로그인 사용자 권한: ${userRole}`);
-      navigate("/main");
+      navigate("/main"); // 상태가 업데이트된 후에 페이지 이동
     } catch (err) {
       setError(err.message || "아이디 또는 비밀번호가 잘못되었습니다.");
     }
   };
+  
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      alert("이미 로그인된 상태입니다.");
-      navigate("/main"); // 자동 로그인 처리
+    if (isInitialRender) {
+      setIsInitialRender(false); // 초기 렌더링 이후로 설정
+      return;
     }
-  }, [navigate]);
+
+    if (isAuth) {
+      alert("이미 로그인된 상태입니다.");
+      navigate("/main");
+    }
+  }, [isAuth, isInitialRender, navigate]);
   
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {

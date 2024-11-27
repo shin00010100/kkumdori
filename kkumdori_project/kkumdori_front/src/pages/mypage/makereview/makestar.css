@@ -107,7 +107,7 @@
     align-items: center;
   }
   
-  input[type="file"] {
+  .hidden input[type="file"] {
     display: none;
   }
   
@@ -222,7 +222,7 @@
   }
   
   /* 기본 설정 */
-input[type="file"] {
+  .hidden input[type="file"] {
     display: none;
   }
   

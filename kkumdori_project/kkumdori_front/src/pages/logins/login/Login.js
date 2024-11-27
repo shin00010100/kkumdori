@@ -46,16 +46,16 @@ export default function Login() {
       setError(err.message || "아이디 또는 비밀번호가 잘못되었습니다.");
     }
   };
-  
 
   useEffect(() => {
+    // console.log("isInitialRender:", isInitialRender);
+    // console.log("isAuth:", isAuth);
     if (isInitialRender) {
       setIsInitialRender(false); // 초기 렌더링 이후로 설정
       return;
     }
 
     if (isAuth) {
-      alert("이미 로그인된 상태입니다.");
       navigate("/main");
     }
   }, [isAuth, isInitialRender, navigate]);

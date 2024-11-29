@@ -9,7 +9,10 @@ const Side1 = () => (
       <Link to="/onetoone">
         <p><img src="/img/service-center.png" alt="고객센터" /></p>
       </Link>
-      <p><img src="/img/announcement.png" alt="공지사항" /></p>
+      <Link to="/notice">
+        <p><img src="/img/announcement.png" alt="공지사항" /></p>
+      </Link>
+
       <p><img src="/img/FAQ.png" alt="FAQ" /></p>
     </div>
   </aside>

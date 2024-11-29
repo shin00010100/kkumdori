@@ -76,12 +76,12 @@
 }
 
 .search-bar {
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc;
   padding: 5px 10px;
-  width: 200px; /* 검색창 너비 */
+  width: 200px; 
   border-radius: 20px;
-  outline: none;
-}
+  outline: none; */
+} 
 
 .search-btn {
   background: none;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';  // Link 추가
 import './Main.css';
 
 const Main = () => {
@@ -57,20 +58,28 @@ const Main = () => {
       {/* 2x2 배열의 상품 이미지들 */}
       <div className="main-product-grid">
         <div className="main-product-item">
-          <img src="/img/recommended.jpg" alt="추천 상품" />
-          <div className="product-label">추천 상품</div>
+          <Link to="/productList">  {/* 이미지 클릭 시 ProductDetail 페이지로 이동 */}
+            <img src="/img/recommended.jpg" alt="추천 상품" />
+            <div className="product-label">추천 상품</div>
+          </Link>
         </div>
         <div className="main-product-item">
-          <img src="/img/event-product.jpg" alt="이벤트 상품" />
-          <div className="product-label">이벤트 상품</div>
+          <Link to="/productList">
+            <img src="/img/event-product.jpg" alt="이벤트 상품" />
+            <div className="product-label">이벤트 상품</div>
+          </Link>
         </div>
         <div className="main-product-item">
-          <img src="/img/new-product.jpg" alt="신상품" />
-          <div className="product-label">신상품</div>
+          <Link to="/productList">
+            <img src="/img/new-product.jpg" alt="신상품" />
+            <div className="product-label">신상품</div>
+          </Link>
         </div>
         <div className="main-product-item">
-          <img src="/img/discount-product.jpg" alt="할인 상품" />
-          <div className="product-label">할인 상품</div>
+          <Link to="/productList">
+            <img src="/img/discount-product.jpg" alt="할인 상품" />
+            <div className="product-label">할인 상품</div>
+          </Link>
         </div>
       </div>
 

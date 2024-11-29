@@ -20,7 +20,7 @@ import EditBoard from './pages/admin/editboard/EditBoard.js';
 import EditBanner from './pages/admin/editbanner/EditBanner.js';
 import SendMessage from './pages/admin/sendmessage/SendMessage.js';
 import RegistGoods from './pages/admin/registgoods/RegistGoods.js';
-// import EditGoods from './pages/admin/editgoods/EditGoods.js';
+import EditGoods from './pages/admin/editgoods/EditGoods.js';
 
 import Login from './pages/logins/login/Login.js';
 import IDSearch from './pages/logins/idsearch/IDSearch.js';
@@ -78,11 +78,11 @@ return(
             < RegistGoods/>
           </PrivateRoute>
         } />
-        {/* <Route path="/editgoods" element={
+        <Route path="/editgoods" element={
           <PrivateRoute allowedRoles={['admin']}>
             < EditGoods/>
           </PrivateRoute>
-        } /> */}
+        } />
         <Route path='/newboard' element={<NewBoard />} /> {/* 새 게시판 작성 */}
         <Route path='/editboard' element={<EditBoard />} /> {/* 게시판 수정 */}
         

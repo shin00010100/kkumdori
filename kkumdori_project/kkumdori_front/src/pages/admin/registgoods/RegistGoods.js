@@ -9,20 +9,41 @@ function RegistGoods() {
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
+  const [error, setError] = useState('');
 
   const handleImageSelect = (file) => {
     setImage(file); // 이미지 파일을 상태로 저장
   };
 
+  const validateFields = () => {
+    if (!productName.trim()) return "상품명을 입력해 주세요.";
+    if (!category) return "카테고리를 선택해 주세요.";
+    if (!price || price <= 0) return "유효한 판매가를 입력해 주세요.";
+    if (!description.trim()) return "상품 설명을 입력해 주세요.";
+    if (!image) return "이미지를 업로드해 주세요.";
+    return null;
+  };
+
   const handleSubmit = () => {
-    // 데이터 전송자리
-    console.log({
+    const validationError = validateFields();
+    if (validationError) {
+      setError(validationError); // 오류 메시지 설정
+      return;
+    }
+
+    // 유효성 검사가 통과된 경우, 데이터를 전송
+    const productData = {
       productName,
       category,
-      price,
+      price: parseFloat(price), // 숫자로 변환
       description,
       image,
-    });
+    };
+
+    console.log("전송할 데이터:", productData);
+
+    alert("상품이 등록되었습니다.");
+    // 실제 전송 로직 자리 (백엔드 연동 시 작성)
   };
 
   return (
@@ -41,13 +62,22 @@ function RegistGoods() {
             <input
               type="text"
               value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              onChange={(e) => {
+                setProductName(e.target.value);
+                setError(''); // 입력 시 오류 초기화
+              }}
             />
           </div>
 
           <div>
             <label>카테고리:</label>
-            <select value={category} onChange={(e) => setCategory(e.target.value)}>
+            <select
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                setError(''); // 입력 시 오류 초기화
+              }}
+            >
               <option value="">선택해주세요</option>
               <option value="category1">카테고리 1</option>
               <option value="category2">카테고리 2</option>
@@ -61,7 +91,10 @@ function RegistGoods() {
               type="number"
               step="10"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => {
+                setPrice(e.target.value);
+                setError(''); // 입력 시 오류 초기화
+              }}
             />
           </div>
         </div>
@@ -74,9 +107,15 @@ function RegistGoods() {
           className='regist-textarea'
           placeholder="상품에 대한 설명을 입력해 주세요..."
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e) => {
+            setDescription(e.target.value);
+            setError(''); // 입력 시 오류 초기화
+          }}
         ></textarea>
       </div>
+
+      {/* 오류 메시지 */}
+      {error && <div className="error-message">{error}</div>}
 
       <ButtonGroup
         onSubmit={handleSubmit}

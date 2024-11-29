@@ -40,14 +40,33 @@ const SendWho = ({ onSelectionChange }) => {
         onChange={handleSendToAllCheckboxChange}
       />
       <label>모두에게 전송하기</label>
-      <input
+      {/* <input
         type="text"
         placeholder="전송할 대상의 주소 입력..."
         value={email}
         onChange={handleEmailChange}
         disabled={!isIndividualChecked}
         className="email-form-input"
-      />
+      /> */}
+      <div className="input-email-container">
+              <input
+                type="text"
+                className="input-email-text"
+                maxLength="50"
+                placeholder="전송할 대상의 주소 입력..."
+                value={email}
+                onChange={handleEmailChange}
+                disabled={!isIndividualChecked}
+              />
+              @
+              <select className="input-email-select" disabled={!isIndividualChecked}>
+                <option value="이메일 선택">이메일 선택</option>
+                <option value="gmail.com">gmail.com</option>
+                <option value="naver.com">naver.com</option>
+                <option value="hanmail.com">hanmail.com</option>
+                <option value="nate.com">nate.com</option>
+              </select>
+            </div>
     </div>
   );
 };

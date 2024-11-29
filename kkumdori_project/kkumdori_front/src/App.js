@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // React Router 추가
+import { AuthProvider } from './utils/AuthContext.js';
 
 import Layout from './components/layout/Layout.js';
 import PrivateRoute from './components/privateroute/PrivateRoute.js';
@@ -19,6 +20,7 @@ import EditBoard from './pages/admin/editboard/EditBoard.js';
 import EditBanner from './pages/admin/editbanner/EditBanner.js';
 import SendMessage from './pages/admin/sendmessage/SendMessage.js';
 import RegistGoods from './pages/admin/registgoods/RegistGoods.js';
+// import EditGoods from './pages/admin/editgoods/EditGoods.js';
 
 import Login from './pages/logins/login/Login.js';
 import IDSearch from './pages/logins/idsearch/IDSearch.js';
@@ -40,72 +42,101 @@ import initialNotices from './pages/data/initialNotices.js';
 import ProductDetail from './pages/purchase/productdetail/ProductDetail';
 import ProductList from "./pages/list/productlist/ProductList";
 
-
-
-
-
-
 const App = () => {
-  const [notices, setNotices] = useState(initialNotices);
+const [notices, setNotices] = useState(initialNotices);
+return(
+  <AuthProvider>
+  <Router> {/* Router로 감싸기 */}
+    <Layout>
+      <Routes>
+        {/* layout */}
+        <Route path="/" element={<Main />} /> {/* 기본 경로를 Main.js로 설정 */}
+        <Route path="/main" element={<Main />} /> {/* Main.js로 이동 */}
+        <Route path="/cart" element={<Cart />} /> {/* Cart.js로 이동 */}
+        <Route path="/pay" element={<Pay />} /> {/* Pay.js로 이동 */}
+        <Route path="/onetooneboard" element={<OneToOneBoard />} /> {/* 1:1 게시판 페이지 */}
+        <Route path="/onetoone" element={<OneToOne />} /> {/* 1:1 문의 페이지 */}
+        
+        {/* admin */}
+        <Route path="/admin" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < AdminMain/>
+          </PrivateRoute>
+        } />
+        <Route path="/editbanner" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < EditBanner/>
+          </PrivateRoute>
+        } />
+        <Route path="/sendmessage" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < SendMessage/>
+          </PrivateRoute>
+        } />
+        <Route path="/registgoods" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < RegistGoods/>
+          </PrivateRoute>
+        } />
+        {/* <Route path="/editgoods" element={
+          <PrivateRoute allowedRoles={['admin']}>
+            < EditGoods/>
+          </PrivateRoute>
+        } /> */}
+        <Route path='/newboard' element={<NewBoard />} /> {/* 새 게시판 작성 */}
+        <Route path='/editboard' element={<EditBoard />} /> {/* 게시판 수정 */}
+        
+        {/* logins */}
+        <Route path="/login" element={<Login />} /> {/* 로그인 페이지 */}
+        <Route path="/sign" element={<Register />} /> {/* 회원가입 페이지 */}
+        <Route path="/idsearch" element={<IDSearch />} /> {/* 아이디 찾기 페이지 */}
+        <Route path="/pwsearch" element={<PWSearch />} /> {/* 비밀번호 찾기 페이지 */}
+        <Route path="/repw" element={<RePW />} /> {/* 비밀번호 재설정 페이지 */}
+        
+        {/* mypage */}
+        <Route path="/mypage" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <MyPage />
+          </PrivateRoute>
+        } /> {/* 마이 페이지 */}
+        <Route path="/return" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <ReturnExchangePage />
+          </PrivateRoute>
+        } /> {/* 반품/교환 페이지 */}
+        <Route path="/wishlist" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <Wishlist />
+          </PrivateRoute>
+        } /> {/* 찜 목록 페이지 */}
+        <Route path="/myreview" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <Myreview />
+          </PrivateRoute>
+        } /> {/* 내가 작성한 리뷰 */}
+        <Route path="/review" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <Review />
+          </PrivateRoute>
+        } /> {/* 리뷰 작성 페이지 */}
+        <Route path="/delivery" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <DeliveryAddressManager />
+          </PrivateRoute>
+        } /> {/* 배송 주소 관리 */}
+        <Route path="/recentproducts" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <RecentProducts />
+          </PrivateRoute>
+        } /> {/* 최근 본 상품 페이지 */}
+        <Route path="/memberinfoedit" element={
+          <PrivateRoute allowedRoles={['user','admin']}>
+            <Memberinfo />
+          </PrivateRoute>
+        } /> {/* 회원 정보 수정 페이지 */}
 
-
-
-
-  return (
-    <Router>
-      <Layout>
-        <Routes>
-          {/* layout */}
-          <Route path="/" element={<Main />} /> {/* 기본 경로를 Main.js로 설정 */}
-          <Route path="/main" element={<Main />} /> {/* Main.js로 이동 */}
-          <Route path="/cart" element={<Cart />} /> {/* Cart.js로 이동 */}
-          <Route path="/pay" element={<Pay />} /> {/* Pay.js로 이동 */}
-          <Route path="/onetooneboard" element={<OneToOneBoard />} /> {/* 1:1 게시판 페이지 */}
-          <Route path="/onetoone" element={<OneToOne />} /> {/* 1:1 문의 페이지 */}
-
-          {/* admin */}
-          <Route path="/admin" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <AdminMain />
-            </PrivateRoute>
-          } />
-          <Route path="/editbanner" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <EditBanner />
-            </PrivateRoute>
-          } />
-          <Route path="/sendmessage" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <SendMessage />
-            </PrivateRoute>
-          } />
-          <Route path="/registgoods" element={
-            <PrivateRoute allowedRoles={['admin']}>
-              <RegistGoods />
-            </PrivateRoute>
-          } />
-          <Route path='/newboard' element={<NewBoard />} /> {/* 새 게시판 작성 */}
-          <Route path='/editboard' element={<EditBoard />} /> {/* 게시판 수정 */}
-
-          {/* logins */}
-          <Route path="/login" element={<Login />} /> {/* 로그인 페이지 */}
-          <Route path="/sign" element={<Register />} /> {/* 회원가입 페이지 */}
-          <Route path="/idsearch" element={<IDSearch />} /> {/* 아이디 찾기 페이지 */}
-          <Route path="/pwsearch" element={<PWSearch />} /> {/* 비밀번호 찾기 페이지 */}
-          <Route path="/repw" element={<RePW />} /> {/* 비밀번호 재설정 페이지 */}
-
-          {/* mypage */}
-          <Route path="/mypage" element={<MyPage />} /> {/* 마이 페이지 */}
-          <Route path="/return" element={<ReturnExchangePage />} /> {/* 반품/교환 페이지 */}
-          <Route path="/wishlist" element={<Wishlist />} /> {/* 찜 목록 페이지 */}
-          <Route path="/myreview" element={<Myreview />} /> {/* 내가 작성한 리뷰 */}
-          <Route path="/review" element={<Review />} /> {/* 리뷰 작성 페이지 */}
-          <Route path="/delivery" element={<DeliveryAddressManager />} /> {/* 배송 주소 관리 */}
-          <Route path="/recentproducts" element={<RecentProducts />} /> {/* 최근 본 상품 페이지 */}
-          <Route path="/memberinfoedit" element={<Memberinfo />} /> {/* 회원 정보 수정 페이지 */}
-
-          {/* Notice */}
-          <Route path="/notice" element={<Notice />} />
+        {/* Notice */}
+        <Route path="/notice" element={<Notice />} />
           <Route path="/notice/:id" element={<NoticeDetail />} />
           <Route path="/notice/edit/:id" element={<NoticeEdit notices={notices} setNotices={setNotices} />} />
 
@@ -114,12 +145,11 @@ const App = () => {
 
 
           <Route path="/productlist" element={<ProductList />} /> {/* 상품 리스트 페이지 */}
-
-
-        </Routes>
-      </Layout>
-    </Router>
-  );
+      </Routes>
+    </Layout>
+  </Router>
+  </AuthProvider>
+  )
 };
 
 export default App;

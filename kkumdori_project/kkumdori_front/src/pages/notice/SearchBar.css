@@ -1,0 +1,22 @@
+/* SearchBar.css */
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  padding: 10px;
+  width: 300px;
+}
+
+.search-button {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.sort-select {
+  padding: 10px 15px;
+  cursor: pointer;
+}

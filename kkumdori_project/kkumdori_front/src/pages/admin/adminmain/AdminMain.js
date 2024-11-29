@@ -20,7 +20,7 @@ const AdminMain = () => {
                 <div className="admin-button-group">
                 <Button
                         text={"상품 등록"}
-                        onClick={() => navigate("/regist")}
+                        onClick={() => navigate("/registgoods")}
                     />
                     <Button
                         text={"상품 관리"}
@@ -36,7 +36,7 @@ const AdminMain = () => {
                     <div className="admin-button-group">
                     <Button
                         text={"게시판 작성"}
-                        onClick={() => navigate("/new")}
+                        onClick={() => navigate("/newboard")}
                     />
                     <Button
                         text={"게시판 관리"}
@@ -48,7 +48,7 @@ const AdminMain = () => {
                     <h3>SMS</h3>
                     <Button
                         text={"메시지 발송"}
-                        onClick={() => navigate("/send")}
+                        onClick={() => navigate("/sendmessage")}
                     />
                 </div>
             </section>
@@ -58,7 +58,7 @@ const AdminMain = () => {
                 <h3>팝업/배너</h3>
                 <Button
                         text={"팝업/배너 관리"}
-                        onClick={() => navigate("/banner")}
+                        onClick={() => navigate("/editbanner")}
                     />
             </section>
             <HLine />

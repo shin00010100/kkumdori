@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom'; // Link 컴포넌트를 추가
 import './Header.css';
 import { getUserRole } from '../../utils/auth';
+import { useAuth } from '../../utils/AuthContext';
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
+  const { isAuth, user, logout } = useAuth();
+  const handleLogout = () => {
+    logout();
+    alert("로그아웃되었습니다.");
+  };
   const userRole = getUserRole();
 
   return (
@@ -33,13 +39,25 @@ const Header = () => {
           </div>
 
           <div className="nav-links">
-            {userRole === "admin" && (
-              <Link to="/admin">관리자</Link>
-            )}
+          {userRole === "admin" && (
+            <Link to="/admin">관리자</Link>
+          )}
+        <a href="#notice">공지사항</a>
+        {userRole === "user" && (
+            <Link to="/mypage">마이페이지</Link>
+          )}
+        {isAuth ? (
+          <>
+            <span>안녕하세요, {userRole === "admin" ? "관리자" : "사용자"}님</span>
+            <button onClick={logout}>로그아웃</button>
+          </>
+        ) : (
+          <>
             <Link to="/Login">로그인</Link>
             <Link to="sign">회원가입</Link>
-            <a href="#community">커뮤니티</a>
-          </div>
+          </>
+        )}
+        </div>
         </div>
 
         {/* 로고, 검색창, 마이페이지, 장바구니 */}
@@ -80,15 +98,14 @@ const Header = () => {
         {/* 카테고리 바 추가 */}
         <div className="category-bar">
           <ul className="category-list">
-            <li><Link to="/productlist?category=A">카테고리A</Link></li>
-            <li><Link to="/productlist?category=B">카테고리B</Link></li>
-            <li><Link to="/productlist?category=C">카테고리C</Link></li>
-            <li><Link to="/productlist?category=D">카테고리D</Link></li>
-            <li><Link to="/productlist?category=E">카테고리E</Link></li>
-            <li><Link to="/productlist?category=F">카테고리F</Link></li>
+            <li><Link to="/category/electronics">카테고리A</Link></li>
+            <li><Link to="/category/fashion">카테고리B</Link></li>
+            <li><Link to="/category/books">카테고리C</Link></li>
+            <li><Link to="/category/home">카테고리D</Link></li>
+            <li><Link to="/category/toys">카테고리E</Link></li>
+            <li><Link to="/category/beauty">카테고리F</Link></li>
           </ul>
         </div>
-
       </header>
     </div>
   );

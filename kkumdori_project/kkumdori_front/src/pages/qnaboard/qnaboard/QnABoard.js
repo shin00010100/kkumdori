@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "./OneToOneBoard.css";
+import "./QnABoard.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-function OneToOneBoard({ posts = [] , updatePostViews }) {
+function QnABoard({ posts, updatePostViews }) {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [filteredPosts, setFilteredPosts] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const filtered = posts.filter(post => post.type === "OneToOne");
-        setFilteredPosts(filtered);
+        setFilteredPosts(posts.filter(post => post.type === "QnA"));
     }, [posts]);
 
     const filterPostsByDateRange = () => {
         if (startDate && endDate) {
             const filtered = posts.filter((post) => {
                 const postDate = new Date(post.date);
-                return postDate >= startDate && postDate <= endDate && post.type === "OneToOne";
+                return postDate >= startDate && postDate <= endDate && post.type === "QnA";
             });
             setFilteredPosts(filtered);
         }
@@ -27,20 +26,20 @@ function OneToOneBoard({ posts = [] , updatePostViews }) {
 
     const handlePostClick = (postId) => {
         updatePostViews(postId);
-        navigate(`/onetooneview/${postId}`);
+        navigate(`/qnaview/${postId}`);
     };
 
     return (
         <div className="board-container">
-            <h1>1:1 문의 게시판</h1>
+            <h1>QnA 게시판</h1>
             <div className="buttons">
-                <button className="write-button" onClick={() => navigate("/onetoone")}>글쓰기</button>
+                <button className="write-button" onClick={() => navigate("/qna")}>글쓰기</button>
             </div>
             <div className="date-picker-container">
                 <label>시작 날짜:</label>
                 <DatePicker
                     selected={startDate}
-                    onChange={(date) => setStartDate(date)}
+                    onChange={setStartDate}
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
@@ -50,7 +49,7 @@ function OneToOneBoard({ posts = [] , updatePostViews }) {
                 <label>끝 날짜:</label>
                 <DatePicker
                     selected={endDate}
-                    onChange={(date) => setEndDate(date)}
+                    onChange={setEndDate}
                     selectsEnd
                     startDate={startDate}
                     endDate={endDate}
@@ -66,11 +65,9 @@ function OneToOneBoard({ posts = [] , updatePostViews }) {
                         <h3>{post.title}</h3>
                         <p className="post-date">{post.date}</p>
                         <p>작성자: {post.author}</p>
+                        <p>조회수: {post.views}</p>
                         <p>{post.content}</p>
-                        {/* 답변 완료 표시 */}
-                        {post.response && (
-                            <span className="response-completed">답변 완료</span>
-                        )}
+                        {post.response && <span className="response-completed">답변 완료</span>}
                     </li>
                 ))}
             </ul>
@@ -78,4 +75,4 @@ function OneToOneBoard({ posts = [] , updatePostViews }) {
     );
 }
 
-export default OneToOneBoard;
+export default QnABoard;

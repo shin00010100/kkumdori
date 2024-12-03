@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./OneToOne.css";
+import "./QnA.css";
 
-const OneToOne = ({ addPost }) => {
+const QnA = ({ addPost }) => {
   const [formData, setFormData] = useState({
     category: "",
     author: "",
@@ -19,15 +19,17 @@ const OneToOne = ({ addPost }) => {
   const [fileUrl, setFileUrl] = useState(null);
   const navigate = useNavigate();
 
+  // CAPTCHA 생성 함수
   function generateCaptcha() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     return Array.from({ length: 6 }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join("");
   }
 
+  // 폼 데이터 핸들러
   const handleChange = (e) => {
     const { name, value, files, checked, type } = e.target;
 
-    if (name === "file" && files) {
+    if (name === "file" && files.length > 0) {
       setFileName(files[0].name);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -42,6 +44,7 @@ const OneToOne = ({ addPost }) => {
     });
   };
 
+  // 폼 제출 핸들러
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -64,10 +67,10 @@ const OneToOne = ({ addPost }) => {
       author: formData.author || "익명",
       views: 0,
       fileUrl,
-      type: "OneToOne", // 타입 지정
+      type: "QnA",
     };
 
-    addPost(newPost); // 부모 컴포넌트의 addPost 함수 호출
+    addPost(newPost);
 
     alert("글이 성공적으로 등록되었습니다!");
     setFormData({
@@ -83,18 +86,18 @@ const OneToOne = ({ addPost }) => {
     setFileName("");
     setCaptcha(generateCaptcha());
 
-    navigate("/onetooneboard");
+    navigate("/qnaboard");
   };
 
   return (
-    <div className="one-to-one-page">
-      <h1>1대1 상담 글쓰기</h1>
+    <div className="qna-page">
+      <h1>QnA 글쓰기</h1>
       <form onSubmit={handleSubmit} className="write-form">
-        {/* 폼 필드들 */}
+        {/* 말머리 */}
         <label className="label-category">
           말머리:
           <select
-            className="ontooneselect"
+            className="qna-select"
             name="category"
             value={formData.category}
             onChange={handleChange}
@@ -107,6 +110,7 @@ const OneToOne = ({ addPost }) => {
           </select>
         </label>
 
+        {/* 작성자 */}
         <label className="label-author">
           작성자:
           <input
@@ -120,6 +124,7 @@ const OneToOne = ({ addPost }) => {
           />
         </label>
 
+        {/* 비밀번호 */}
         <label className="label-password">
           비밀번호:
           <input
@@ -133,6 +138,7 @@ const OneToOne = ({ addPost }) => {
           />
         </label>
 
+        {/* 제목 */}
         <label className="label-title">
           제목:
           <input
@@ -146,6 +152,7 @@ const OneToOne = ({ addPost }) => {
           />
         </label>
 
+        {/* 본문 */}
         <label className="label-content">
           본문:
           <textarea
@@ -153,12 +160,13 @@ const OneToOne = ({ addPost }) => {
             name="content"
             value={formData.content}
             onChange={handleChange}
-            placeholder="문의 내용을 입력하세요."
+            placeholder="질문 내용을 입력하세요."
             rows="5"
             required
           />
         </label>
 
+        {/* 첨부파일 */}
         <label className="label-file">
           첨부파일:
           <input
@@ -167,9 +175,14 @@ const OneToOne = ({ addPost }) => {
             name="file"
             onChange={handleChange}
           />
-          {fileName && <div className="file-name">첨부된 파일: {fileName}</div>}
+          {fileName && (
+            <div className="file-name">
+              첨부된 파일: {fileName}
+            </div>
+          )}
         </label>
 
+        {/* CAPTCHA */}
         <label className="label-captcha">
           <br />
           <br />
@@ -195,10 +208,10 @@ const OneToOne = ({ addPost }) => {
           />
         </label>
 
+        {/* 개인정보 수집 동의 */}
         <div className="privacy-agreement">
           <p>
-            회사는 비회원의 게시글 등록 시 콘텐츠 등록 및 고객 문의 응대 등을
-            원활하게 진행하기 위해 아래와 같은 개인정보를 수집하고 있습니다.
+            회사는 비회원의 게시글 등록 시 콘텐츠 등록 및 고객 문의 응대 등을 원활하게 진행하기 위해 아래와 같은 개인정보를 수집하고 있습니다.
           </p>
           <ul>
             <li>수집항목: 이름, 비밀번호, 닉네임, 휴대폰번호, 이메일, IP</li>
@@ -217,6 +230,7 @@ const OneToOne = ({ addPost }) => {
           </label>
         </div>
 
+        {/* 제출 버튼 */}
         <button type="submit" className="submit-button">
           작성 완료
         </button>
@@ -225,4 +239,4 @@ const OneToOne = ({ addPost }) => {
   );
 };
 
-export default OneToOne;
+export default QnA;

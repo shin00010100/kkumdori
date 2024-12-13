@@ -1,0 +1,20 @@
+package com.kkumdori.shop.login;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class VerificationService {
+
+    private Map<String, String> verificationCodes = new ConcurrentHashMap<>();
+
+    public void saveCode(String tel, String code) {
+        verificationCodes.put(tel, code);
+    }
+
+    public boolean verifyCode(String tel, String code) {
+        return verificationCodes.containsKey(tel) && verificationCodes.get(tel).equals(code);
+    }
+}

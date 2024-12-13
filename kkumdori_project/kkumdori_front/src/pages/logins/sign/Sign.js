@@ -14,14 +14,16 @@ class Register extends Component {
       formData: {
         zipcode: '',
         address: '',
-        addressDetails: '',  // 상세주소
-        registerId: '',  // 아이디
+        address_details: '',  // 상세주소
+        username: '',  // 아이디
         password: '',  // 비밀번호
         confirmPassword: '',  // 비밀번호 확인
         register_email: '',  // 이메일
         register_email_domain: '',  // 이메일 도메인
         register_bank: '',  // 은행
         register_account: '',  // 계좌
+        fullname: '',  // 이름
+        tel: '',  // 전화번호
       },
       passwordError: '',  // 비밀번호 유효성 검사 에러 메시지
       confirmPasswordError: '',  // 비밀번호 확인 에러 메시지
@@ -56,70 +58,168 @@ class Register extends Component {
     return '';
   };
 
-  // 중복확인 버튼 클릭 핸들러
   handleIdCheck = () => {
-    const { registerId } = this.state.formData;
-    if (!registerId) {
+    const { username } = this.state.formData;
+    if (!username) {
       alert("아이디를 입력해주세요.");
     } else {
-      // 실제 아이디 중복 체크 로직은 서버와 연동되어야 합니다.
-      alert("아이디가 사용 가능합니다.");
-      this.setState({ isIdChecked: true });  // 중복 확인 완료 상태로 설정
-    }
-  };
+  
+      // 아이디 중복 체크를 위한 서버 요청
+      fetch(`http://localhost:8090/api/auth/check-username?username=${username}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("아이디가 사용 가능합니다.");
+            this.setState({ isIdChecked: true });
+          } else {
+            alert("이미 사용 중인 아이디입니다.");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("아이디 중복 확인에 실패했습니다.");
+        });
+      }
+    };
 
   // 회원가입 폼 제출
-  handleSubmit = (e) => {
-    e.preventDefault();
+handleSubmit = (e) => {
+  e.preventDefault();
 
-    const {
-      registerId,
-      password,
-      confirmPassword,
-      address,
-      zipcode,
-      addressDetails,
-      register_email,
-      register_email_domain,
-      register_bank,
-      register_account
-    } = this.state.formData;
+  const {
+    username,
+    password,
+    confirmPassword,
+    address,
+    zipcode,
+    address_details,
+    register_email,
+    register_email_domain,
+    register_bank,
+    register_account,
+    fullname,
+    tel,
+  } = this.state.formData;
 
-    const fullEmail = register_email && register_email_domain ? `${register_email}@${register_email_domain}` : "";
+  const fullEmail = register_email && register_email_domain ? `${register_email}@${register_email_domain}` : "";
 
-    // 필수 항목 체크 (이메일 도메인 추가 체크)
-    if (!registerId || !password || !confirmPassword || !address || !zipcode || !addressDetails || !fullEmail || !register_bank || register_bank === "은행 선택" || !register_account) {
-      alert("모든 필수 입력란을 채워주세요.");
-      return;  // 필수 항목이 비어 있으면 가입 진행 안 함
-    }
+  // 필수 항목 체크 (이메일 도메인 추가 체크)
+  if (!username || !password || !confirmPassword || !address || !zipcode || !address_details || !fullEmail || !register_bank || register_bank === "은행 선택" || !register_account || !tel || !fullname)  {
+    alert("모든 필수 입력란을 채워주세요.");
+    return;  // 필수 항목이 비어 있으면 가입 진행 안 함
+  }
 
-    // 이메일 도메인 선택 여부 체크
-    if (register_email_domain === "") {
-      alert("이메일 도메인을 선택해주세요.");
-      return;  // 이메일 도메인이 선택되지 않으면 함수 종료
-    }
+  // 이메일 도메인 선택 여부 체크
+  if (register_email_domain === "") {
+    alert("이메일 도메인을 선택해주세요.");
+    return;  // 이메일 도메인이 선택되지 않으면 함수 종료
+  }
 
-    // 약관 동의 체크
-    if (!this.state.isTermsAgreed || !this.state.isPrivacyAgreed) {
-      alert("약관 동의를 체크해 주세요.");
-      return; // 약관 동의가 안 되어 있으면 함수 종료
-    }
+  // 약관 동의 체크
+  if (!this.state.isTermsAgreed || !this.state.isPrivacyAgreed) {
+    alert("약관 동의를 체크해 주세요.");
+    return; // 약관 동의가 안 되어 있으면 함수 종료
+  }
 
-    // 계좌 선택 체크
-    if (register_bank === "은행 선택") {
-      alert("계좌를 선택해주세요.");
-      return; // 계좌가 선택되지 않으면 함수 종료
-    }
+  // 아이디 길이 검사
+  if (username.length < 6) {
+    alert("아이디는 6글자 이상이어야 합니다.");
+    return; 
+  }
 
-    // 아이디 중복 확인 체크
-    if (!this.state.isIdChecked) {
-      alert("아이디 중복 확인을 해주세요.");
-      return; // 중복 확인이 되지 않으면 함수 종료
-    }
+  // 아이디 중복 확인 체크
+  if (!this.state.isIdChecked) {
+    alert("아이디 중복 확인을 해주세요.");
+    return;
+  }
 
-    // 가입 완료 로직
-    alert("회원가입이 완료되었습니다.");
-  };
+  // 이름 길이 및 유효성 검사
+  const nameRegex = /^[a-zA-Z가-힣]+$/; 
+  if (fullname.length < 3) {
+    alert("이름은 3자 이상이어야 합니다.");
+    return;
+  }
+  if (!nameRegex.test(fullname)) {
+    alert("이름은 영어 또는 한글로만 입력해주세요.");
+    return;
+  }
+
+  // 계좌 선택 체크
+  if (register_bank === "은행 선택" || !register_account) {
+    alert("계좌를 선택해주세요.");
+    return;
+  }
+
+  // 비밀번호와 비밀번호 확인 유효성 검사
+  const passwordError = this.validatePassword(password);
+  const confirmPasswordError = this.validateConfirmPassword(confirmPassword);
+
+  if (passwordError || confirmPasswordError) {
+    alert("비밀번호와 비밀번호 확인이 일치하지 않거나 형식이 잘못되었습니다.");
+    return;  // 비밀번호 유효성 검사에서 실패하면 가입 진행 안 함
+  }
+
+  const email = `${register_email}@${register_email_domain}`;
+  const fulltel = `+82${tel}`;
+  
+  // 중복 체크 API 호출
+  fetch(`http://localhost:8090/api/auth/check-username?username=${username}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("아이디가 이미 사용 중입니다.");
+      }
+      return fetch(`http://localhost:8090/api/auth/check-email?email=${email}`);
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("이메일이 이미 사용 중입니다.");
+      }
+      return fetch(`http://localhost:8090/api/auth/check-tel?tel=${tel}`);
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("전화번호가 이미 사용 중입니다.");
+      }
+
+      // 중복이 없으면 회원가입 진행
+      const fullAddress = `${address} ${address_details}`;
+      
+      // 서버로 데이터 전송 (POST 요청)
+      const userData = {
+        username,
+        password,
+        fullname,
+        tel: fulltel,
+        address: fullAddress,
+        zipcode,
+        email,
+        bank: register_bank !== "은행 선택" && register_bank !== "" ? register_bank : null,
+        account: register_account || 'default_value',
+      };
+
+      fetch('http://localhost:8090/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData),
+      })
+        .then((response) => response.ok ? response.json() : Promise.reject('회원가입 실패'))
+        .then((data) => {
+          alert("회원가입이 완료되었습니다.");
+          window.location.href = '/login';
+        })
+        .catch((error) => {
+          console.error(error);
+          alert("전화번호가 이미 사용 중입니다.");
+        });
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+};
 
   // 입력 값 변경 핸들러
   handleChange = (e) => {
@@ -136,7 +236,7 @@ class Register extends Component {
 
         return { formData: updatedFormData };
       });
-    } else if (name === 'registerId') {
+    } else if (name === 'username') {
       // 아이디 입력 시, 영문자와 숫자만 허용
       const alphanumericValue = value.replace(/[^a-zA-Z0-9]/g, ''); // 영문자와 숫자 외 문자 제거
       this.setState((prevState) => {
@@ -147,6 +247,17 @@ class Register extends Component {
 
         return { formData: updatedFormData };
       });
+    }
+    // 'tel' 필드: 전화번호는 숫자만 허용
+  else if (name === 'tel') {
+    const numericValue = value.replace(/[^0-9]/g, '');  // 숫자 외 문자 제거
+    this.setState((prevState) => {
+      const updatedFormData = {
+        ...prevState.formData,
+        [name]: numericValue, // 숫자만 업데이트
+      };
+      return { formData: updatedFormData };
+    });  
     } else {
       this.setState((prevState) => {
         const updatedFormData = {
@@ -210,7 +321,7 @@ class Register extends Component {
       isTOSOpen: false,
     });
   };
-
+  
   render() {
     return (
       <div className="register-page">
@@ -236,9 +347,9 @@ class Register extends Component {
                   type="text"
                   className="input-field-sign"
                   maxLength="20"
-                  name="registerId"
+                  name="username"
                   placeholder="영문/숫자 입력 (6~20자)"
-                  value={this.state.formData.registerId}
+                  value={this.state.formData.username}
                   onChange={this.handleChange}
                   autoFocus
                 />
@@ -279,6 +390,34 @@ class Register extends Component {
                 {this.state.confirmPasswordError && (
                   <div className="sign-error-message">{this.state.confirmPasswordError}</div>
                 )}
+              </div>
+              
+              {/* 이름 */}
+              <div>
+                <h5>이름</h5>
+                <input
+                  type="text"
+                  className="input-field-sign"
+                  maxLength="20"
+                  name="fullname"
+                  placeholder="이름을 입력해주세요(한글/영문)"
+                  value={this.state.formData.fullname}
+                  onChange={this.handleChange}
+                />
+              </div>
+
+              {/* 전화번호 */}
+              <div>
+                <h5>전화번호</h5>
+                <input
+                  type="text"
+                  className="input-field-sign"
+                  maxLength="15"
+                  name="tel"
+                  placeholder="'+82', '-' 는 제외하고 적어주세요"
+                  value={this.state.formData.tel}
+                  onChange={this.handleChange}
+                />
               </div>
 
               {/* 이메일 */}
@@ -363,9 +502,9 @@ class Register extends Component {
                 />
                 <input
                   type="text"
-                  name="addressDetails"
+                  name="address_details"
                   className="postcodify_details"
-                  value={this.state.formData.addressDetails}
+                  value={this.state.formData.address_details}
                   onChange={this.handleChange}
                   placeholder="상세주소"
                 />

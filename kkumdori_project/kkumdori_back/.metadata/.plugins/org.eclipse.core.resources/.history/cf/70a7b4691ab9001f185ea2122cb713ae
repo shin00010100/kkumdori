@@ -1,0 +1,37 @@
+package com.kkumdori.shop.login;
+
+import java.util.Collections;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("Searching for user: " + username);  // 디버깅 로그 추가
+
+        return userRepository.findByUsername(username)
+                .map(user -> {
+                    System.out.println("User found: " + user.getUsername());  // 사용자 찾았을 때 로그
+                    return new org.springframework.security.core.userdetails.User(
+                            user.getUsername(),
+                            user.getPassword(),
+                            Collections.emptyList() // 권한 설정
+                    );
+                })
+                .orElseThrow(() -> {
+                    System.err.println("User not found: " + username);  // 사용자 못 찾을 때 로그
+                    return new UsernameNotFoundException("User not found: " + username);
+                });
+    }
+}

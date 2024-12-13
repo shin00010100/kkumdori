@@ -50,7 +50,7 @@
   }
   
   .view-button {
-    display: block;
+    /* display: block; */
     width: 100%;
     padding: 10px;
     font-size: 16px;
@@ -97,7 +97,7 @@
     margin-top: 15px;
     width: 100%; /* 버튼 너비 100%로 설정 */
     text-align: center; /* 텍스트 가운데 정렬 */
-    display: block; /* 버튼을 블록 요소로 설정해 가로로 꽉 채움 */
+    /* /* display: block;  */
   }
   
   .product-button:hover {

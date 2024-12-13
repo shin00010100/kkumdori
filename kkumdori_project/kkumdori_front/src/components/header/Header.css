@@ -41,6 +41,7 @@
 .nav-links {
   display: flex;
   gap: 15px;
+  margin-top: 20px;
 }
 
 .nav-links a {
@@ -76,12 +77,12 @@
 }
 
 .search-bar {
-  /* border: 1px solid #ccc;
+  border: 1px solid #ccc;
   padding: 5px 10px;
   width: 200px; 
   border-radius: 20px;
-  outline: none; */
-} 
+  outline: none; 
+}  
 
 .search-btn {
   background: none;
@@ -108,10 +109,11 @@
 .header-links a {
   text-decoration: none;
   color: #333;
+  text-decoration-line: none;
 }
 
 .header-links a:hover {
-  text-decoration: underline;
+  text-decoration-line: none;
 }
 
 .header-icon {
@@ -160,3 +162,23 @@
   color: #007bff; /* 마우스 오버 시 색상 변경 */
 }
 
+.logout_button {
+  background-color: rgb(163, 156, 231);
+    color: #f7f5f5;
+    width: 70px;
+    height: 30px;
+    font-size: 13px;
+    margin-left: 10px;
+    cursor: pointer;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    margin-bottom: 8px;
+}
+
+.logout_button:hover {
+  background-color: rgb(138, 132, 195);
+}
+
+.name-text {
+  font-weight: bold;
+}

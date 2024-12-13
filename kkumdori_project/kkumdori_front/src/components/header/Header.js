@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Link 컴포넌트를 추가
+import { Link, useNavigate } from 'react-router-dom'; // Link 컴포넌트를 추가
 import './Header.css';
-import { getUserRole } from '../../utils/auth';
-import { useAuth } from '../../utils/AuthContext';
+import { useAuth } from '../../utils/AuthContext'; // useAuth 훅 사용
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태 추가
-  const { isAuth, user, logout } = useAuth();
+  const { isAuth, user, logout } = useAuth(); // useAuth 훅으로 로그인 상태와 사용자 정보 가져오기
+  console.log(user);
+  const navigate = useNavigate(); // useNavigate 사용
+
   const handleLogout = () => {
     logout();
     alert("로그아웃되었습니다.");
+    navigate("/login"); // 로그인 후 대시보드로 이동
   };
-  const userRole = getUserRole();
 
   return (
     <div>
@@ -39,25 +41,25 @@ const Header = () => {
           </div>
 
           <div className="nav-links">
-          {userRole === "admin" && (
-            <Link to="/admin">관리자</Link>
-          )}
-        <a href="#notice">공지사항</a>
-        {userRole === "user" && (
-            <Link to="/mypage">마이페이지</Link>
-          )}
-        {isAuth ? (
-          <>
-            <span>안녕하세요, {userRole === "admin" ? "관리자" : "사용자"}님</span>
-            <button onClick={logout}>로그아웃</button>
-          </>
-        ) : (
-          <>
-            <Link to="/Login">로그인</Link>
-            <Link to="sign">회원가입</Link>
-          </>
-        )}
-        </div>
+            {user?.role === "admin" && <Link to="/admin">관리자</Link>} 
+            <a href="#notice">공지사항</a> 
+            {user?.role === "user" && <Link to="/mypage">마이페이지</Link>}
+            {isAuth ? (
+  <>
+    {user?.role === "admin" ? (
+      <span>환영합니다, <span class="name-text">관리자</span>님</span> // 관리자일 경우
+    ) : (
+      <span>환영합니다, <span class="name-text">{user?.fullname}</span>님</span> // 일반 사용자일 경우
+    )}
+    <button className="logout_button" onClick={handleLogout}>로그아웃</button>
+  </>
+) : (
+  <>
+    <Link to="/login">로그인</Link>
+    <Link to="/sign">회원가입</Link>
+  </>
+)}
+          </div>
         </div>
 
         {/* 로고, 검색창, 마이페이지, 장바구니 */}
@@ -86,7 +88,7 @@ const Header = () => {
             </div>
 
             {/* 마이페이지와 장바구니 (Cart.js로 이동) */}
-            <Link to="/Mypage">
+            <Link to="/mypage">
               <img src="/img/mypage.png" alt="마이페이지" className="header-icon" />
             </Link>
             <Link to="/cart">
@@ -109,6 +111,6 @@ const Header = () => {
       </header>
     </div>
   );
-}
+};
 
 export default Header;

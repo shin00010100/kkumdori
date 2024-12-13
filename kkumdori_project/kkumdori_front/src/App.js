@@ -47,6 +47,10 @@ import initialNotices from './pages/data/initialNotices.js';
 import ProductDetail from './pages/purchase/productdetail/ProductDetail';
 import ProductList from "./pages/list/productlist/ProductList";
 
+// import UserRoute from './utils/UserRoute';
+// import AdminRoute from './utils/AdminRoute';
+// import UniteRoute from './utils/UniteRoute';
+
 const App = () => {
   const [posts, setPosts] = useState([]);
   const [notices, setNotices] = useState(initialNotices);
@@ -87,11 +91,12 @@ const App = () => {
             <Route path="/onetoone" element={<OneToOne addPost={addPost} />} /> {/* 1:1 문의 페이지 */}
 
             {/* admin */}
-            <Route path="/admin" element={
+            <Route path="/admin" element={<AdminMain />} />
+            {/* <Route path="/admin" element={
               <PrivateRoute allowedRoles={['admin']}>
                 <AdminMain />
               </PrivateRoute>
-            } />
+            } /> */}
             <Route path="/editbanner" element={
               <PrivateRoute allowedRoles={['admin']}>
                 <EditBanner />
@@ -123,11 +128,13 @@ const App = () => {
             <Route path="/repw" element={<RePW />} /> {/* 비밀번호 재설정 페이지 */}
 
             {/* mypage */}
-            <Route path="/mypage" element={
+            <Route path="/mypage" element={<MyPage />} />
+            {/* <Route path="/mypage" element={
               <PrivateRoute allowedRoles={['user', 'admin']}>
                 <MyPage />
-              </PrivateRoute>
-            } /> {/* 마이 페이지 */}
+              </PrivateRoute>}
+               />  */}
+              {/* 마이 페이지 */}
             <Route path="/return" element={
               <PrivateRoute allowedRoles={['user', 'admin']}>
                 <ReturnExchangePage />

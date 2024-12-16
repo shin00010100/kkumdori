@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./RePW.css";
 
@@ -7,7 +7,9 @@ export default function RePW() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPasswordMismatch, setIsPasswordMismatch] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(true);  // 비밀번호 유효성 상태 추가
+  const [isPasswordValid, setIsPasswordValid] = useState(true); // 비밀번호 유효성 상태 추가
+
+  const navigate = useNavigate();
 
   const handleNewPasswordChange = (e) => setNewPassword(e.target.value);
   const handleConfirmPasswordChange = (e) => {
@@ -27,23 +29,51 @@ export default function RePW() {
   };
 
   const validatePassword = (password) => {
-    // 불필요한 이스케이프 제거한 정규식
     const regex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=~`'"{};:,.<>?]).{6,20}$/;
     return regex.test(password);
   };
 
-  const handleResetPassword = () => {
+
+  const handleResetPassword = async () => {
+   // localStorage에서 토큰을 가져옴
+   const token = localStorage.getItem("resetToken");
+
+   if (!token) {
+     alert("유효한 토큰이 없습니다.");
+     return;
+   }
+
     if (newPassword === confirmPassword) {
       if (validatePassword(newPassword)) {
-        alert("비밀번호가 성공적으로 재설정되었습니다.");
-        setIsPasswordMismatch(false);  // 비밀번호가 일치하면 오류 메시지 숨기기
-        setIsPasswordValid(true);  // 유효성 검사 통과 시 유효성 상태 true
+        try {
+          const resetRequest = {
+            newPassword: newPassword, // 새 비밀번호
+          };
+
+          const response = await fetch("http://localhost:8090/api/auth/resetPassword", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`, // 헤더에 토큰 추가
+            },
+            body: JSON.stringify(resetRequest),
+          });
+
+          if (response.ok) {
+            alert("비밀번호가 성공적으로 재설정되었습니다.");
+            navigate("/login");
+          } else {
+            alert("비밀번호 재설정에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("비밀번호 재설정 중 오류 발생:", error);
+          alert("서버와의 연결에 문제가 발생했습니다.");
+        }
       } else {
-        setIsPasswordValid(false);  // 비밀번호 유효성 검사 실패 시 오류 상태
+        setIsPasswordValid(false);
       }
     } else {
-      setIsPasswordMismatch(true);  // 비밀번호 불일치
-      setIsPasswordValid(true);  // 비밀번호 불일치 상태에서 유효성 오류 메시지 숨기기
+      setIsPasswordMismatch(true);
     }
   };
 

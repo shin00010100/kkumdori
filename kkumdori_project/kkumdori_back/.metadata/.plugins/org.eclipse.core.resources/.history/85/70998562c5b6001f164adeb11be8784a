@@ -1,0 +1,23 @@
+package com.kkumdori.shop.login;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class VerificationService {
+
+    private Map<String, String> verificationCodes = new ConcurrentHashMap<>();
+
+    public void saveCode(String tel, String code) {
+    	System.out.println("전화번호: " + tel + ", 인증번호: " + code); // 로그 추가
+        verificationCodes.put(tel, code);
+    }
+
+    public boolean verifyCode(String tel, String code) {
+    	 String storedCode = verificationCodes.get(tel);
+    	   System.out.println("저장된 인증번호: " + storedCode + ", 입력된 인증번호: " + code); // 로그 추가
+        return verificationCodes.containsKey(tel) && verificationCodes.get(tel).equals(code);
+    }
+}

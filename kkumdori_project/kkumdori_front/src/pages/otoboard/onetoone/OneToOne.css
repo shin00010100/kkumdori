@@ -1,4 +1,4 @@
-.one-to-one-page {
+.onetoone-page {
   max-width: 800px;
   width: 100%; /* 화면 크기에 따라 100%로 확장 */
   padding: 20px;
@@ -26,7 +26,7 @@ h1 {
 }
 
 /* input, select, textarea 스타일 */
-.inputer, .ontooneselect {
+.inputer, .onetoone-select {
   width: 98%;
   padding: 10px;
   margin-top: 5px;
@@ -138,7 +138,7 @@ h1 {
 
 /* 반응형 스타일 */
 @media (max-width: 768px) {
-  .one-to-one-page {
+  .onetoone-page {
     width: 90%; /* 모바일에서는 페이지 너비를 90%로 설정 */
     padding: 15px; /* 모바일에서의 패딩 간격 */
   }
@@ -148,7 +148,7 @@ h1 {
     margin-bottom: 15px;
   }
 
-  .inputer, .ontooneselect, .onetoone-textarea {
+  .inputer, .onetooneselect, .onetoone-textarea {
     font-size: 13px; /* 입력 폰트 크기 줄이기 */
     padding: 8px; /* 패딩 줄이기 */
   }

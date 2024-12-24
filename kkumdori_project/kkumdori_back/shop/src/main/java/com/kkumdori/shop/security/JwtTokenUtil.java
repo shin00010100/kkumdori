@@ -1,50 +1,90 @@
 package com.kkumdori.shop.security;
 
-import io.jsonwebtoken.*;
-import org.springframework.security.core.Authentication;
+import java.security.Key;
+import java.util.Date;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import com.kkumdori.shop.login.entity.User;
+import com.kkumdori.shop.login.entity.User.Role;
+import com.kkumdori.shop.login.repository.UserRepository;
+
+import io.jsonwebtoken.*;
+
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtTokenUtil {
-	private final String jwtSecret = "yourSecretKey"; // JWT 서명에 사용할 키 (보안을 위해 환경변수로 관리 권장)
-    private final long jwtExpirationMs = 86400000; // 1일 (토큰 유효기간)
 
-    // 토큰 생성
-    public String generateToken(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    @Value("${jwt.expiration}")
+    private long expirationTime;
+
+    private Key getSigningKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
+
+    // **1. 토큰 생성** - 사용자 이름과 역할 포함
+    public String generateToken(String username, Role role) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername()) // 사용자 이름 설정
-                .setIssuedAt(new Date()) // 생성일
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)) // 만료일
-                .signWith(SignatureAlgorithm.HS512, jwtSecret) // 서명
+                .setSubject(username) // 사용자 이름
+                .claim("role", role) // 사용자 역할
+                .setIssuedAt(new Date()) // 토큰 발행 시간
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // 토큰 만료 시간
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // 서명
                 .compact();
     }
 
-    // 토큰에서 사용자 이름 추출
-    public String getUsernameFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(jwtSecret)
+    // **2. 토큰에서 사용자 이름 추출**
+    public String extractUsername(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    // 토큰 유효성 확인
-    public boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    // **3. 토큰에서 역할(Role) 추출**
+    public String extractRole(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
     }
 
-    // 토큰 만료 확인
-    private boolean isTokenExpired(String token) {
-        Date expiration = Jwts.parser()
-                .setSigningKey(jwtSecret)
+    // **4. 토큰 만료 시간 확인**
+    public boolean isTokenExpired(String token) {
+        Date expiration = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getExpiration();
         return expiration.before(new Date());
+    }
+
+    // **5. 토큰 유효성 검증**
+    public boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    // **6. 토큰 검증 및 사용자 조회**
+    public Optional<User> verifyToken(String token, UserRepository userRepository) {
+        try {
+            String username = extractUsername(token);
+            return userRepository.findByUsername(username);
+        } catch (Exception e) {
+            System.err.println("Token verification failed: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 }

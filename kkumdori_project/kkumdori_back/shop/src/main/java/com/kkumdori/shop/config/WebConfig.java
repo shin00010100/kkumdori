@@ -1,4 +1,4 @@
-package com.kkumdori.shop.login.config;
+package com.kkumdori.shop.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

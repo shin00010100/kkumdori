@@ -2,12 +2,22 @@ package com.kkumdori.shop.login.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
-public class User {
+public class User implements UserDetails {
+   
+   private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,31 +38,37 @@ public class User {
     @Column(nullable = false)
     private String account;
 
-    @Column(nullable = false)
+    @Column(name = "zipcode", columnDefinition = "CHAR(10)")
     private String zipcode;
 
     @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private String role;  
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role; // Role은 Enum 타입
+    
+    public enum Role {
+        admin,
+        user
+    }
+    
     @Column(nullable = false, unique = true)
-    private String tel;  
+    private String tel;
 
     @Column(nullable = false)
-    private String fullname;  
+    private String fullname;
 
     // 기본 생성자
     public User() {
     }
 
     // Getter와 Setter
-    public Long getId() {
+    public Long getUserno() {
         return user_no;
     }
 
-    public void setId(Long user_no) {
+    public void setUserno(Long user_no) {
         this.user_no = user_no;
     }
 
@@ -112,28 +128,28 @@ public class User {
         this.address = address;
     }
 
-    public String getRole() {
-        return role;  
+    public Role getRole() {
+        return role;
     }
 
-    public void setRole(String role) {
-        this.role = role;  
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getTel() {
-        return tel; 
+        return tel;
     }
 
     public void setTel(String tel) {
-        this.tel = tel; 
+        this.tel = tel;
     }
 
     public String getFullname() {
-        return fullname; 
+        return fullname;
     }
 
     public void setFullname(String fullname) {
-        this.fullname = fullname; 
+        this.fullname = fullname;
     }
 
     @Override
@@ -146,9 +162,9 @@ public class User {
                 ", account='" + account + '\'' +
                 ", zipcode='" + zipcode + '\'' +
                 ", address='" + address + '\'' +
-                ", role='" + role + '\'' +  // 
-                ", tel='" + tel + '\'' +  
-                ", fullname='" + fullname + '\'' +  
+                ", role='" + role + '\'' +
+                ", tel='" + tel + '\'' +
+                ", fullname='" + fullname + '\'' +
                 '}';
     }
 
@@ -164,4 +180,34 @@ public class User {
     public int hashCode() {
         return user_no.hashCode();
     }
+
+    // UserDetails 메서드들
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // "ROLE_" 접두어를 붙여서 권한을 설정합니다.
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;  // 계정 만료 여부
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;  // 계정 잠금 여부
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;  // 자격 증명 만료 여부
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;  // 계정 활성화 여부
+    }
+    
 }
+

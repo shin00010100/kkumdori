@@ -1,49 +1,83 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios'; 
 import ButtonGroup from '../../../components/buttongroup/ButtonGroup';
 import UploadImage from '../../../components/uploadimage/UploadImage';
 import './RegistGoods.css';
+import { useNavigate } from 'react-router-dom';
 
 function RegistGoods() {
-  const [productName, setProductName] = useState('');
+  const [goodsName, setGoodsName] = useState('');
   const [category, setCategory] = useState('');
+  const [categories, setCategories] = useState([]);
   const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [error, setError] = useState('');
+
+  const navigate = useNavigate(); // navigate 함수 초기화
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:8090/api/categories', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        },
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error('카테고리 가져오기 실패:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const handleImageSelect = (file) => {
     setImage(file); // 이미지 파일을 상태로 저장
   };
 
   const validateFields = () => {
-    if (!productName.trim()) return "상품명을 입력해 주세요.";
-    if (!category) return "카테고리를 선택해 주세요.";
-    if (!price || price <= 0) return "유효한 판매가를 입력해 주세요.";
-    if (!description.trim()) return "상품 설명을 입력해 주세요.";
-    if (!image) return "이미지를 업로드해 주세요.";
+    if (!goodsName.trim()) return '상품명을 입력해 주세요.';
+    if (!category) return '카테고리를 선택해 주세요.';
+    if (!price || price <= 0) return '유효한 판매가를 입력해 주세요.';
+    if (!stock || stock <= 0) return '유효한 수량을 입력해 주세요.';
+    if (!description.trim()) return '상품 설명을 입력해 주세요.';
+    if (!image) return '이미지를 업로드해 주세요.';
     return null;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationError = validateFields();
     if (validationError) {
       setError(validationError); // 오류 메시지 설정
       return;
     }
 
-    // 유효성 검사가 통과된 경우, 데이터를 전송
-    const productData = {
-      productName,
-      category,
-      price: parseFloat(price), // 숫자로 변환
-      description,
-      image,
-    };
-
-    console.log("전송할 데이터:", productData);
-
-    alert("상품이 등록되었습니다.");
-    // 실제 전송 로직 자리 (백엔드 연동 시 작성)
+    try {
+      const token = localStorage.getItem("jwt"); // JWT 토큰 가져오기
+      // FormData를 사용해 이미지 포함 데이터 전송
+      const formData = new FormData();
+      formData.append('goodsName', goodsName);
+      formData.append('categoryNo', category);
+      formData.append('price', price);
+      formData.append('stock', stock);
+      formData.append('description', description);
+      formData.append('image', image);
+      const response = await axios.post('http://localhost:8090/api/goods', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log('상품 등록 성공:', response.data);
+      navigate(-1);
+      alert('상품이 등록되었습니다.');
+    } catch (error) {
+      console.error('상품 등록 실패:', error);
+      setError('상품 등록에 실패했습니다.');
+    }
   };
 
   return (
@@ -61,9 +95,9 @@ function RegistGoods() {
             <label>상품명:</label>
             <input
               type="text"
-              value={productName}
+              value={goodsName}
               onChange={(e) => {
-                setProductName(e.target.value);
+                setGoodsName(e.target.value);
                 setError(''); // 입력 시 오류 초기화
               }}
             />
@@ -79,9 +113,11 @@ function RegistGoods() {
               }}
             >
               <option value="">선택해주세요</option>
-              <option value="category1">카테고리 1</option>
-              <option value="category2">카테고리 2</option>
-              {/* 필요에 따라 추가 카테고리를 넣어주세요 */}
+              {categories.map((cat) => (
+                <option key={cat.categoryNo} value={cat.categoryNo}>
+                  {cat.categoryName}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -97,14 +133,27 @@ function RegistGoods() {
               }}
             />
           </div>
+
+          <div>
+            <label>수량:</label>
+            <input
+              type="number"
+              step="1"
+              value={stock}
+              onChange={(e) => {
+                setStock(e.target.value);
+                setError(''); // 입력 시 오류 초기화
+              }}
+            />
+          </div>
         </div>
       </div>
 
       {/* 상품 설명란과 버튼 */}
-      <div className='product-content-container'>
+      <div className="product-content-container">
         <label>상품 설명란</label>
         <textarea
-          className='regist-textarea'
+          className="regist-textarea"
           placeholder="상품에 대한 설명을 입력해 주세요..."
           value={description}
           onChange={(e) => {
@@ -117,10 +166,7 @@ function RegistGoods() {
       {/* 오류 메시지 */}
       {error && <div className="error-message">{error}</div>}
 
-      <ButtonGroup
-        onSubmit={handleSubmit}
-        submitText="등록"
-      />
+      <ButtonGroup onSubmit={handleSubmit} submitText="등록" />
     </div>
   );
 }

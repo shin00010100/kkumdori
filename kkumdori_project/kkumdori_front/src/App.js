@@ -26,6 +26,7 @@ import EditBanner from './pages/admin/editbanner/EditBanner.js';
 import SendMessage from './pages/admin/sendmessage/SendMessage.js';
 import RegistGoods from './pages/admin/registgoods/RegistGoods.js';
 import EditGoods from './pages/admin/editgoods/EditGoods.js';
+import EditCategory from './pages/admin/editcategory/EditCategory.js';
 
 import Login from './pages/logins/login/Login.js';
 import IDSearch from './pages/logins/idsearch/IDSearch.js';
@@ -91,12 +92,12 @@ const App = () => {
             <Route path="/onetoone" element={<OneToOne addPost={addPost} />} /> {/* 1:1 문의 페이지 */}
 
             {/* admin */}
-            <Route path="/admin" element={<AdminMain />} />
-            {/* <Route path="/admin" element={
+            {/* <Route path="/admin" element={<AdminMain />} /> */}
+            <Route path="/admin" element={
               <PrivateRoute allowedRoles={['admin']}>
                 <AdminMain />
               </PrivateRoute>
-            } /> */}
+            } />
             <Route path="/editbanner" element={
               <PrivateRoute allowedRoles={['admin']}>
                 <EditBanner />
@@ -112,9 +113,17 @@ const App = () => {
                 <RegistGoods />
               </PrivateRoute>
             } />
-            <Route path="/editgoods" element={
+            <Route
+              path="/editgoods/:goodsId" // URL에서 goodsId를 동적으로 받음
+              element={
+                <PrivateRoute allowedRoles={["admin"]}>
+                  <EditGoods />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/editcategory" element={
               <PrivateRoute allowedRoles={['admin']}>
-                <EditGoods />
+                <EditCategory/>
               </PrivateRoute>
             } />
             <Route path='/newboard' element={<NewBoard />} /> {/* 새 게시판 작성 */}

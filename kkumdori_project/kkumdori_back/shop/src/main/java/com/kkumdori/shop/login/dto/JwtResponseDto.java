@@ -1,4 +1,4 @@
-package com.kkumdori.shop.dto;
+package com.kkumdori.shop.login.dto;
 
 import java.util.Collection;
 

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kkumdori.shop.login.dto.UserApiResponse;
 import com.kkumdori.shop.login.dto.UserDto;
 import com.kkumdori.shop.login.entity.User;
-import com.kkumdori.shop.login.jwt.JwtTokenUtil;
+import com.kkumdori.shop.security.JwtTokenUtil;
 import com.kkumdori.shop.login.repository.UserRepository;
 import com.kkumdori.shop.login.request.EmailVerificationRequest;
 import com.kkumdori.shop.login.request.PasswordResetRequest;

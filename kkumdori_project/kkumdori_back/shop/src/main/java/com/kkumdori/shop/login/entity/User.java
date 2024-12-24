@@ -5,54 +5,62 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
-public class User {
+public class User implements UserDetails {
+	
+	private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long user_no;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 64) // VARCHAR(64)
     private String username;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 64) // VARCHAR(64)
     private String password;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 100) // VARCHAR(100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(length = 32) // VARCHAR(32)
     private String bank;
 
-    @Column(nullable = false)
+    @Column(length = 20) // VARCHAR(20)
     private String account;
 
-    @Column(nullable = false)
+    @Column(length = 5) // CHAR(5)
     private String zipcode;
 
-    @Column(nullable = false)
+    @Column(length = 255) // VARCHAR(255)
     private String address;
 
-    @Column(nullable = false)
-    private String role;  
+    @Column(nullable = false, columnDefinition = "ENUM('user', 'admin') DEFAULT 'user'") // ENUM('user', 'admin') with default 'user'
+    private String role;  // 권한
 
-    @Column(nullable = false, unique = true)
-    private String tel;  
+    @Column(nullable = false, unique = true, length = 15) // VARCHAR(15)
+    private String tel;
 
-    @Column(nullable = false)
-    private String fullname;  
+    @Column(nullable = false, length = 64) // VARCHAR(64)
+    private String fullname;
 
     // 기본 생성자
     public User() {
     }
 
     // Getter와 Setter
-    public Long getId() {
+    public Long getUserno() {
         return user_no;
     }
 
-    public void setId(Long user_no) {
+    public void setUserno(Long user_no) {
         this.user_no = user_no;
     }
 
@@ -113,27 +121,27 @@ public class User {
     }
 
     public String getRole() {
-        return role;  
+        return role;
     }
 
     public void setRole(String role) {
-        this.role = role;  
+        this.role = role;
     }
 
     public String getTel() {
-        return tel; 
+        return tel;
     }
 
     public void setTel(String tel) {
-        this.tel = tel; 
+        this.tel = tel;
     }
 
     public String getFullname() {
-        return fullname; 
+        return fullname;
     }
 
     public void setFullname(String fullname) {
-        this.fullname = fullname; 
+        this.fullname = fullname;
     }
 
     @Override
@@ -146,9 +154,9 @@ public class User {
                 ", account='" + account + '\'' +
                 ", zipcode='" + zipcode + '\'' +
                 ", address='" + address + '\'' +
-                ", role='" + role + '\'' +  // 
-                ", tel='" + tel + '\'' +  
-                ", fullname='" + fullname + '\'' +  
+                ", role='" + role + '\'' +
+                ", tel='" + tel + '\'' +
+                ", fullname='" + fullname + '\'' +
                 '}';
     }
 
@@ -163,5 +171,33 @@ public class User {
     @Override
     public int hashCode() {
         return user_no.hashCode();
+    }
+
+    // UserDetails 메서드들
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // "ROLE_" 접두어를 붙여서 권한을 설정합니다.
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;  // 계정 만료 여부
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;  // 계정 잠금 여부
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;  // 자격 증명 만료 여부
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;  // 계정 활성화 여부
     }
 }

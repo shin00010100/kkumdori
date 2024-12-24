@@ -7,40 +7,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.kkumdori.shop.login.jwt.JwtAuthenticationFilter;
 import com.kkumdori.shop.login.jwt.JwtTokenUtil;
 
 @Configuration
 public class SecurityConfig {
 
-    // JwtTokenUtil만 생성자 주입
-    public SecurityConfig(JwtTokenUtil jwtTokenUtil) {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    
+    // 생성자 주입
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter, JwtTokenUtil jwtTokenUtil) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
-
-    @Bean
-    UserDetailsService userDetailsService() {
-        // 임시로 In-Memory UserDetailsService 사용 (DB 기반 구현 시 변경 필요)
-        return new InMemoryUserDetailsManager(
-            User.withUsername("admin")
-                .password(passwordEncoder().encode("password"))
-                .roles("ADMIN")
-                .build()
-        );
-    }
-
-//    @Bean
-//    JwtAuthenticationFilter jwtAuthenticationFilter() {
-//        return new JwtAuthenticationFilter(jwtTokenUtil, userDetailsService());
-//    }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -70,23 +56,44 @@ public class SecurityConfig {
                     "/api/auth/check-username",
                     "/api/auth/check-email",
                     "/api/auth/check-tel",
+                    "/api/auth/SignEmailVerificationCode",
+                    "/api/auth/SignPhoneVerificationCode",
                     "/api/auth/IDsendPhoneVerificationCode",
                     "/api/auth/IDCheckPhoneVerificationCode",
                     "/api/auth/IDsendEmailVerificationCode",
                     "/api/auth/IDcheckEmailVerificationCode",
                     "/api/auth/PWsendPhoneVerificationCode",
                     "/api/auth/PWsendEmailVerificationCode",
-                    "/api/auth/resetPassword",
-                    "/api/auth/resetToken"
+                    "/api/auth/resetToken",
+                    "/api/auth/login/kakao",
+                    "/api/auth/login/naver",
+                    "/api/auth/login/google",
+                    "/api/auth/getuser"
+                    
                 ).permitAll()
+                .requestMatchers("/api/auth/resetPassword").authenticated()
                 .anyRequest().authenticated()
             )
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .headers(headers -> headers
+                .addHeaderWriter((request, response) -> {
+                    response.setHeader("Content-Security-Policy", 
+                        "default-src 'self'; " +
+                        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://www.gstatic.com https://www.googleapis.com; " +  // Google 스크립트 허용 추가
+                        "style-src 'self'; " +
+                        "img-src 'self' data:; " +
+                        "font-src 'self'; " +
+                        "object-src 'none'; " +
+                        "frame-ancestors 'self' https://accounts.google.com; " + // Google 로그인 iframe 허용
+                        "connect-src 'self' https://accounts.google.com https://www.googleapis.com;" // Google API와의 연결을 허용
+                    );
+                })
+            ); // CSP 설정
+        
         return http.build();
     }
 
-    // AuthenticationManager Bean 정의
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

@@ -24,7 +24,12 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    
+    // 사용자 저장 메소드
+    public User save(User user) {
+        return userRepository.save(user);  // 사용자 정보를 데이터베이스에 저장
+    }
+    
     // 인증번호 저장용 맵
     private Map<String, String> verificationCodes = new HashMap<>(); // 인증 코드 저장
 

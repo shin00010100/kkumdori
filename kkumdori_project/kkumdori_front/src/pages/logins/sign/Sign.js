@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import HorizonLine from "../../../utils/HorizontalLine.js";
+import HLine from "../../../utils/HLine.js";
 import TOS from "../tos/Tos.js";
 import "./Sign.css";
 
@@ -24,6 +24,15 @@ class Register extends Component {
         register_account: '',  // 계좌
         fullname: '',  // 이름
         tel: '',  // 전화번호
+        
+        isEmailVerified: false,   // 이메일 인증 여부
+        isPhoneVerified: false,   // 전화번호 인증 여부
+        emailVerificationCode: '',  // 이메일 인증 코드 입력값
+        phoneVerificationCode: '',  // 전화번호 인증 코드 입력값
+        emailCodeSent: false,      // 이메일 인증 코드 전송 여부
+        phoneCodeSent: false,
+        emailSentCode: '',  // 전송된 이메일 인증 코드
+        phoneSentCode: '',  // 전송된 전화번호 인증 코드
       },
       passwordError: '',  // 비밀번호 유효성 검사 에러 메시지
       confirmPasswordError: '',  // 비밀번호 확인 에러 메시지
@@ -63,7 +72,6 @@ class Register extends Component {
     if (!username) {
       alert("아이디를 입력해주세요.");
     } else {
-  
       // 아이디 중복 체크를 위한 서버 요청
       fetch(`http://localhost:8090/api/auth/check-username?username=${username}`, {
         method: 'GET',
@@ -83,8 +91,108 @@ class Register extends Component {
           console.error(error);
           alert("아이디 중복 확인에 실패했습니다.");
         });
-      }
-    };
+    }
+  };
+
+  sendEmailVerification = () => {
+    const { register_email, register_email_domain } = this.state.formData;
+    const fullEmail = `${register_email}@${register_email_domain}`;
+
+    fetch("http://localhost:8090/api/auth/SignEmailVerificationCode", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: fullEmail }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          this.setState({
+            emailCodeSent: true,
+            emailSentCode: data.verificationCode, // 서버가 반환한 인증번호 저장 (디버깅 용도)
+          });
+          console.log("이메일로 전송된 인증번호:", data.verificationCode);
+          alert("이메일 인증번호가 전송되었습니다.");
+        } else {
+          alert("이메일 인증번호 전송에 실패했습니다.");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        alert("이메일 인증번호 전송에 실패했습니다.");
+      });
+  };
+
+  sendPhoneVerification = () => {
+    const { tel } = this.state.formData;
+
+    fetch("http://localhost:8090/api/auth/SignPhoneVerificationCode", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ tel }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          this.setState({
+            phoneCodeSent: true,
+            phoneSentCode: data.verificationCode, // 서버에서 반환한 인증번호 저장 (디버깅 용도)
+          });
+          console.log("전화번호로 전송된 인증번호:", data.verificationCode);
+          alert("전화번호 인증번호가 전송되었습니다.");
+        } else {
+          alert("전화번호 인증번호 전송에 실패했습니다.");
+        }
+      })
+      .catch(error => {
+        console.error(error);
+        alert("전화번호 인증번호 전송에 실패했습니다.");
+      });
+  };
+
+  verifyEmailCode = () => {
+    const { emailVerificationCode } = this.state.formData;
+    const { emailSentCode } = this.state;
+
+    console.log("입력한 인증번호:", emailVerificationCode);
+    console.log("전송된 인증번호:", emailSentCode);
+
+    if (!emailSentCode) {
+      alert("인증번호가 전송되지 않았습니다.");
+      return;
+    }
+
+    if (emailVerificationCode === emailSentCode) {
+      this.setState({ isEmailVerified: true });
+      alert("이메일 인증이 완료되었습니다.");
+    } else {
+      alert("이메일 인증번호가 틀렸습니다.");
+    }
+  };
+
+  verifyPhoneCode = () => {
+    const { phoneVerificationCode } = this.state.formData;
+    const { phoneSentCode } = this.state;
+
+    console.log("입력한 인증번호:", phoneVerificationCode);
+    console.log("전송된 인증번호:", phoneSentCode);
+
+    if (!phoneSentCode) {
+      alert("인증번호가 전송되지 않았습니다.");
+      return;
+    }
+
+    if (phoneVerificationCode === phoneSentCode) {
+      this.setState({ isPhoneVerified: true });
+      alert("전화번호 인증이 완료되었습니다.");
+    } else {
+      alert("전화번호 인증번호가 틀렸습니다.");
+    }
+  };
+
 
   // 회원가입 폼 제출
 handleSubmit = (e) => {
@@ -104,41 +212,54 @@ handleSubmit = (e) => {
     fullname,
     tel,
   } = this.state.formData;
-
-  const fullEmail = register_email && register_email_domain ? `${register_email}@${register_email_domain}` : "";
-
+  
+  const fullEmail = `${register_email}@${register_email_domain}`;
+  
   // 필수 항목 체크 (이메일 도메인 추가 체크)
-  if (!username || !password || !confirmPassword || !address || !zipcode || !address_details || !fullEmail || !register_bank || register_bank === "은행 선택" || !register_account || !tel || !fullname)  {
+  if (
+    !username ||
+    !password ||
+    !confirmPassword ||
+    !address ||
+    !zipcode ||
+    !address_details ||
+    !fullEmail ||
+    !register_bank ||
+    register_bank === "은행 선택" ||
+    !register_account ||
+    !tel ||
+    !fullname
+  ) {
     alert("모든 필수 입력란을 채워주세요.");
-    return;  // 필수 항목이 비어 있으면 가입 진행 안 함
+    return; // 필수 항목이 비어 있으면 가입 진행 안 함
   }
-
+  
   // 이메일 도메인 선택 여부 체크
   if (register_email_domain === "") {
     alert("이메일 도메인을 선택해주세요.");
-    return;  // 이메일 도메인이 선택되지 않으면 함수 종료
+    return; // 이메일 도메인이 선택되지 않으면 함수 종료
   }
-
+  
   // 약관 동의 체크
   if (!this.state.isTermsAgreed || !this.state.isPrivacyAgreed) {
     alert("약관 동의를 체크해 주세요.");
     return; // 약관 동의가 안 되어 있으면 함수 종료
   }
-
+  
   // 아이디 길이 검사
   if (username.length < 6) {
     alert("아이디는 6글자 이상이어야 합니다.");
-    return; 
+    return;
   }
-
+  
   // 아이디 중복 확인 체크
   if (!this.state.isIdChecked) {
     alert("아이디 중복 확인을 해주세요.");
     return;
   }
-
+  
   // 이름 길이 및 유효성 검사
-  const nameRegex = /^[a-zA-Z가-힣]+$/; 
+  const nameRegex = /^[a-zA-Z가-힣]+$/;
   if (fullname.length < 3) {
     alert("이름은 3자 이상이어야 합니다.");
     return;
@@ -147,24 +268,30 @@ handleSubmit = (e) => {
     alert("이름은 영어 또는 한글로만 입력해주세요.");
     return;
   }
-
+  
   // 계좌 선택 체크
   if (register_bank === "은행 선택" || !register_account) {
     alert("계좌를 선택해주세요.");
     return;
   }
-
+  
   // 비밀번호와 비밀번호 확인 유효성 검사
   const passwordError = this.validatePassword(password);
   const confirmPasswordError = this.validateConfirmPassword(confirmPassword);
-
+  
   if (passwordError || confirmPasswordError) {
     alert("비밀번호와 비밀번호 확인이 일치하지 않거나 형식이 잘못되었습니다.");
-    return;  // 비밀번호 유효성 검사에서 실패하면 가입 진행 안 함
+    return; // 비밀번호 유효성 검사에서 실패하면 가입 진행 안 함
   }
-
+  
+  // 이메일과 전화번호 인증 확인
+  if (!this.state.isEmailVerified || !this.state.isPhoneVerified) {
+    alert("이메일과 전화번호 인증을 완료해 주세요.");
+    return;
+  }
+  
   const email = `${register_email}@${register_email_domain}`;
-  const fulltel = `+82${tel}`;
+  const fulltel = `+1${tel}`;
   
   // 중복 체크 API 호출
   fetch(`http://localhost:8090/api/auth/check-username?username=${username}`)
@@ -184,10 +311,10 @@ handleSubmit = (e) => {
       if (!response.ok) {
         throw new Error("전화번호가 이미 사용 중입니다.");
       }
-
+  
       // 중복이 없으면 회원가입 진행
       const fullAddress = `${address} ${address_details}`;
-      
+  
       // 서버로 데이터 전송 (POST 요청)
       const userData = {
         username,
@@ -198,28 +325,30 @@ handleSubmit = (e) => {
         zipcode,
         email,
         bank: register_bank !== "은행 선택" && register_bank !== "" ? register_bank : null,
-        account: register_account || 'default_value',
+        account: register_account || "default_value",
       };
-
-      fetch('http://localhost:8090/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+  
+      return fetch("http://localhost:8090/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
-      })
-        .then((response) => response.ok ? response.json() : Promise.reject('회원가입 실패'))
-        .then((data) => {
-          alert("회원가입이 완료되었습니다.");
-          window.location.href = '/login';
-        })
+      });
+    })
+    .then((response) =>
+      response.ok ? response.json() : Promise.reject("회원가입 실패")
+    )
+    .then((data) => {
+      alert("회원가입이 완료되었습니다.");
+      window.location.href = "/login";
+    })
         .catch((error) => {
           console.error(error);
           alert("전화번호가 이미 사용 중입니다.");
+        })
+        .catch((error) => { // 중복된 catch 블록
+          alert(error.message);
         });
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-};
+      };
 
   // 입력 값 변경 핸들러
   handleChange = (e) => {
@@ -234,7 +363,10 @@ handleSubmit = (e) => {
           [name]: numericValue, // 숫자만 업데이트
         };
 
-        return { formData: updatedFormData };
+        return {
+          formData: updatedFormData,
+          isIdChecked: false,  // 아이디 변경 시 중복 확인 상태를 초기화
+        };
       });
     } else if (name === 'username') {
       // 아이디 입력 시, 영문자와 숫자만 허용
@@ -245,7 +377,10 @@ handleSubmit = (e) => {
           [name]: alphanumericValue, // 영문자와 숫자만 업데이트
         };
 
-        return { formData: updatedFormData };
+        return {
+          formData: updatedFormData,
+          isIdChecked: false,  // 아이디 변경 시 중복 확인 상태를 초기화
+        };
       });
     }
     // 'tel' 필드: 전화번호는 숫자만 허용
@@ -285,7 +420,7 @@ handleSubmit = (e) => {
       });
     }
   };
-
+  
   // 우편번호 찾기 함수 (Daum API)
   handlePostcode = () => {
     const script = document.createElement('script');
@@ -330,13 +465,9 @@ handleSubmit = (e) => {
             <h1 className="register_title">회원가입</h1>
           </div>
 
-          <div className="socialImages">
-            <img src="/img/kakao.png" alt="Kakao" />
-            <img src="/img/google.png" alt="Google" />
-            <img src="/img/naver.png" alt="Naver" />
-          </div>
+         
 
-          <HorizonLine text="또는" />
+          <HLine />
 
           <div className="register">
             <div>
@@ -404,7 +535,7 @@ handleSubmit = (e) => {
                   value={this.state.formData.fullname}
                   onChange={this.handleChange}
                 />
-              </div>
+              </div> <br />
 
               {/* 전화번호 */}
               <div>
@@ -417,8 +548,27 @@ handleSubmit = (e) => {
                   placeholder="'+82', '-' 는 제외하고 적어주세요"
                   value={this.state.formData.tel}
                   onChange={this.handleChange}
+                  disabled={this.state.isPhoneVerified}
                 />
-              </div>
+                 <button type="button" className="telsendNum-sign" onClick={this.sendPhoneVerification} 
+                 disabled={this.state.isPhoneVerified}>
+                  인증전송
+                </button>
+                <br /><br />
+                <input
+                  type="text"
+                  className="input-field-sign"
+                  maxLength="15"
+                  name="phoneVerificationCode"
+                  placeholder="휴대폰 인증번호를 입력해주세요"
+                  value={this.state.formData.phoneVerificationCode}
+                  onChange={this.handleChange}
+                />
+                <button type="button" className="telcheck-sign" onClick={this.verifyPhoneCode}
+                disabled={this.state.isPhoneVerified}>
+                  인증확인
+                </button>
+              </div><br />
 
               {/* 이메일 */}
               <div>
@@ -431,13 +581,19 @@ handleSubmit = (e) => {
                   placeholder="이메일 입력란"
                   value={this.state.formData.register_email}
                   onChange={this.handleChange}
-                />
-                @
+                  disabled={this.state.isEmailVerified}
+                /><button type="button" className="emailsendNum-sign" onClick={this.sendEmailVerification}
+                disabled={this.state.isEmailVerified}>
+                인증전송
+              </button>
+                <div>
+                @ &nbsp; 
                 <select
                   className="register_email_select"
                   name="register_email_domain"
                   value={this.state.formData.register_email_domain}
                   onChange={this.handleChange}
+                  disabled={this.state.isEmailVerified}
                 >
                   <option value="">이메일 선택</option>
                   <option value="gmail.com">gmail.com</option>
@@ -445,7 +601,22 @@ handleSubmit = (e) => {
                   <option value="hanmail.com">hanmail.com</option>
                   <option value="nate.com">nate.com</option>
                 </select>
-              </div>
+                </div>
+                <br />
+                <input
+                  type="text"
+                  className="input-field-sign"
+                  maxLength="15"
+                  name="emailVerificationCode"
+                  placeholder="이메일 인증번호를 입력해주세요"
+                  value={this.state.formData.emailVerificationCode}
+                  onChange={this.handleChange}
+                />
+                <button type="button" className="emailcheck-sign" onClick={this.verifyEmailCode} 
+                disabled={this.state.isEmailVerified}>
+                  인증확인
+                </button>
+              </div> <br />
 
               {/* 계좌 */}
               <div>

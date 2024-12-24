@@ -128,7 +128,7 @@ export default function PWSearch() {
       return;
     }
 
-    const fulltel = `+82${phoneNumber}`;
+    const fulltel = `+1${phoneNumber}`;
     try {
       const response = await fetch("http://localhost:8090/api/auth/PWsendPhoneVerificationCode", {
         method: "POST",
@@ -197,7 +197,7 @@ export default function PWSearch() {
     } else if (method === "phone" && phoneVerificationSent) {
       requestData = {
         username: phoneIdInput,
-        phone: `+82${phoneNumber}`,
+        phone: `+1${phoneNumber}`,
       };
     }
 

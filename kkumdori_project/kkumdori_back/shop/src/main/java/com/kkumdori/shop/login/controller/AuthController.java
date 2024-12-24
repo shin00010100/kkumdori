@@ -1,9 +1,14 @@
 package com.kkumdori.shop.login.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,9 +21,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import com.kkumdori.shop.login.dto.UserApiResponse;
 import com.kkumdori.shop.login.dto.UserDto;
+import com.kkumdori.shop.login.dto.UserResponse;
 import com.kkumdori.shop.login.entity.User;
 import com.kkumdori.shop.login.jwt.JwtTokenUtil;
 import com.kkumdori.shop.login.repository.UserRepository;
@@ -26,6 +35,7 @@ import com.kkumdori.shop.login.request.EmailVerificationRequest;
 import com.kkumdori.shop.login.request.PasswordResetRequest;
 import com.kkumdori.shop.login.request.PhoneVerificationRequest;
 import com.kkumdori.shop.login.service.EmailService;
+import com.kkumdori.shop.login.service.SmsService;
 import com.kkumdori.shop.login.service.UserService;
 import com.kkumdori.shop.login.service.VerificationService;
 
@@ -54,22 +64,322 @@ public class AuthController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
         String password = credentials.get("password");
 
         Optional<User> user = userService.findByUsername(username); // 사용자 조회
         if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            // JWT 토큰에 role 추가
             String token = jwtTokenUtil.generateToken(username, user.get().getRole());
-            return ResponseEntity.ok("{\"token\":\"" + token + "\", \"role\":\"" + user.get().getRole() + "\", \"fullname\":\"" + user.get().getFullname() + "\"}");
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+//            response.put("fullname", user.get().getFullname());
+//            response.put("role", user.get().getRole());
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid credentials"));
+        }
+    }
+    
+    
+    // 카카오 로그인
+    @PostMapping("/login/kakao")
+    public ResponseEntity<Map<String, String>> kakaoLogin(@RequestBody Map<String, String> credentials) {
+        String kakaoAccessToken = credentials.get("token");
+
+        // 카카오 사용자 정보 조회
+        String kakaoApiUrl = "https://kapi.kakao.com/v2/user/me";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + kakaoAccessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            // 카카오 사용자 정보 조회
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                kakaoApiUrl, 
+                HttpMethod.GET, 
+                entity, 
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
+            Map<String, Object> kakaoUser = response.getBody();
+
+            if (kakaoUser == null) {
+                System.out.println("카카오 사용자 정보를 가져올 수 없습니다.");  // 로그 추가
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "카카오 사용자 정보를 가져올 수 없습니다."));
+            }
+
+            // 카카오 사용자 ID 추출
+            String kakaoUserId = kakaoUser.get("id").toString();  // 카카오 고유 ID
+            System.out.println("카카오 사용자 ID: " + kakaoUserId);  // 로그 추가
+
+            // 사용자 이름 추출
+            String fullname = "이름 없음";
+            if (kakaoUser.get("properties") instanceof Map<?, ?>) {
+                Map<?, ?> properties = (Map<?, ?>) kakaoUser.get("properties");
+                fullname = (String) properties.get("nickname");
+                System.out.println("사용자 이름: " + fullname);  // 로그 추가
+            } else {
+                System.out.println("properties가 Map 타입이 아닙니다.");  // 로그 추가
+            }
+
+            // 사용자 정보 DB에 저장
+            Optional<User> user = userService.findByUsername(kakaoUserId);  // 카카오 ID로 사용자 찾기
+            if (user.isEmpty()) {
+                // 신규 사용자라면 카카오 정보로 회원가입 처리
+                System.out.println("신규 사용자, 카카오 정보로 회원가입 처리 중...");  // 로그 추가
+                User newUser = new User();
+                newUser.setUsername(kakaoUserId);  // 카카오 고유 ID
+                newUser.setFullname(fullname);     // 이름
+                
+                // 임의의 값을 설정
+                newUser.setEmail(userService.generateVerificationCode() + "@example.com");   // 임의 이메일
+                newUser.setBank("SampleBank");                // 임의 은행명
+                newUser.setAccount("0000000000");             // 임의 계좌번호
+                newUser.setZipcode("00000");                  // 임의 우편번호
+                newUser.setAddress("Sample Address");         // 임의 주소
+                newUser.setRole("user");                      // 기본 권한 설정 (사용자 권한)
+                newUser.setTel("kakao"+userService.generateVerificationCode());              // 임의 전화번호
+                
+                // 비밀번호 암호화
+                String rawPassword = userService.generateVerificationCode();
+                String encodedPassword = passwordEncoder.encode(rawPassword);
+                newUser.setPassword(encodedPassword);                     
+                
+                userService.save(newUser);
+                System.out.println("신규 사용자 등록 완료: " + newUser.getUsername());  // 로그 추가
+            } else {
+                System.out.println("기존 사용자 확인: " + kakaoUserId);  // 로그 추가
+            }
+
+            // JWT 토큰 생성
+            String token = jwtTokenUtil.generateToken(kakaoUserId, "user");
+            System.out.println("JWT 토큰 생성 완료: " + token);  // 로그 추가
+
+            // 응답 데이터 생성
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("token", token);
+//            responseMap.put("fullname", fullname);
+//            responseMap.put("role", "user");
+
+            return ResponseEntity.ok(responseMap);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            // HTTP 오류가 발생한 경우
+            System.out.println("HTTP 오류 발생: " + e.getMessage());  // 로그 추가
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "카카오 로그인 실패: " + e.getMessage()));
+        } catch (Exception e) {
+            // 기타 예외 처리
+            e.printStackTrace();  // 예외 스택 트레이스를 출력하여 문제를 상세히 확인
+            System.out.println("서버 오류 발생: " + e.getMessage());  // 로그 추가
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "서버 오류: " + e.getMessage()));
+        }
+    }  
+    
+    
+    @PostMapping("/login/naver")
+    public ResponseEntity<Map<String, String>> naverLogin(@RequestBody Map<String, String> credentials) {
+        String naverAccessToken = credentials.get("token");
+
+        // 네이버 사용자 정보 조회
+        String naverApiUrl = "https://openapi.naver.com/v1/nid/me";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + naverAccessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            // 네이버 사용자 정보 조회
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                naverApiUrl,
+                HttpMethod.GET,
+                entity,
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
+            Map<String, Object> naverUser = response.getBody();
+
+            if (naverUser == null) {
+                System.out.println("네이버 사용자 정보를 가져올 수 없습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "네이버 사용자 정보를 가져올 수 없습니다."));
+            }
+
+            // 네이버 사용자 ID 추출
+            String naverUserId = "";
+            if (naverUser.containsKey("response")) {
+                Object responseObj = naverUser.get("response");
+                if (responseObj instanceof Map) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> responseMap = (Map<String, Object>) responseObj;
+                    if (responseMap != null && responseMap.get("id") != null) {
+                        naverUserId = responseMap.get("id").toString();
+                        System.out.println("네이버 사용자 ID: " + naverUserId);
+                    } else {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "네이버 사용자 ID가 없습니다."));
+                    }
+                } else {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "응답 데이터 형식이 잘못되었습니다."));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "응답에서 사용자 정보를 찾을 수 없습니다."));
+            }
+
+            // 사용자 이름 추출
+            String fullname = "이름 없음";
+            if (naverUser.get("response") instanceof Map<?, ?>) {
+                Map<?, ?> responseMap = (Map<?, ?>) naverUser.get("response");
+                if (responseMap != null && responseMap.get("name") != null) {
+                    fullname = (String) responseMap.get("name");
+                }
+            }
+
+            // 사용자 정보 DB에 저장
+            Optional<User> user = userService.findByUsername(naverUserId);
+            if (user.isEmpty()) {
+                // 신규 사용자라면 네이버 정보로 회원가입 처리
+                System.out.println("신규 사용자, 네이버 정보로 회원가입 처리 중...");
+                
+                // username 중복 방지: 네이버 ID에 랜덤 문자열 추가
+                String generatedUsername = naverUserId;
+
+                User newUser = new User();
+                newUser.setUsername(generatedUsername);  // 네이버 고유 ID + 랜덤 문자열
+                newUser.setFullname(fullname);
+                newUser.setEmail(userService.generateVerificationCode() + "@example.com");
+                newUser.setBank("SampleBank");
+                newUser.setAccount("0000000000");
+                newUser.setZipcode("00000");
+                newUser.setAddress("Sample Address");
+                newUser.setRole("user");
+                newUser.setTel("naver" + userService.generateVerificationCode());
+
+                // 비밀번호 암호화
+                String rawPassword = userService.generateVerificationCode();
+                String encodedPassword = passwordEncoder.encode(rawPassword);
+                newUser.setPassword(encodedPassword);
+
+                userService.save(newUser);
+                System.out.println("신규 사용자 등록 완료: " + newUser.getUsername());
+            } else {
+                System.out.println("기존 사용자 확인: " + naverUserId);
+            }
+
+            // JWT 토큰 생성
+            String token = jwtTokenUtil.generateToken(naverUserId, "user");
+            System.out.println("JWT 토큰 생성 완료: " + token);
+
+            // 응답 데이터 생성
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("token", token);
+//            responseMap.put("fullname", fullname);
+//            responseMap.put("role", "user");
+
+            return ResponseEntity.ok(responseMap);
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            // HTTP 오류 발생한 경우
+            System.out.println("HTTP 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "네이버 로그인 실패: " + e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("서버 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "서버 오류: " + e.getMessage()));
+        }
+    }
+    
+    // 구글 로그인 API 호출 처리
+    @PostMapping("/login/google")
+    public ResponseEntity<Map<String, String>> googleLogin(@RequestBody Map<String, String> credentials) {
+        String googleAccessToken = credentials.get("token");
+
+        // 구글 사용자 정보 조회
+        String googleApiUrl = "https://www.googleapis.com/oauth2/v3/userinfo";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + googleAccessToken);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            // 구글 사용자 정보 조회
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                googleApiUrl,
+                HttpMethod.GET,
+                entity,
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
+            Map<String, Object> googleUser = response.getBody();
+
+            if (googleUser == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "구글 사용자 정보를 가져올 수 없습니다."));
+            }
+
+            // 구글 사용자 ID 및 이름 추출
+            String googleUserId = googleUser.get("sub").toString();  // 구글 고유 ID
+            String fullname = googleUser.get("name").toString();     // 이름
+
+            // 사용자 정보 DB에 저장
+            Optional<User> user = userService.findByUsername(googleUserId);
+            if (user.isEmpty()) {
+                // 신규 사용자라면 구글 정보로 회원가입 처리
+                User newUser = new User();
+                newUser.setUsername(googleUserId);  // 구글 고유 ID
+                newUser.setFullname(fullname);      // 이름
+                newUser.setEmail(userService.generateVerificationCode() + "@example.com");  // 임의 이메일
+                newUser.setBank("SampleBank");                // 임의 은행명
+                newUser.setAccount("0000000000");             // 임의 계좌번호
+                newUser.setZipcode("00000");                  // 임의 우편번호
+                newUser.setAddress("Sample Address");         // 임의 주소
+                newUser.setRole("user");            // 기본 권한 설정 (사용자 권한)
+                newUser.setTel("google" + userService.generateVerificationCode());        // 임의 전화번호
+
+                // 비밀번호 암호화
+                String rawPassword = userService.generateVerificationCode();
+                String encodedPassword = passwordEncoder.encode(rawPassword);
+                newUser.setPassword(encodedPassword);
+
+                userService.save(newUser);
+            }
+
+            // JWT 토큰 생성
+            String token = jwtTokenUtil.generateToken(googleUserId, "user");
+
+            // 응답 데이터 생성
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("token", token);
+//            responseMap.put("fullname", fullname);
+//            responseMap.put("role", "user");
+
+            return ResponseEntity.ok(responseMap);
+
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "구글 로그인 실패: " + e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "서버 오류: " + e.getMessage()));
         }
     }
 
-    
- // 회원가입
+   
+    // 로그인 후 사용자 정보 조회
+    @GetMapping("/getuser")
+    public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
+        // Authorization 헤더에서 "Bearer " 제거한 토큰만 추출
+        String jwtToken = token.replace("Bearer ", "");
+        System.out.println("Received Token: " + jwtToken); // 서버 로그에 토큰 확인
+
+        // 토큰 검증 및 사용자 정보 조회
+        Optional<User> userOptional = jwtTokenUtil.verifyToken(jwtToken, userRepository);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            // 사용자 정보 반환 (user_no, fullname, role 포함)
+            return ResponseEntity.ok(new UserResponse(user.getUserno(), user.getFullname(), user.getRole()));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않거나 만료된 토큰입니다.");
+        }
+    }
+ 
+    // 회원가입
     @PostMapping("/signup")
     public ResponseEntity<UserApiResponse> registerUser(@RequestBody UserDto userDto) {
         try {
@@ -105,7 +415,52 @@ public class AuthController {
         }
         return ResponseEntity.ok().body("이메일이 사용 가능합니다.");
     }
+    
+    // 회원가입 이메일 인증번호 전송
+    @PostMapping("/SignEmailVerificationCode")
+    public ResponseEntity<UserApiResponse> sendEmailVerificationCode(@RequestBody EmailVerificationRequest request) {
+        String email = request.getEmail();
 
+        // 인증번호 생성
+        String verificationCode = userService.generateVerificationCode();
+        
+        try {
+            // 이메일로 인증번호 전송
+            emailService.sendVerificationCode(email, verificationCode);
+
+            // 인증번호를 응답에 포함하여 반환
+            return ResponseEntity.ok(new UserApiResponse(true, "인증번호가 이메일로 전송되었습니다.", verificationCode));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new UserApiResponse(false, "인증번호 전송에 실패했습니다."));
+        }
+    }
+
+    // 회원가입 전화번호 인증번호 전송
+    @PostMapping("/SignPhoneVerificationCode")
+    public ResponseEntity<UserApiResponse> sendPhoneVerificationCode(@RequestBody PhoneVerificationRequest request) {
+        String tel = request.getTel();
+
+        // 인증번호 생성
+        String verificationCode = userService.generateVerificationCode();
+        
+        try {
+            // 전화번호로 인증번호 전송 (SmsService 활용)
+            SmsService smsService = new SmsService();
+            smsService.sendSms(tel, verificationCode); // 전화번호와 인증번호 전송
+        	
+        	// 인증번호 저장
+        	verificationService.saveCode(request.getTel(), verificationCode);
+        	 // 인증번호 콘솔에 출력
+            System.out.println("전송된 인증번호: " + verificationCode);
+
+            // 인증번호를 응답에 포함하여 반환
+            return ResponseEntity.ok(new UserApiResponse(true, "인증번호가 전화번호로 전송되었습니다.", verificationCode));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new UserApiResponse(false, "인증번호 전송에 실패했습니다."));
+        }
+    }
+
+    
     // 전화번호 중복 체크
     @GetMapping("/check-tel")
     public ResponseEntity<?> checkTel(@RequestParam String tel) {
@@ -118,7 +473,8 @@ public class AuthController {
     // 아이디 찾기(전화번호)
     @PostMapping("/IDsendPhoneVerificationCode")
     public UserApiResponse sendIdPhoneVerificationCode(@RequestBody PhoneVerificationRequest request) {
-        // 이름과 전화번호로 사용자 찾기
+    
+    	// 이름과 전화번호로 사용자 찾기
         Optional<User> user = userService.findUserByFullnameAndTel(request.getFullname(), request.getTel());
         
         if (user.isPresent()) {
@@ -127,6 +483,10 @@ public class AuthController {
             
             // 인증번호 저장
             verificationService.saveCode(request.getTel(), verificationCode); 
+            
+            // 인증번호 SMS로 발송
+            SmsService smsService = new SmsService();
+            smsService.sendSms(request.getTel(), verificationCode); // 전화번호와 인증번호 전송
             
             // 인증번호 콘솔에 출력
             System.out.println("전송된 인증번호: " + verificationCode);
@@ -153,6 +513,10 @@ public class AuthController {
             
             // 인증번호 저장
             verificationService.saveCode(request.getTel(), verificationCode);
+            
+          // 인증번호 SMS로 발송
+          SmsService smsService = new SmsService();
+          smsService.sendSms(request.getTel(), verificationCode); // 전화번호와 인증번호 전송
             
             // 인증번호 콘솔 출력 (SMS 전송 대신)
             System.out.println("전송된 인증번호: " + verificationCode);

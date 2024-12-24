@@ -32,7 +32,7 @@ const handleSendVerificationCode = (type) => {
     if (!name || !phoneNumber) {
       alert("이름, 등록한 휴대폰 번호를 모두 입력해 주세요.");
     } else {
-      const fulltel = `+82${phoneNumber}`;
+      const fulltel = `+1${phoneNumber}`;
 
       // 백엔드 API 호출
       fetch("http://localhost:8090/api/auth/IDsendPhoneVerificationCode", {
@@ -104,7 +104,7 @@ const handleSendVerificationCode = (type) => {
     alert("인증번호를 입력해주세요.");
   } else if (trimmedInput === trimmedCode) {
     // 인증번호가 일치하면 이름과 전화번호로 사용자 검색 API 호출
-    const fulltel = `+82${phoneNumber}`;
+    const fulltel = `+1${phoneNumber}`;
 
     fetch("http://localhost:8090/api/auth/IDCheckPhoneVerificationCode", {
       method: "POST",

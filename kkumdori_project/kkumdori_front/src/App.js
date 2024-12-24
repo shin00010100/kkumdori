@@ -32,6 +32,7 @@ import IDSearch from './pages/logins/idsearch/IDSearch.js';
 import PWSearch from './pages/logins/pwsearch/PWSearch.js';
 import Register from './pages/logins/sign/Sign.js';
 import RePW from './pages/logins/repw/RePW.js';
+import NaverCallback from "./pages/logins/login/NaverCallback";
 
 import MyPage from './pages/mypage/mypagemain/Mypage.js';
 import Memberinfo from './pages/mypage/memberinfo/MemberInfoEdit.js';
@@ -46,6 +47,7 @@ import initialNotices from './pages/data/initialNotices.js';
 
 import ProductDetail from './pages/purchase/productdetail/ProductDetail';
 import ProductList from "./pages/list/productlist/ProductList";
+
 
 // import UserRoute from './utils/UserRoute';
 // import AdminRoute from './utils/AdminRoute';
@@ -125,7 +127,8 @@ const App = () => {
             <Route path="/sign" element={<Register />} /> {/* 회원가입 페이지 */}
             <Route path="/idsearch" element={<IDSearch />} /> {/* 아이디 찾기 페이지 */}
             <Route path="/pwsearch" element={<PWSearch />} /> {/* 비밀번호 찾기 페이지 */}
-            <Route path="/repw" element={<RePW />} /> {/* 비밀번호 재설정 페이지 */}
+            <Route path="/repw" element={<RePW />} /> 
+            <Route path="/naver-callback" element={<NaverCallback />} />
 
             {/* mypage */}
             <Route path="/mypage" element={<MyPage />} />

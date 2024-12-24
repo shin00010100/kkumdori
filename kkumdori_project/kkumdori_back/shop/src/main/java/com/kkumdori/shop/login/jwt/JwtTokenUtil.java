@@ -14,6 +14,7 @@ import com.kkumdori.shop.login.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
 public class JwtTokenUtil {
@@ -28,14 +29,7 @@ public class JwtTokenUtil {
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
-    
-    // 로그 추가: 설정값 확인
-    public JwtTokenUtil() {
-        System.out.println("[JwtTokenUtil Initialized]");
-        System.out.println("Secret Key: " + secretKey);
-        System.out.println("Expiration Time: " + expirationTime);
-    }
-    
+
     // JWT 토큰 생성 (사용자 이름과 역할을 포함)
     public String generateToken(String fullname, String role) {
         String token = Jwts.builder()
@@ -107,25 +101,25 @@ public class JwtTokenUtil {
     }
 
     // JWT 토큰 유효성 검증
-    public boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails, String requiredRole) {
         final String username = extractUsername(token);
         boolean isValid = username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        
+        // 역할 검증 추가
+        if (isValid && requiredRole != null) {
+            String tokenRole = extractRole(token);
+            isValid = requiredRole.equals(tokenRole);
+        }
+
         System.out.println("Token Valid: " + isValid);
         return isValid;
     }
 
-//    // Authentication 객체 생성 (Spring Security와 연동 시 사용)
-//    public Authentication getAuthentication(String token, UserDetails userDetails) {
-//        return new JwtAuthenticationToken(userDetails, token, userDetails.getAuthorities());
-//    }
-    
     // 토큰 검증 및 사용자 정보 조회
- // JwtTokenUtil 수정
     public Optional<User> verifyToken(String token, UserRepository userRepository) {
         try {
             // JWT에서 사용자 이름 추출
             String username = extractUsername(token);
-            System.out.println("Extracted Username: " + username);  // 디버깅: 추출된 사용자 이름 확인
             
             // DB에서 사용자 조회
             Optional<User> userOptional = userRepository.findByUsername(username);
@@ -138,10 +132,12 @@ public class JwtTokenUtil {
             }
             
             return userOptional;
+        } catch (ExpiredJwtException e) {
+            System.err.println("Token has expired: " + e.getMessage());
+            return Optional.empty();
         } catch (Exception e) {
             System.err.println("Error verifying token: " + e.getMessage());
             return Optional.empty();
         }
     }
 }
-

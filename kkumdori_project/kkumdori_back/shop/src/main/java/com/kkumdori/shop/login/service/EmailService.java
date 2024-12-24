@@ -36,7 +36,7 @@ public class EmailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);  // 발신자 이메일
             message.setTo(toEmail);      // 수신자 이메일
-            message.setSubject("인증번호");  // 이메일 제목
+            message.setSubject("[꿈돌이 쇼핑몰] 인증번호");  // 이메일 제목
             message.setText("[꿈돌이 쇼핑몰] 인증번호: " + code);  // 이메일 내용
 
             // 이메일 전송

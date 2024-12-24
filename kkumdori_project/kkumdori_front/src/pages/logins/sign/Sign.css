@@ -101,7 +101,7 @@
 }
 
 /* 아이디 중복 확인 버튼 스타일 */
-.dupIdCheck {
+.dupIdCheck, .emailsendNum-sign, .emailcheck-sign, .telsendNum-sign, .telcheck-sign {
     background-color: rgb(163, 156, 231);
     color: #f7f5f5;
     width: 70px;
@@ -141,7 +141,8 @@
     margin-bottom: 50px; /* 버튼 아래쪽 여백 추가 */
     cursor: pointer;
 }
-.sbtn-sign:hover, .dupIdCheck:hover, .address-search-btn:hover, .TOSbtn:hover, .TOSbtn2:hover {
+.sbtn-sign:hover, .dupIdCheck:hover, .address-search-btn:hover, .TOSbtn:hover, .TOSbtn2:hover 
+ , .emailsendNum-sign:hover, .emailcheck-sign:hover, .telsendNum-sign:hover, .telcheck-sign:hover{
     background-color: rgb(138, 132, 195);
   }
 

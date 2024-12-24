@@ -1,5 +1,7 @@
 package com.kkumdori.shop.goods.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +19,7 @@ public class ImageController {
 
 //    private static final String IMAGE_UPLOAD_DIR = "C:/kkumdori_project/kkumdori_back/shop/uploads/images/";
     private static final String IMAGE_UPLOAD_DIR = "uploads/images/"; // 상대 경로
-    
+	private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
@@ -34,7 +36,7 @@ public class ImageController {
             if (contentType == null) {
                 contentType = "application/octet-stream"; // 기본값
             }
-
+            logger.debug("요청된 파일: {}", filename); // 디버깅 로그
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, contentType)
                     .body(resource);

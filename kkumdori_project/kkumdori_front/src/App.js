@@ -24,7 +24,7 @@ import NewBoard from './pages/admin/newboard/NewBoard.js';
 import EditBoard from './pages/admin/editboard/EditBoard.js';
 import EditBanner from './pages/admin/editbanner/EditBanner.js';
 import SendMessage from './pages/admin/sendmessage/SendMessage.js';
-import RegistGoods from './psages/admin/registgoods/RegistGoods.js';
+import RegistGoods from './pages/admin/registgoods/RegistGoods.js';
 import EditGoods from './pages/admin/editgoods/EditGoods.js';
 import EditCategory from './pages/admin/editcategory/EditCategory.js';
 

@@ -36,12 +36,12 @@ function EditGoods() {
   // 기존 상품 데이터 로드
   const fetchGoodsData = useCallback(async () => {
     try {
-        const response = await axios.get(`http://localhost:8090/api/goods/${goodsId}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      const response = await axios.get(`http://localhost:8090/api/goods/${goodsId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
         },
-        });
-        const goods = response.data;
+      });
+      const goods = response.data;
 
         setGoodsName(goods.goodsName);
         setCategoryNo(goods.categoryNo);
@@ -50,18 +50,19 @@ function EditGoods() {
         setDiscount(goods.discount);
         setDescription(goods.description);
         setImage(goods.imagePath || null);
-        console.log(goods.imagePath);
         if (goods.imagePath) {
-          const fullImagePath = `http://localhost:8090/api/images/${goods.imagePath}`;
+          // goods.imagePath에 이미 "uploads/images/"가 포함되어 있다면 이를 제거해야 함
+          const fileName = goods.imagePath.split("/").pop(); // 파일 이름만 추출
+          const fullImagePath = `http://localhost:8090/api/images/${fileName}`;
           setImage(fullImagePath); // 이미지 URL 설정
         } else {
           setImage(null); // 이미지가 없는 경우
         }
-    } catch (error) {
+      } catch (error) {
         console.error("상품 데이터 가져오기 실패:", error);
         setError("상품 데이터를 불러오는 데 실패했습니다.");
-    }
-}, [goodsId]); // `goodsId`를 의존성으로 포함
+      }
+    }, [goodsId]); // `goodsId`를 의존성으로 포함
 
 useEffect(() => {
   const fetchData = async () => {
@@ -120,7 +121,7 @@ useEffect(() => {
     <div className="edit-goods-container">
       <h2>상품 수정</h2>
       <div className="edit-goods-content">
-        <div className="upload-image-container">
+      <div className="upload-image-container">
           <UploadImage onImageSelect={setImage} existingImage={image} />
         </div>
         <div className="product-info-container">

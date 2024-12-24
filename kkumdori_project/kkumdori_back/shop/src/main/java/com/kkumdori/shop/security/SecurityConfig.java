@@ -76,9 +76,10 @@ public class SecurityConfig {
                     "/api/auth/PWsendPhoneVerificationCode", 
                     "/api/auth/PWsendEmailVerificationCode",
                     "/api/auth/resetPassword", 
-                    "/api/auth/resetToken"
+                    "/api/auth/resetToken",
+                    "/api/images/**" // 이미지 경로 허용 추가
                 ).permitAll() // 로그인, 회원가입, 비밀번호 재설정은 모두 허용
-                .requestMatchers("/api/goods/${goodsId}").authenticated()
+                .requestMatchers("/api/goods/{goodsId}").authenticated()
                 .anyRequest().authenticated() // 나머지 요청은 인증 필요
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // 필터 등록

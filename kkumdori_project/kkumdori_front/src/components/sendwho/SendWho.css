@@ -1,0 +1,22 @@
+.email-form-input {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+    font-size: 1em;
+  }
+
+  .input-email-container .input-email-text {
+    width: 30%;
+    max-width: 500px;
+    height: 24px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    margin-right: 5px;
+  }
+
+  .input-email-container .input-email-select {
+    height: 25px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+}

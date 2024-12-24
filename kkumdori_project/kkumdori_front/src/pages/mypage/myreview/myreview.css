@@ -1,0 +1,218 @@
+.myreviews{
+    width: 800px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 20px;
+    min-height: 100%;
+    min-width: 70%;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.review-list {
+    list-style-type: none; /* 리스트 항목의 점을 없애기 */
+    padding: 0; /* 패딩을 0으로 설정 */
+    margin: 10px; /* 전체 여백을 줄이기 */
+}
+
+/* 각 리뷰 항목 스타일 */
+.review-item {
+    margin: 10px 0; /* 위 아래 여백을 줄이고, 좌우는 0으로 */
+    padding: 15px; /* 안쪽 여백을 줄이기 */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* 부드러운 배경색 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* 부드러운 hover 효과 */
+    max-width: 90%; /* 최대 너비를 화면에 비례해서 조정 */
+    margin-left: auto; /* 가운데 정렬 */
+    margin-right: auto; /* 가운데 정렬 */
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 20px;
+}
+
+/* 리뷰 헤더 (상품명, 별점, 이미지) */
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* 아래 여백을 좀 더 줄이기 */
+    flex-direction: row; /* 이미지가 왼쪽, 텍스트가 오른쪽 */
+}
+
+/* 리뷰 정보 스타일 (상품명, 별점 등) */
+.review-info h2 {
+    font-size: 18px; /* 폰트 크기 줄이기 */
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.review-info div {
+    font-size: 16px; /* 별점 폰트 크기 줄이기 */
+    color: #ffd700; /* 별점 색상 */
+    margin-top: 5px;
+}
+
+/* 리뷰 텍스트 */
+.review-text {
+    font-size: 14px; /* 텍스트 크기 줄이기 */
+    line-height: 1.4; /* 줄 간격 줄이기 */
+    color: #555;
+    margin: 10px 0; /* 여백을 줄이기 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    width: 80%; /* 텍스트의 너비를 적당히 설정 (너무 넓어지지 않도록) */
+    margin-left: auto; /* 수평 가운데 정렬 */
+    margin-right: auto; /* 수평 가운데 정렬 */
+    padding: 10px; /* 내부 여백 추가 */
+}
+
+/* 판매자 답변 스타일 */
+.seller-reply {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+}
+
+/* 고유한 버튼 스타일 */
+.delete-review-btn {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.delete-review-btn:hover {
+    background-color: #e60000;
+}
+
+.edit-review-btn {
+    background-color: #ffa500;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.edit-review-btn:hover {
+    background-color: #ff7f00;
+}
+
+.review-save-edit-btn {
+    background-color: rgb(163, 156, 231);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.review-save-edit-btn:hover {
+    background-color: rgb(147, 138, 223);
+}
+
+/* 별점 표시 스타일 */
+.filled {
+    color: #ffd700;
+}
+
+.empty {
+    color: #ddd;
+}
+
+/* 전체 가격 합계 스타일 */
+.total-price {
+    margin-top: 30px;
+    font-size: 16px; /* 크기 줄이기 */
+    font-weight: bold;
+    color: #333;
+    text-align: right;
+    padding: 10px 0;
+    border-top: 2px solid #ddd;
+}
+
+/* 수정 모드 스타일 (입력 필드와 버튼들) */
+.edit-textarea .seller-reply-textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.edit-textarea .seller-reply-textarea {
+    resize: vertical; /* 세로 크기만 조절 가능 */
+    min-height: 80px;
+}
+
+button.save-edit-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    width: 100%; /* 저장 버튼을 넓게 */
+}
+
+/* 수정 및 삭제 버튼을 오른쪽으로 정렬 */
+.review-actions {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽으로 정렬 */
+    gap: 10px; /* 버튼 사이의 간격 */
+}
+
+/* 작은 화면을 위한 모바일 스타일 */
+@media (max-width: 768px) {
+    .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .review-header img {
+        margin-bottom: 10px; /* 이미지 아래에 여백 추가 */
+    }
+
+    .review-info h2 {
+        font-size: 18px;
+    }
+
+    .review-info div {
+        font-size: 16px;
+    }
+
+    .total-price {
+        font-size: 16px;
+    }
+
+    /* 모바일에서는 버튼들도 세로로 배치 */
+    .review-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+/* 이미지 업로드 버튼 */
+.image-upload-btn {
+    background-color: #ff7f00; /* 버튼 색상 */
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.image-upload-btn:hover {
+    background-color: #ff7f00; /* hover 시 색상 */
+}

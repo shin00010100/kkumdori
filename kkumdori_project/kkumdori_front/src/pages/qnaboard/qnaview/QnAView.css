@@ -1,0 +1,51 @@
+.view-container {
+    padding: 20px;
+    max-width: 60%;
+    margin: 0 auto;
+    border-radius: 12px;
+    border: 1px solid rgb(163, 156, 231);
+}
+
+.Error {
+    max-width: 60%;
+    margin: 0 auto;
+}
+
+.post-detail {
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.post-date {
+    font-size: 14px;
+    color: gray;
+}
+
+.back-button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #45a049;
+}
+
+.post-file {
+    margin-top: 20px;
+}
+
+.attached-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,52 @@
+.admin {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.section {
+    margin-top: 20px;
+}
+
+.product-section .search-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.search-box input {
+    padding: 5px;
+    width: 200px;
+}
+
+.admin-button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.board-sms-section {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.sub-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sub-section .admin-button-group {
+    display: flex;
+    gap: 10px;
+}

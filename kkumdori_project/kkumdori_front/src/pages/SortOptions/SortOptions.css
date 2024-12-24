@@ -1,0 +1,11 @@
+/* SortOptions.css(src폴더 components폴더 SortOptions폴더안 )*/
+label {
+  font-size: 16px;
+  margin-right: 10px; 
+}
+
+select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}

@@ -1,0 +1,106 @@
+/* Side2 스타일 */
+.side2 {
+    position: fixed; /* 화면을 스크롤할 때 따라오는 고정 위치 */
+    right: 30px; /* 오른쪽에 간격 추가 */
+    width: 140px; /* 적당한 너비로 조정 */
+    height: 700px; /* 자동 높이 설정 */
+    max-height: 63vh; /* 화면의 60% 높이로 설정 */
+    background-color: #B6B5FF; /* 배경 색상 변경 */
+    padding: 20px;
+    border-radius: 8px; /* 둥근 모서리 */
+    overflow-y: auto; /* 내용이 많으면 스크롤 가능 */
+    top: 57%; /* 페이지 높이의 가운데에 배치 */
+    transform: translateY(-50%); /* 요소의 높이를 기준으로 정확히 가운데 정렬 */
+    border: 1px solid rgb(163, 156, 231);
+    display: flex;
+    justify-content: space-between; /* 항목 간격을 비율에 맞게 배치 */
+  }
+  
+  /* 최근 본 상품 박스 디자인 */
+  .ad-banner1 {
+    background-color: #fff; /* 배경색을 흰색으로 설정 */
+    padding: 15px;
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+    margin-bottom: 20px;
+  }
+  
+  .ad-banner1 img{
+    width: 100%; /* 이미지가 박스를 꽉 채우도록 설정 */
+    max-width: 140px; /* 사이드 바와 동일한 너비 설정 */
+    height: auto; /* 비율에 맞게 높이 자동 설정 */
+    border-radius: 8px;
+    margin-bottom: 10px; /* 이미지와 버튼 간의 간격 */
+    margin-top: 10px;
+  }
+
+  .ad-banner2 {
+    background-color: #fff; /* 배경색을 흰색으로 설정 */
+    padding: 15px;
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  }
+  
+  .ad-banner2 img{
+    width: 100%; /* 이미지가 박스를 꽉 채우도록 설정 */
+    max-width: 140px; /* 사이드 바와 동일한 너비 설정 */
+    height: auto; /* 비율에 맞게 높이 자동 설정 */
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .view-button {
+    /* display: block; */
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #A5A4FF; /* 버튼 색상 */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .view-button:hover {
+    background-color: #8A89FF; /* 버튼 호버 시 색상 변경 */
+  }
+  
+  /* 이달의 추천 상품 배너 디자인 */
+  
+  .ad-banner img {
+    width: 100%; /* 광고 이미지가 박스를 꽉 채우도록 설정 */
+    border-radius: 8px; /* 이미지 모서리 둥글게 */
+    height: auto; /* 비율에 맞게 높이 자동 설정 */
+  }
+  
+  .ad-title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .ad-content {
+    font-size: 14px;
+    color: #333;
+    margin-top: 10px;
+  }
+  
+  .product-button {
+    background-color: #9C9BFF; /* 약간 더 진한 파란색 */
+    color: white;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%; /* 버튼 너비 100%로 설정 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    /* /* display: block;  */
+  }
+  
+  .product-button:hover {
+    background-color: #8A89FF; /* 버튼 호버 시 약간 더 진한 색으로 변화 */
+  }
+  

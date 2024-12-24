@@ -1,0 +1,130 @@
+/* 전체 장바구니 스타일 */
+.cart-container {
+    padding: 20px;
+    box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%; /* 창 너비의 50%로 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+  }
+  
+  /* 장바구니 항목 스타일 */
+  .cart-items {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* 개별 상품 스타일 */
+  .cart-item {
+    display: flex;
+    gap: 20px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cart-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .cart-item-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .cart-item-details h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .cart-item-details p {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .quantity-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .quantity-controls button {
+    padding: 5px 10px;
+    background-color: #d1d1d1;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .quantity-controls button:hover {
+    background-color: #a1a1a1;
+  }
+  
+  .remove-item {
+    padding: 5px 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+  
+  .remove-item:hover {
+    background-color: #e60000;
+  }
+  
+  /* 주문 예상 금액 계산 창 스타일 */
+  .order-summary {
+    margin-top: 30px;
+    width: 100%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .order-summary h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  
+  .summary-item.discount,
+  .summary-item.shipping {
+    color: #ff4d4d;
+  }
+  
+  .summary-item.total {
+    font-weight: bold;
+    font-size: 20px;
+  }
+  
+  .checkout button {
+    padding: 15px 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .checkout button:hover {
+    background-color: #45a049;
+  }
+  

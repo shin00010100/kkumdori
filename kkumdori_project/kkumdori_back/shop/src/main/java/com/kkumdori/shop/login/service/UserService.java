@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.kkumdori.shop.login.dto.UserApiResponse;
 import com.kkumdori.shop.login.dto.UserDto;
 import com.kkumdori.shop.login.entity.User;
+import com.kkumdori.shop.login.entity.User.Role;
 import com.kkumdori.shop.login.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -107,7 +108,7 @@ public class UserService {
             user.setTel(userDto.getTel());
             user.setFullname(userDto.getFullname());
             
-            user.setRole("user");
+            user.setRole(Role.user);
 
             // 사용자 저장 후 반환
             return userRepository.save(user);

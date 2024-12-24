@@ -8,9 +8,9 @@ import PrivateRoute from './components/privateroute/PrivateRoute.js';
 import QnA from './pages/qnaboard/qna/QnA.js';
 import QnABoard from './pages/qnaboard/qnaboard/QnABoard.js';
 import QnAView from './pages/qnaboard/qnaview/QnAView.js';
-import Notice from './pages/notice/Notice.js';
-import NoticeDetail from './pages/notice/NoticeDetail.js';
-import NoticeEdit from './pages/notice/NoticeEdit.js';
+import Notice from './pages/notice/notice/Notice.js';
+import NoticeBoard from './pages/notice/noticeboard/NoticeBoard.js';
+import NoticeView from './pages/notice/noticeview/NoticeView.js';
 import OneToOne from './pages/otoboard/onetoone/OneToOne.js';
 import OneToOneBoard from './pages/otoboard/onetooneboard/OneToOneBoard.js';
 import OneToOneView from './pages/otoboard/onetooneview/OneToOneView.js';
@@ -26,6 +26,7 @@ import EditBanner from './pages/admin/editbanner/EditBanner.js';
 import SendMessage from './pages/admin/sendmessage/SendMessage.js';
 import RegistGoods from './pages/admin/registgoods/RegistGoods.js';
 import EditGoods from './pages/admin/editgoods/EditGoods.js';
+import EditCategory from './pages/admin/editcategory/EditCategory.js';
 
 import Login from './pages/logins/login/Login.js';
 import IDSearch from './pages/logins/idsearch/IDSearch.js';
@@ -43,8 +44,6 @@ import Myreview from './pages/mypage/myreview/Myreview.js';
 import Wishlist from './pages/mypage/wishlist/Wishlist.js';
 import ReturnExchangePage from './pages/mypage/return/Return.js';
 
-import initialNotices from './pages/data/initialNotices.js';
-
 import ProductDetail from './pages/purchase/productdetail/ProductDetail';
 import ProductList from "./pages/list/productlist/ProductList";
 
@@ -55,7 +54,6 @@ import ProductList from "./pages/list/productlist/ProductList";
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [notices, setNotices] = useState(initialNotices);
 
   const addPost = (newPost) => {
     setPosts((prevPosts) => [...prevPosts, newPost]);
@@ -93,12 +91,12 @@ const App = () => {
             <Route path="/onetoone" element={<OneToOne addPost={addPost} />} /> {/* 1:1 문의 페이지 */}
 
             {/* admin */}
-            <Route path="/admin" element={<AdminMain />} />
-            {/* <Route path="/admin" element={
+            {/* <Route path="/admin" element={<AdminMain />} /> */}
+            <Route path="/admin" element={
               <PrivateRoute allowedRoles={['admin']}>
                 <AdminMain />
               </PrivateRoute>
-            } /> */}
+            } />
             <Route path="/editbanner" element={
               <PrivateRoute allowedRoles={['admin']}>
                 <EditBanner />
@@ -114,9 +112,17 @@ const App = () => {
                 <RegistGoods />
               </PrivateRoute>
             } />
-            <Route path="/editgoods" element={
+            <Route
+              path="/editgoods/:goodsId" // URL에서 goodsId를 동적으로 받음
+              element={
+                <PrivateRoute allowedRoles={["admin"]}>
+                  <EditGoods />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/editcategory" element={
               <PrivateRoute allowedRoles={['admin']}>
-                <EditGoods />
+                <EditCategory/>
               </PrivateRoute>
             } />
             <Route path='/newboard' element={<NewBoard />} /> {/* 새 게시판 작성 */}
@@ -185,9 +191,9 @@ const App = () => {
             <Route path="/onetooneview/:postId" element={<OneToOneView posts={posts} updatePostViews={updatePostViews} setPosts={setPosts} addResponse={addResponse} />} />
 
             {/* 공지사항 페이지 */}
-            <Route path="/notice" element={<Notice />} />
-            <Route path="/notice/:id" element={<NoticeDetail />} />
-            <Route path="/notice/edit/:id" element={<NoticeEdit notices={notices} setNotices={setNotices} />} />
+            <Route path="/notice" element={<Notice addPost={addPost} />} />
+            <Route path="/noticeboard" element={<NoticeBoard posts={posts} updatePostViews={updatePostViews} />} />
+            <Route path="/noticeview/:postId" element={<NoticeView posts={posts} updatePostViews={updatePostViews} setPosts={setPosts} addResponse={addResponse} />} />
 
             {/* FAQ 페이지 */}
             <Route path="/faqboard" element={<FAQBoard />} />

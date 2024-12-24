@@ -1,0 +1,36 @@
+.category-manager {
+    text-align: center;
+  }
+  
+  .category-item {
+    margin: 10px 0;
+  }
+  
+  .category-item input {
+    width: 200px;
+    margin-right: 10px;
+  }
+  
+  .category-item button {
+    margin-left: 5px;
+  }
+  
+  .category-insert-button {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .category-edit-button {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .category-delete-button {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .category-back-button {
+    padding: 5px 10px;
+    cursor: pointer;
+  }

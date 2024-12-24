@@ -25,6 +25,7 @@ const AdminMain = () => {
                     <Button
                         text={"상품 관리"}
                         onClick={() => {alert("관리")}}
+                        // onClick={() => navigate("/editgoods/1")}
                     />
                 </div>
             </section>
@@ -54,12 +55,22 @@ const AdminMain = () => {
             </section>
             <HLine />
 
-            <section className="section image-section">
+            {/* <section className="section image-section"> */}
+            <section className="section board-sms-section">
+                <div className="sub-section">
                 <h3>팝업/배너</h3>
                 <Button
                         text={"팝업/배너 관리"}
                         onClick={() => navigate("/editbanner")}
                     />
+                </div>
+                <div className="sub-section">
+                    <h3>카테고리</h3>
+                    <Button
+                        text={"카테고리 설정"}
+                        onClick={() => navigate("/editcategory")}
+                    />
+                </div>
             </section>
             <HLine />
         </div>

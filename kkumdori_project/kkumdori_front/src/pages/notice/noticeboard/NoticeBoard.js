@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./QnABoard.css";
+import "./NoticeBoard.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-function QnABoard() {
+function NoticeBoard() {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [posts, setPosts] = useState([]); // 전체 게시글 목록
@@ -16,7 +16,7 @@ function QnABoard() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/qna/qnaboard");
+                const response = await axios.get("http://localhost:8080/notice/noticeboard");
                 if (response.status === 200) {
                     setPosts(response.data);
                     setFilteredPosts(response.data);
@@ -47,8 +47,8 @@ function QnABoard() {
     // 게시글 클릭 시 상세보기로 이동
     const handlePostClick = async (postId) => {
         try {
-            await axios.get(`http://localhost:8080/qna/qnaview/${postId}/views`);
-            navigate(`/qnaview/${postId}`);
+            await axios.get(`http://localhost:8080/notice/noticeview/${postId}/views`);
+            navigate(`/noticeview/${postId}`);
         } catch (error) {
             console.error("Error updating post views:", error);
             alert("게시글을 불러오는 중 오류가 발생했습니다.");
@@ -57,10 +57,10 @@ function QnABoard() {
 
     return (
         <div className="board-container">
-            <h1>QnA 게시판</h1>
+            <h1>공지사항 게시판</h1>
             <div className="buttons">
-                <button className="write-button" onClick={() => navigate("/qna")}>
-                    글쓰기
+                <button className="write-button" onClick={() => navigate("/notice")}>
+                    공지사항 작성
                 </button>
             </div>
             <div className="date-picker-container">
@@ -89,15 +89,13 @@ function QnABoard() {
 
             {/* 게시글 리스트 */}
             {filteredPosts.length === 0 ? (
-                <p>게시글이 없습니다.</p>
+                <p>공지사항이 없습니다.</p>
             ) : (
                 <ul className="post-list">
                     {filteredPosts.map((post) => (
-                        <li key={post.qnaNo} className="post-item" onClick={() => handlePostClick(post.qnaNo)}>
+                        <li key={post.noticeNo} className="post-item" onClick={() => handlePostClick(post.noticeNo)}>
                             <h3>{post.title}</h3>
                             <p className="post-date">{new Date(post.createdTime).toLocaleDateString()}</p>
-                            <p>작성자 번호: {post.userNo}</p>
-                            {post.answer && <span className="response-completed">답변 완료</span>}
                         </li>
                     ))}
                 </ul>
@@ -106,4 +104,4 @@ function QnABoard() {
     );
 }
 
-export default QnABoard;
+export default NoticeBoard;

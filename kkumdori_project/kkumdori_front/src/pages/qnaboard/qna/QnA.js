@@ -1,22 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./QnA.css";
 
 const QnA = ({ addPost }) => {
   const [formData, setFormData] = useState({
-    category: "",
-    author: "",
-    password: "",
     title: "",
     content: "",
-    file: null,
+    userNo: "", // 사용자 번호
     captchaInput: "",
     agree: false,
   });
 
-  const [fileName, setFileName] = useState("");
   const [captcha, setCaptcha] = useState(generateCaptcha());
-  const [fileUrl, setFileUrl] = useState(null);
   const navigate = useNavigate();
 
   // CAPTCHA 생성 함수
@@ -27,117 +23,71 @@ const QnA = ({ addPost }) => {
 
   // 폼 데이터 핸들러
   const handleChange = (e) => {
-    const { name, value, files, checked, type } = e.target;
-
-    if (name === "file" && files.length > 0) {
-      setFileName(files[0].name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFileUrl(reader.result);
-      };
-      reader.readAsDataURL(files[0]);
-    }
-
+    const { name, value, checked, type } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : files ? files[0] : value,
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 
   // 폼 제출 핸들러
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // CAPTCHA 확인
     if (formData.captchaInput !== captcha) {
       alert("자동등록방지 문자가 일치하지 않습니다.");
       setCaptcha(generateCaptcha());
       return;
     }
 
+    // 개인정보 동의 확인
     if (!formData.agree) {
       alert("개인정보 수집 및 이용에 동의해야 글을 작성할 수 있습니다.");
       return;
     }
 
-    const newPost = {
-      id: Date.now(),
-      title: `${formData.category} : ${formData.title}`,
-      date: new Date().toISOString().split("T")[0],
+    // JSON 객체 생성
+    const postData = {
+      title: formData.title,
       content: formData.content,
-      author: formData.author || "익명",
-      views: 0,
-      fileUrl,
-      type: "QnA",
+      userNo: parseInt(formData.userNo), // 사용자 번호는 숫자로 변환
     };
 
-    addPost(newPost);
+    console.log("Sending post data:", postData);
 
-    alert("글이 성공적으로 등록되었습니다!");
-    setFormData({
-      category: "",
-      author: "",
-      password: "",
-      title: "",
-      content: "",
-      file: null,
-      captchaInput: "",
-      agree: false,
-    });
-    setFileName("");
-    setCaptcha(generateCaptcha());
+    try {
+      // axios를 사용해 백엔드로 데이터 전송
+      const response = await axios.post("http://localhost:8080/qna/qna", postData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    navigate("/qnaboard");
+      if (response.status === 201) {
+        alert("글이 성공적으로 등록되었습니다!");
+        addPost(response.data); // 새 게시글 데이터를 상태에 추가
+        // 폼 초기화
+        setFormData({
+          title: "",
+          content: "",
+          userNo: "",
+          captchaInput: "",
+          agree: false,
+        });
+        setCaptcha(generateCaptcha());
+        navigate("/qnaboard");
+      }
+    } catch (error) {
+      console.error("Error creating post:", error);
+      alert("글 작성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+    }
   };
 
   return (
     <div className="qna-page">
       <h1>QnA 글쓰기</h1>
       <form onSubmit={handleSubmit} className="write-form">
-        {/* 말머리 */}
-        <label className="label-category">
-          말머리:
-          <select
-            className="qna-select"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="">선택하세요</option>
-            <option value="문의">문의</option>
-            <option value="요청">요청</option>
-            <option value="불만">불만</option>
-          </select>
-        </label>
-
-        {/* 작성자 */}
-        <label className="label-author">
-          작성자:
-          <input
-            className="inputer"
-            type="text"
-            name="author"
-            value={formData.author}
-            onChange={handleChange}
-            placeholder="이름을 입력하세요."
-            required
-          />
-        </label>
-
-        {/* 비밀번호 */}
-        <label className="label-password">
-          비밀번호:
-          <input
-            type="password"
-            name="password"
-            className="inputer"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="비밀번호를 입력하세요."
-            required
-          />
-        </label>
-
         {/* 제목 */}
         <label className="label-title">
           제목:
@@ -166,26 +116,22 @@ const QnA = ({ addPost }) => {
           />
         </label>
 
-        {/* 첨부파일 */}
-        <label className="label-file">
-          첨부파일:
+        {/* 사용자 번호 */}
+        <label className="label-userNo">
+          사용자 번호:
           <input
+            type="number"
+            name="userNo"
             className="inputer"
-            type="file"
-            name="file"
+            value={formData.userNo}
             onChange={handleChange}
+            placeholder="사용자 번호를 입력하세요."
+            required
           />
-          {fileName && (
-            <div className="file-name">
-              첨부된 파일: {fileName}
-            </div>
-          )}
         </label>
 
         {/* CAPTCHA */}
         <label className="label-captcha">
-          <br />
-          <br />
           자동등록방지:
           <div className="captcha-container">
             <span className="captcha">{captcha}</span>

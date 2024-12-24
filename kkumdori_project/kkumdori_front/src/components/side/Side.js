@@ -11,7 +11,7 @@ const Side1 = () => (
       <Link to="/onetooneboard">
         <p><img src="/img/service-center.png" alt="고객센터" /></p>
       </Link>
-      <Link to="/notice">
+      <Link to="/noticeboard">
         <p><img src="/img/announcement.png" alt="공지사항" /></p>
       </Link>
       <Link to="/faqboard">

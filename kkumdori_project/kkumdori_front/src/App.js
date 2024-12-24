@@ -8,9 +8,9 @@ import PrivateRoute from './components/privateroute/PrivateRoute.js';
 import QnA from './pages/qnaboard/qna/QnA.js';
 import QnABoard from './pages/qnaboard/qnaboard/QnABoard.js';
 import QnAView from './pages/qnaboard/qnaview/QnAView.js';
-import Notice from './pages/notice/Notice.js';
-import NoticeDetail from './pages/notice/NoticeDetail.js';
-import NoticeEdit from './pages/notice/NoticeEdit.js';
+import Notice from './pages/notice/notice/Notice.js';
+import NoticeBoard from './pages/notice/noticeboard/NoticeBoard.js';
+import NoticeView from './pages/notice/noticeview/NoticeView.js';
 import OneToOne from './pages/otoboard/onetoone/OneToOne.js';
 import OneToOneBoard from './pages/otoboard/onetooneboard/OneToOneBoard.js';
 import OneToOneView from './pages/otoboard/onetooneview/OneToOneView.js';
@@ -24,7 +24,7 @@ import NewBoard from './pages/admin/newboard/NewBoard.js';
 import EditBoard from './pages/admin/editboard/EditBoard.js';
 import EditBanner from './pages/admin/editbanner/EditBanner.js';
 import SendMessage from './pages/admin/sendmessage/SendMessage.js';
-import RegistGoods from './pages/admin/registgoods/RegistGoods.js';
+import RegistGoods from './psages/admin/registgoods/RegistGoods.js';
 import EditGoods from './pages/admin/editgoods/EditGoods.js';
 import EditCategory from './pages/admin/editcategory/EditCategory.js';
 
@@ -43,8 +43,6 @@ import Myreview from './pages/mypage/myreview/Myreview.js';
 import Wishlist from './pages/mypage/wishlist/Wishlist.js';
 import ReturnExchangePage from './pages/mypage/return/Return.js';
 
-import initialNotices from './pages/data/initialNotices.js';
-
 import ProductDetail from './pages/purchase/productdetail/ProductDetail';
 import ProductList from "./pages/list/productlist/ProductList";
 
@@ -54,7 +52,6 @@ import ProductList from "./pages/list/productlist/ProductList";
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [notices, setNotices] = useState(initialNotices);
 
   const addPost = (newPost) => {
     setPosts((prevPosts) => [...prevPosts, newPost]);
@@ -191,9 +188,9 @@ const App = () => {
             <Route path="/onetooneview/:postId" element={<OneToOneView posts={posts} updatePostViews={updatePostViews} setPosts={setPosts} addResponse={addResponse} />} />
 
             {/* 공지사항 페이지 */}
-            <Route path="/notice" element={<Notice />} />
-            <Route path="/notice/:id" element={<NoticeDetail />} />
-            <Route path="/notice/edit/:id" element={<NoticeEdit notices={notices} setNotices={setNotices} />} />
+            <Route path="/notice" element={<Notice addPost={addPost} />} />
+            <Route path="/noticeboard" element={<NoticeBoard posts={posts} updatePostViews={updatePostViews} />} />
+            <Route path="/noticeview/:postId" element={<NoticeView posts={posts} updatePostViews={updatePostViews} setPosts={setPosts} addResponse={addResponse} />} />
 
             {/* FAQ 페이지 */}
             <Route path="/faqboard" element={<FAQBoard />} />

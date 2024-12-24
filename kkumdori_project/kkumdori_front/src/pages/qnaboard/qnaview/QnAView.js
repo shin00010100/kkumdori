@@ -1,41 +1,63 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import "./QnAView.css";
 
-function QnAView({ posts, addResponse }) {
-    const { postId } = useParams();
-    const [post, setPost] = useState(null);
-    const [response, setResponse] = useState("");
-    const [existingResponse, setExistingResponse] = useState(null); // 단일 답변 상태
+function QnAView() {
+    const { postId } = useParams(); // URL 파라미터에서 postId 가져오기
+    const [post, setPost] = useState(null); // 단일 게시글 상태
+    const [response, setResponse] = useState(""); // 답변 상태
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const foundPost = posts.find((post) => post.id === parseInt(postId));
-        setPost(foundPost);
-        if (foundPost && foundPost.response) {
-            setExistingResponse(foundPost.response);
+    // 게시글 상세 정보 가져오기
+    const fetchPostDetails = useCallback(async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/qna/qnaview/${postId}/views`);
+            if (response.status === 200) {
+                setPost(response.data); // 게시글 데이터 설정
+            }
+        } catch (error) {
+            console.error("Error fetching post details:", error);
+            alert("게시글을 불러오는 중 오류가 발생했습니다.");
         }
-    }, [postId, posts]);
+    }, [postId]);
 
+    useEffect(() => {
+        fetchPostDetails(); // 페이지 로드 시 게시글 데이터 가져오기
+    }, [fetchPostDetails]); // postId 변경 시마다 fetchPostDetails 호출
+
+    const handleResponseChange = (e) => {
+        setResponse(e.target.value); // 답변 입력값 업데이트
+    };
+
+    // 답변 등록
+    const handleAddResponse = async () => {
+        if (response.trim() === "") {
+            alert("답변 내용을 입력하세요.");
+            return;
+        }
+
+        try {
+            const res = await axios.post(`http://localhost:8080/qna/qnaview/${postId}/response`, {
+                response, // 입력된 답변 데이터 전송
+            });
+            if (res.status === 200) {
+                alert("답변이 등록되었습니다!");
+                fetchPostDetails(); // 답변 등록 후 게시글 데이터 다시 가져오기
+                setResponse(""); // 답변 입력창 비우기
+            }
+        } catch (error) {
+            console.error("Error adding response:", error);
+            alert("답변 등록 중 오류가 발생했습니다.");
+        }
+    };
+
+    // 게시판으로 돌아가기
     const goBack = () => {
         navigate("/qnaboard");
     };
 
-    const handleResponseChange = (e) => {
-        setResponse(e.target.value);
-    };
-
-    const handleAddResponse = () => {
-        if (response.trim() !== "") {
-            addResponse(post.id, response);
-            setExistingResponse(response); // 답변 등록 후 상태 업데이트
-            setResponse(""); // 입력 필드 초기화
-            alert("답변이 등록되었습니다!");
-        } else {
-            alert("답변 내용을 입력하세요.");
-        }
-    };
-
+    // 게시글이 로드되지 않은 경우 에러 메시지
     if (!post) {
         return (
             <div className="Error">
@@ -52,22 +74,18 @@ function QnAView({ posts, addResponse }) {
             <h1>QnA 게시글</h1>
             <div className="post-detail">
                 <h2>{post.title}</h2>
-                <p className="post-date">{post.date}</p>
-                <p>작성자: {post.author}</p>
-                <p>조회수: {post.views}</p>
+                <p className="post-date">작성일: {new Date(post.createdTime).toLocaleString()}</p>
+                <p>작성자: {post.userNo}</p>
                 <p>{post.content}</p>
-                {post.fileUrl && (
-                    <div className="post-file">
-                        <h3>첨부파일:</h3>
-                        <img
-                            src={post.fileUrl}
-                            alt="첨부된 파일"
-                            className="attached-image"
-                        />
-                    </div>
-                )}
             </div>
-            {!existingResponse && (
+
+            {/* 답변 작성 및 기존 답변 표시 */}
+            {post.isAnswered === true ? (  // 답변 여부에 따라 표시 다르게
+                <div className="responses-section">
+                    <h3>등록된 답변</h3>
+                    <p>{post.answer}</p> {/* 등록된 답변 표시 */}
+                </div>
+            ) : (
                 <div className="response-section">
                     <h3>답변 작성</h3>
                     <textarea
@@ -81,12 +99,7 @@ function QnAView({ posts, addResponse }) {
                     </button>
                 </div>
             )}
-            {existingResponse && (
-                <div className="responses-section">
-                    <h3>등록된 답변</h3>
-                    <p>{existingResponse}</p>
-                </div>
-            )}
+
             <button onClick={goBack} className="back-button">
                 게시판으로 돌아가기
             </button>

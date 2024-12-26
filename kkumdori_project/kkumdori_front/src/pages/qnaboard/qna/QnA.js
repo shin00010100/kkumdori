@@ -58,7 +58,7 @@ const QnA = ({ addPost }) => {
 
     try {
       // axios를 사용해 백엔드로 데이터 전송
-      const response = await axios.post("http://localhost:8080/qna/qna", postData, {
+      const response = await axios.post("http://localhost:8090/qna/qna", postData, {
         headers: {
           "Content-Type": "application/json",
         },

@@ -12,7 +12,7 @@ function OneToOneView() {
     // 게시글 상세 정보 가져오기
     const fetchPostDetails = useCallback(async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/onetoone/onetooneview/${postId}/views`);
+            const response = await axios.get(`http://localhost:8090/onetoone/onetooneview/${postId}/views`);
             if (response.status === 200) {
                 setPost(response.data); // 게시글 데이터 설정
             }
@@ -38,7 +38,7 @@ function OneToOneView() {
         }
 
         try {
-            const res = await axios.post(`http://localhost:8080/onetoone/onetooneview/${postId}/response`, {
+            const res = await axios.post(`http://localhost:8090/onetoone/onetooneview/${postId}/response`, {
                 response, // 입력된 답변 데이터 전송
             });
             if (res.status === 200) {

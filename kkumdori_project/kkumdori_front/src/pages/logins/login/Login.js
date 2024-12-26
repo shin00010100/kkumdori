@@ -72,6 +72,12 @@ export default function Login() {
             setIsAuth(true);
             setUser({ fullname: data.fullname, role: data.role });
 
+            Object.keys(localStorage).forEach((key) => {
+              if (key.includes("kakao")) {
+                localStorage.removeItem(key); // "kakao"가 들어간 키를 제거
+              }
+            });
+
             alert("카카오톡 로그인에 성공하였습니다.");
             navigate("/main");
           } else {

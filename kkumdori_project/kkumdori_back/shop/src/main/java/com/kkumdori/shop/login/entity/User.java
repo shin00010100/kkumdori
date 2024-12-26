@@ -16,13 +16,9 @@ import java.util.Collections;
 
 @Entity
 public class User implements UserDetails {
-<<<<<<< HEAD
-	
-	private static final long serialVersionUID = 1L;
-=======
    
    private static final long serialVersionUID = 1L;
->>>>>>> b35fd52fcbbe863ef586de712053dbcc57237e12
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,25 +39,14 @@ public class User implements UserDetails {
     @Column(length = 20) // VARCHAR(20)
     private String account;
 
-<<<<<<< HEAD
-    @Column(length = 5) // CHAR(5)
-=======
+
     @Column(name = "zipcode", columnDefinition = "CHAR(10)")
->>>>>>> b35fd52fcbbe863ef586de712053dbcc57237e12
     private String zipcode;
 
     @Column(length = 255) // VARCHAR(255)
     private String address;
 
-<<<<<<< HEAD
-    @Column(nullable = false, columnDefinition = "ENUM('user', 'admin') DEFAULT 'user'") // ENUM('user', 'admin') with default 'user'
-    private String role;  // 권한
 
-    @Column(nullable = false, unique = true, length = 15) // VARCHAR(15)
-    private String tel;
-
-    @Column(nullable = false, length = 64) // VARCHAR(64)
-=======
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     private Role role; // Role은 Enum 타입
@@ -75,7 +60,6 @@ public class User implements UserDetails {
     private String tel;
 
     @Column(nullable = false)
->>>>>>> b35fd52fcbbe863ef586de712053dbcc57237e12
     private String fullname;
 
     // 기본 생성자
@@ -147,19 +131,12 @@ public class User implements UserDetails {
         this.address = address;
     }
 
-<<<<<<< HEAD
-    public String getRole() {
-        return role;
-    }
 
-    public void setRole(String role) {
-=======
     public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
->>>>>>> b35fd52fcbbe863ef586de712053dbcc57237e12
         this.role = role;
     }
 
@@ -235,9 +212,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;  // 계정 활성화 여부
     }
-<<<<<<< HEAD
-=======
-    
->>>>>>> b35fd52fcbbe863ef586de712053dbcc57237e12
+
 }
 

@@ -77,7 +77,7 @@ const Header = () => {
     // 일반 로그아웃 처리 (JWT 제거)
     localStorage.removeItem("jwt");  // JWT 토큰 제거
     sessionStorage.removeItem("jwt");  // 세션 스토리지에서도 JWT 제거
-  
+
     // 네이버 로그아웃 URL로 이동
     const naverLogoutRedirectUri = naverLogoutUrl;
     const naverPopup = window.open(naverLogoutRedirectUri, "_blank", "width=1,height=1");

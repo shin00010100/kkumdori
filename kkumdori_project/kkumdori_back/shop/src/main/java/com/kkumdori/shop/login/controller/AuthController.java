@@ -29,7 +29,6 @@ import com.kkumdori.shop.login.dto.UserApiResponse;
 import com.kkumdori.shop.login.dto.UserDto;
 import com.kkumdori.shop.login.dto.UserResponse;
 import com.kkumdori.shop.login.entity.User;
-import com.kkumdori.shop.security.JwtTokenUtil;
 import com.kkumdori.shop.login.repository.UserRepository;
 import com.kkumdori.shop.login.request.EmailVerificationRequest;
 import com.kkumdori.shop.login.request.PasswordResetRequest;
@@ -38,6 +37,7 @@ import com.kkumdori.shop.login.service.EmailService;
 import com.kkumdori.shop.login.service.SmsService;
 import com.kkumdori.shop.login.service.UserService;
 import com.kkumdori.shop.login.service.VerificationService;
+import com.kkumdori.shop.security.JwtTokenUtil;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -139,7 +139,7 @@ public class AuthController {
                 newUser.setAccount("0000000000");             // 임의 계좌번호
                 newUser.setZipcode("00000");                  // 임의 우편번호
                 newUser.setAddress("Sample Address");         // 임의 주소
-                newUser.setRole("user");                      // 기본 권한 설정 (사용자 권한)
+                newUser.setRole(User.Role.valueOf("user"));   // User.Role로 변경                      // 기본 권한 설정 (사용자 권한)
                 newUser.setTel("kakao"+userService.generateVerificationCode());              // 임의 전화번호
                 
                 // 비밀번호 암호화
@@ -154,7 +154,7 @@ public class AuthController {
             }
 
             // JWT 토큰 생성
-            String token = jwtTokenUtil.generateToken(kakaoUserId, "user");
+            String token = jwtTokenUtil.generateToken(kakaoUserId, User.Role.valueOf("user"));
             System.out.println("JWT 토큰 생성 완료: " + token);  // 로그 추가
 
             // 응답 데이터 생성
@@ -250,7 +250,7 @@ public class AuthController {
                 newUser.setAccount("0000000000");
                 newUser.setZipcode("00000");
                 newUser.setAddress("Sample Address");
-                newUser.setRole("user");
+                newUser.setRole(User.Role.valueOf("user"));   // User.Role로 변경
                 newUser.setTel("naver" + userService.generateVerificationCode());
 
                 // 비밀번호 암호화
@@ -265,7 +265,7 @@ public class AuthController {
             }
 
             // JWT 토큰 생성
-            String token = jwtTokenUtil.generateToken(naverUserId, "user");
+            String token = jwtTokenUtil.generateToken(naverUserId, User.Role.valueOf("user"));
             System.out.println("JWT 토큰 생성 완료: " + token);
 
             // 응답 데이터 생성
@@ -329,7 +329,7 @@ public class AuthController {
                 newUser.setAccount("0000000000");             // 임의 계좌번호
                 newUser.setZipcode("00000");                  // 임의 우편번호
                 newUser.setAddress("Sample Address");         // 임의 주소
-                newUser.setRole("user");            // 기본 권한 설정 (사용자 권한)
+                newUser.setRole(User.Role.valueOf("user"));   // User.Role로 변경            // 기본 권한 설정 (사용자 권한)
                 newUser.setTel("google" + userService.generateVerificationCode());        // 임의 전화번호
 
                 // 비밀번호 암호화
@@ -341,7 +341,7 @@ public class AuthController {
             }
 
             // JWT 토큰 생성
-            String token = jwtTokenUtil.generateToken(googleUserId, "user");
+            String token = jwtTokenUtil.generateToken(googleUserId, User.Role.valueOf("user"));
 
             // 응답 데이터 생성
             Map<String, String> responseMap = new HashMap<>();
@@ -372,8 +372,13 @@ public class AuthController {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            // 사용자 정보 반환 (user_no, fullname, role 포함)
-            return ResponseEntity.ok(new UserResponse(user.getUserno(), user.getFullname(), user.getRole()));
+            // UserResponse 객체 생성 (role을 String으로 변환)
+            UserResponse userResponse = new UserResponse(
+                    user.getUserno(), 
+                    user.getFullname(), 
+                    user.getRole().toString() // User.Role을 String으로 변환하여 전달
+            );
+            return ResponseEntity.ok(userResponse); // UserResponse 객체 반환
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않거나 만료된 토큰입니다.");
         }

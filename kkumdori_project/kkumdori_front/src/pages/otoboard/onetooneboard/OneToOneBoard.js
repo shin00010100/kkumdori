@@ -16,7 +16,7 @@ function OneToOneBoard() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/onetoone/onetooneboard");
+                const response = await axios.get("http://localhost:8090/onetoone/onetooneboard");
                 if (response.status === 200) {
                     setPosts(response.data);
                     setFilteredPosts(response.data);
@@ -47,7 +47,7 @@ function OneToOneBoard() {
     // 게시글 클릭 시 상세보기로 이동
     const handlePostClick = async (postId) => {
         try {
-            await axios.get(`http://localhost:8080/onetoone/onetooneview/${postId}/views`);
+            await axios.get(`http://localhost:8090/onetoone/onetooneview/${postId}/views`);
             navigate(`/onetooneview/${postId}`);
         } catch (error) {
             console.error("Error updating post views:", error);

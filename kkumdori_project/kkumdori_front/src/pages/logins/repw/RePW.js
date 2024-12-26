@@ -61,6 +61,8 @@ export default function RePW() {
 
           if (response.ok) {
             alert("비밀번호가 성공적으로 재설정되었습니다.");
+            // 비밀번호 재설정 완료 후 토큰 삭제
+            localStorage.removeItem("resetToken");
             navigate("/login");
           } else {
             alert("비밀번호 재설정에 실패했습니다.");

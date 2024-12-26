@@ -11,7 +11,7 @@ function NoticeView() {
     // 게시글 상세 정보 가져오기
     const fetchPostDetails = useCallback(async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/notice/noticeview/${postId}/views`);
+            const response = await axios.get(`http://localhost:8090/notice/noticeview/${postId}/views`);
             if (response.status === 200) {
                 setPost(response.data); // 게시글 데이터 설정
             }

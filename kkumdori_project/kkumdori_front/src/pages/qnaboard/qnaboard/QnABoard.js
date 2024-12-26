@@ -16,7 +16,7 @@ function QnABoard() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/qna/qnaboard");
+                const response = await axios.get("http://localhost:8090/qna/qnaboard");
                 if (response.status === 200) {
                     setPosts(response.data);
                     setFilteredPosts(response.data);
@@ -47,7 +47,7 @@ function QnABoard() {
     // 게시글 클릭 시 상세보기로 이동
     const handlePostClick = async (postId) => {
         try {
-            await axios.get(`http://localhost:8080/qna/qnaview/${postId}/views`);
+            await axios.get(`http://localhost:8090/qna/qnaview/${postId}/views`);
             navigate(`/qnaview/${postId}`);
         } catch (error) {
             console.error("Error updating post views:", error);

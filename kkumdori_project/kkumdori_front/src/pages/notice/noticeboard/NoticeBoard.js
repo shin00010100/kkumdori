@@ -16,7 +16,7 @@ function NoticeBoard() {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/notice/noticeboard");
+                const response = await axios.get("http://localhost:8090/notice/noticeboard");
                 if (response.status === 200) {
                     setPosts(response.data);
                     setFilteredPosts(response.data);

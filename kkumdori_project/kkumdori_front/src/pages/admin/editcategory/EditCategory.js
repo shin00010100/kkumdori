@@ -15,7 +15,10 @@ function EditCategory() {
 
   const fetchCategories = async () => {
     try {
-      const token = localStorage.getItem("jwt"); // JWT 토큰 가져오기
+      let token = sessionStorage.getItem("jwt");  // 세션에서 먼저 확인
+    if (!token) {
+      token = localStorage.getItem("jwt");  // 세션에 없으면 로컬스토리지에서 가져오기
+    }
       const response = await axios.get("http://localhost:8090/api/categories", {
         headers: {
           Authorization: `Bearer ${token}` // Authorization 헤더 추가
@@ -45,7 +48,10 @@ const handleUpdate = async (id, newName) => {
   }
 
   try {
-    const token = localStorage.getItem("jwt"); // 로컬 스토리지에서 JWT 토큰 가져오기
+    let token = sessionStorage.getItem("jwt");  // 세션에서 먼저 확인
+    if (!token) {
+      token = localStorage.getItem("jwt");  // 세션에 없으면 로컬스토리지에서 가져오기
+    }
     await axios.put(
       `http://localhost:8090/api/categories/${id}`,
       { categoryName: newName },
@@ -72,7 +78,10 @@ const handleDelete = async (id) => {
   if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
   try {
-    const token = localStorage.getItem("jwt"); // 로컬 스토리지에서 JWT 토큰 가져오기
+    let token = sessionStorage.getItem("jwt");  // 세션에서 먼저 확인
+    if (!token) {
+      token = localStorage.getItem("jwt");  // 세션에 없으면 로컬스토리지에서 가져오기
+    }
     await axios.delete(`http://localhost:8090/api/categories/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Authorization 헤더 추가
@@ -94,7 +103,10 @@ const handleAdd = async () => {
   }
 
   try {
-    const token = localStorage.getItem("jwt"); // 로컬 스토리지에서 JWT 토큰 가져오기
+    let token = sessionStorage.getItem("jwt");  // 세션에서 먼저 확인
+    if (!token) {
+      token = localStorage.getItem("jwt");  // 세션에 없으면 로컬스토리지에서 가져오기
+    }
     const response = await axios.post(
       "http://localhost:8090/api/categories",
       { categoryName: newCategory },

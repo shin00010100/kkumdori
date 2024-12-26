@@ -19,12 +19,21 @@ function EditGoods() {
   const [image, setImage] = useState(null); // 이미지 상태 관리
   const [error, setError] = useState("");
 
+  // 세션에서 먼저 확인하고 없으면 로컬스토리지에서 가져오는 함수
+  const getToken = () => {
+    let token = sessionStorage.getItem("jwt");
+    if (!token) {
+      token = localStorage.getItem("jwt");
+    }
+    return token;
+  };
+
   // 카테고리 목록 로드
   const fetchCategories = async () => {
     try {
       const response = await axios.get("http://localhost:8090/api/categories", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       setCategories(response.data);
@@ -38,40 +47,40 @@ function EditGoods() {
     try {
       const response = await axios.get(`http://localhost:8090/api/goods/${goodsId}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       const goods = response.data;
 
-        setGoodsName(goods.goodsName);
-        setCategoryNo(goods.categoryNo);
-        setPrice(goods.price);
-        setStock(goods.stock);
-        setDiscount(goods.discount);
-        setDescription(goods.description);
-        setImage(goods.imagePath || null);
-        if (goods.imagePath) {
-          // goods.imagePath에 이미 "uploads/images/"가 포함되어 있다면 이를 제거해야 함
-          const fileName = goods.imagePath.split("/").pop(); // 파일 이름만 추출
-          const fullImagePath = `http://localhost:8090/api/images/${fileName}`;
-          setImage(fullImagePath); // 이미지 URL 설정
-        } else {
-          setImage(null); // 이미지가 없는 경우
-        }
-      } catch (error) {
-        console.error("상품 데이터 가져오기 실패:", error);
-        setError("상품 데이터를 불러오는 데 실패했습니다.");
+      setGoodsName(goods.goodsName);
+      setCategoryNo(goods.categoryNo);
+      setPrice(goods.price);
+      setStock(goods.stock);
+      setDiscount(goods.discount);
+      setDescription(goods.description);
+      setImage(goods.imagePath || null);
+      if (goods.imagePath) {
+        // goods.imagePath에 이미 "uploads/images/"가 포함되어 있다면 이를 제거해야 함
+        const fileName = goods.imagePath.split("/").pop(); // 파일 이름만 추출
+        const fullImagePath = `http://localhost:8090/api/images/${fileName}`;
+        setImage(fullImagePath); // 이미지 URL 설정
+      } else {
+        setImage(null); // 이미지가 없는 경우
       }
-    }, [goodsId]); // `goodsId`를 의존성으로 포함
+    } catch (error) {
+      console.error("상품 데이터 가져오기 실패:", error);
+      setError("상품 데이터를 불러오는 데 실패했습니다.");
+    }
+  }, [goodsId]); // `goodsId`를 의존성으로 포함
 
-useEffect(() => {
-  const fetchData = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
       await fetchCategories(); // 카테고리 가져오기
       await fetchGoodsData(); // 상품 데이터 가져오기
-  };
+    };
 
-  fetchData();
-}, [fetchGoodsData]); // `fetchGoodsData` 의존성 추가
+    fetchData();
+  }, [fetchGoodsData]); // `fetchGoodsData` 의존성 추가
 
   const validateFields = () => {
     if (!goodsName.trim()) return "상품명을 입력해 주세요.";
@@ -106,7 +115,7 @@ useEffect(() => {
       await axios.put(`http://localhost:8090/api/goods/${goodsId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       alert("상품이 성공적으로 수정되었습니다.");
@@ -121,7 +130,7 @@ useEffect(() => {
     <div className="edit-goods-container">
       <h2>상품 수정</h2>
       <div className="edit-goods-content">
-      <div className="upload-image-container">
+        <div className="upload-image-container">
           <UploadImage onImageSelect={setImage} existingImage={image} />
         </div>
         <div className="product-info-container">

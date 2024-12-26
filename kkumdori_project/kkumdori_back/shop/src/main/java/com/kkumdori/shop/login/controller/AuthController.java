@@ -1,5 +1,6 @@
 package com.kkumdori.shop.login.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kkumdori.shop.login.dto.UserApiResponse;
 import com.kkumdori.shop.login.dto.UserDto;
@@ -38,6 +40,8 @@ import com.kkumdori.shop.login.service.SmsService;
 import com.kkumdori.shop.login.service.UserService;
 import com.kkumdori.shop.login.service.VerificationService;
 import com.kkumdori.shop.security.JwtTokenUtil;
+
+import jakarta.mail.MessagingException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -374,7 +378,7 @@ public class AuthController {
             User user = userOptional.get();
             // UserResponse 객체 생성 (role을 String으로 변환)
             UserResponse userResponse = new UserResponse(
-                    user.getUserno(), 
+                    user.getUserNo(), 
                     user.getFullname(), 
                     user.getRole().toString() // User.Role을 String으로 변환하여 전달
             );
@@ -694,6 +698,26 @@ public class AuthController {
 
         // 토큰 반환
         return ResponseEntity.ok("{\"token\":\"" + token + "\"}");
+    }
+    
+    // 관리자 이메일 전송 메서드
+    @PostMapping("/sendAdminEmail")
+    public ResponseEntity<String> sendAdminEmail(
+            @RequestParam String recipient,
+            @RequestParam String title,
+            @RequestParam String content,
+            @RequestParam(required = false) MultipartFile attachment) throws MessagingException, IOException {
+        
+        System.out.println("recipient: " + recipient);
+        System.out.println("title: " + title);
+        System.out.println("content: " + content);
+        
+        try {
+            emailService.sendEmailWithAttachment(recipient, title, content, attachment);
+            return ResponseEntity.ok("이메일이 성공적으로 전송되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("이메일 전송 실패: " + e.getMessage());
+        }
     }
     
 }

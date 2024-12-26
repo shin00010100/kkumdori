@@ -6,10 +6,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "onetoone") // 테이블 이름 매핑
 public class OneToOnePost {
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "onetoone_no") // 테이블의 onetoone_no와 매핑
-    private Integer onetooneNo;
+    @Column(name = "onetoone_no")
+    private Long onetooneNo;
 
     @Column(nullable = false, length = 45) // VARCHAR(45)
     private String title;
@@ -36,11 +37,11 @@ public class OneToOnePost {
     private Long adminNo; // 관리자 번호 (FK, NULL 가능)
 
     // Getters and Setters
-    public Integer getOnetooneNo() {
+    public Long getOnetooneNo() {
         return onetooneNo;
     }
 
-    public void setOnetooneNo(Integer onetooneNo) {
+    public void setOnetooneNo(Long onetooneNo) {
         this.onetooneNo = onetooneNo;
     }
 

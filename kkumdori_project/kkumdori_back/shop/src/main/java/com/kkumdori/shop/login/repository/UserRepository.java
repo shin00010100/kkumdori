@@ -1,8 +1,10 @@
 package com.kkumdori.shop.login.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.kkumdori.shop.login.entity.User;
@@ -35,4 +37,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     
     // 사용자명, 이름, 전화번호로 유저 찾기
     Optional<User> findByUsernameAndFullnameAndTel(String username, String fullname, String tel);
+    
+    @Query("SELECT u.email FROM User u")
+    List<String> findAllEmails();
 }

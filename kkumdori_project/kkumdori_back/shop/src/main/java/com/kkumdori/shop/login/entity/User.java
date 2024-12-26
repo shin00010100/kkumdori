@@ -22,7 +22,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_no;
+    private Long userNo;
 
     @Column(nullable = false, unique = true, length = 64) // VARCHAR(64)
     private String username;
@@ -67,12 +67,12 @@ public class User implements UserDetails {
     }
 
     // Getter와 Setter
-    public Long getUserno() {
-        return user_no;
+    public Long getUserNo() {
+        return userNo;
     }
 
-    public void setUserno(Long user_no) {
-        this.user_no = user_no;
+    public void setUserno(Long userNo) {
+        this.userNo = userNo;
     }
 
     public String getUsername() {
@@ -159,7 +159,7 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "user_no=" + user_no +
+                "user_no=" + userNo +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", bank='" + bank + '\'' +
@@ -177,12 +177,12 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return user_no.equals(user.user_no);
+        return userNo.equals(user.userNo);
     }
 
     @Override
     public int hashCode() {
-        return user_no.hashCode();
+        return userNo.hashCode();
     }
 
     // UserDetails 메서드들

@@ -5,6 +5,7 @@ const SendWho = ({ onSelectionChange }) => {
   const [isIndividualChecked, setIsIndividualChecked] = useState(false);
   const [isSendToAllChecked, setIsSendToAllChecked] = useState(true);
   const [email, setEmail] = useState("");
+  const [domain, setDomain] = useState("");
 
   const handleIndividualCheckboxChange = () => {
     const newIndividualChecked = !isIndividualChecked;
@@ -24,6 +25,12 @@ const SendWho = ({ onSelectionChange }) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
     onSelectionChange({ isIndividual: isIndividualChecked, email: newEmail });
+  };
+
+  const handleDomainChange = (e) => {
+    const newDomain = e.target.value;
+    setDomain(newDomain);
+    onSelectionChange({ isIndividual: isIndividualChecked, email: email + "@" + newDomain });
   };
 
   return (
@@ -58,14 +65,19 @@ const SendWho = ({ onSelectionChange }) => {
                 onChange={handleEmailChange}
                 disabled={!isIndividualChecked}
               />
-              @
-              <select className="input-email-select" disabled={!isIndividualChecked}>
-                <option value="이메일 선택">이메일 선택</option>
-                <option value="gmail.com">gmail.com</option>
-                <option value="naver.com">naver.com</option>
-                <option value="hanmail.com">hanmail.com</option>
-                <option value="nate.com">nate.com</option>
-              </select>
+               @
+          <select
+            className="input-email-select"
+            value={domain}
+            onChange={handleDomainChange}
+            disabled={!isIndividualChecked}
+          >
+            <option value="">이메일 선택</option>
+            <option value="gmail.com">gmail.com</option>
+            <option value="naver.com">naver.com</option>
+            <option value="hanmail.com">hanmail.com</option>
+            <option value="nate.com">nate.com</option>
+          </select>
             </div>
     </div>
   );

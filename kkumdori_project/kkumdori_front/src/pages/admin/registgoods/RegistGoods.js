@@ -17,11 +17,21 @@ function RegistGoods() {
 
   const navigate = useNavigate(); // navigate 함수 초기화
 
+  // 세션에서 먼저 확인하고, 없으면 로컬스토리지에서 가져오는 함수
+  const getToken = () => {
+    let token = sessionStorage.getItem("jwt");
+    if (!token) {
+      token = localStorage.getItem("jwt");
+    }
+    return token;
+  };
+
+  // 카테고리 목록 로드
   const fetchCategories = async () => {
     try {
       const response = await axios.get('http://localhost:8090/api/categories', {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+          Authorization: `Bearer ${getToken()}`, // getToken() 사용
         },
       });
       setCategories(response.data);
@@ -34,10 +44,12 @@ function RegistGoods() {
     fetchCategories();
   }, []);
 
+  // 이미지 선택 핸들러
   const handleImageSelect = (file) => {
     setImage(file); // 이미지 파일을 상태로 저장
   };
 
+  // 입력 값 검증
   const validateFields = () => {
     if (!goodsName.trim()) return '상품명을 입력해 주세요.';
     if (!category) return '카테고리를 선택해 주세요.';
@@ -48,6 +60,7 @@ function RegistGoods() {
     return null;
   };
 
+  // 폼 제출 핸들러
   const handleSubmit = async () => {
     const validationError = validateFields();
     if (validationError) {
@@ -56,7 +69,7 @@ function RegistGoods() {
     }
 
     try {
-      const token = localStorage.getItem("jwt"); // JWT 토큰 가져오기
+      const token = getToken(); // JWT 토큰 가져오기
       // FormData를 사용해 이미지 포함 데이터 전송
       const formData = new FormData();
       formData.append('goodsName', goodsName);
@@ -65,14 +78,15 @@ function RegistGoods() {
       formData.append('stock', stock);
       formData.append('description', description);
       formData.append('image', image);
+      
       const response = await axios.post('http://localhost:8090/api/goods', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
         },
       });
       console.log('상품 등록 성공:', response.data);
-      navigate(-1);
+      navigate(-1); // 이전 페이지로 이동
       alert('상품이 등록되었습니다.');
     } catch (error) {
       console.error('상품 등록 실패:', error);

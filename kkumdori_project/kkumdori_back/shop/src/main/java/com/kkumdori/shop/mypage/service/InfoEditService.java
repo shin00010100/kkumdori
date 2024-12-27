@@ -50,7 +50,7 @@ public class InfoEditService {
                 user.setAddress(address);
             }
             if (tel != null) {
-                user.setTel(tel);  // 전화번호 수정 추가
+                user.setTel(tel);  
             }
 
             // 업데이트된 사용자 정보를 저장하고 반환

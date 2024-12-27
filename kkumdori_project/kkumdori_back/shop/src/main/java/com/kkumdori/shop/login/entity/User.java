@@ -71,7 +71,7 @@ public class User implements UserDetails {
         return userNo;
     }
 
-    public void setUserno(Long userNo) {
+    public void setUserNo(Long userNo) {
         this.userNo = userNo;
     }
 

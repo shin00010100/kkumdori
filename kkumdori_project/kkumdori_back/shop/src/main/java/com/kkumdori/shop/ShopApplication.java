@@ -11,7 +11,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     "com.kkumdori.shop.goods.repository",
     "com.kkumdori.shop.notice.repository",
     "com.kkumdori.shop.onetoone.repository",
-    "com.kkumdori.shop.qna.repository"
+    "com.kkumdori.shop.qna.repository",
+    "com.kkumdori.shop.mypage.repository"
 })
 @EntityScan(basePackages = {
     "com.kkumdori.shop.category.entity", 
@@ -19,7 +20,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     "com.kkumdori.shop.goods.entity",
     "com.kkumdori.shop.notice.entity",
     "com.kkumdori.shop.onetoone.entity",
-    "com.kkumdori.shop.qna.entity" 
+    "com.kkumdori.shop.qna.entity",
+    "com.kkumdori.shop.mypage.entity" 
 })
 @SpringBootApplication
 public class ShopApplication {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./QnA.css";
@@ -20,6 +20,39 @@ const QnA = ({ addPost }) => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     return Array.from({ length: 6 }, () => chars.charAt(Math.floor(Math.random() * chars.length))).join("");
   }
+
+  // fetchUserData 함수 정의 (useCallback 사용)
+  const fetchUserData = useCallback(async () => {
+    const token = sessionStorage.getItem("jwt");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      navigate("/login"); // 로그인 페이지로 리디렉션
+      return;
+    }
+
+    try {
+      const response = await axios.get("http://localhost:8090/api/auth/getuser", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // 사용자 번호만 추출하여 formData에 설정
+      const userNo = response.data.userNo;
+      setFormData((prevData) => ({
+        ...prevData,
+        userNo: userNo, // 사용자 번호를 폼 데이터에 설정
+      }));
+    } catch (error) {
+      console.error("사용자 정보를 가져오는 데 실패했습니다:", error);
+      alert("사용자 정보를 가져오는 데 실패했습니다.");
+    }
+  }, [navigate]);
+
+  // useEffect에서 fetchUserData 호출
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]); // 의존성 배열에 fetchUserData 추가
 
   // 폼 데이터 핸들러
   const handleChange = (e) => {
@@ -127,6 +160,7 @@ const QnA = ({ addPost }) => {
             onChange={handleChange}
             placeholder="사용자 번호를 입력하세요."
             required
+            disabled // 사용자 번호는 자동으로 설정되므로 입력할 필요 없음
           />
         </label>
 

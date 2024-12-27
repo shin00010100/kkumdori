@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import HLine from "../../utils/HLine.js";
 import './Pay.css';
+
 
 const Pay = () => {
   const location = useLocation();
@@ -19,13 +21,32 @@ const Pay = () => {
   const [paymentMethod, setPaymentMethod] = useState(''); // 선택된 결제 방식
   const [userNo, setUserNo] = useState(null); // 사용자 번호 저장
 
-  // 총 결제 금액 계산 함수
-  const calculateTotalPrice = () => {
-    return selectedItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-  };
+
+
+  // 총 결제 금액 계산 함수 (할인율 포함)
+const calculateTotalPrice = () => {
+  return selectedItems.reduce((total, item) => {
+    return total + item.price * item.quantity; // 할인 전 총 결제 금액
+  }, 0);
+};
+
+// 할인 금액 계산 함수
+const calculateDiscountedPrice = () => {
+  return selectedItems.reduce((total, item) => {
+    const originalPrice = item.price * item.quantity; // 원래 가격
+    const discountedPrice = item.price * (1 - item.discount / 100) * item.quantity; // 할인된 가격
+    return total + (originalPrice - discountedPrice); // 할인 금액 계산
+  }, 0);
+};
+
+// 총 결제 금액 계산 함수 (할인율 적용 후)
+const calculateTotalPrice2 = () => {
+  return selectedItems.reduce((total, item) => {
+    const discountedPrice = item.price * (1 - item.discount / 100); // 할인된 가격
+    return total + discountedPrice * item.quantity; // 할인된 가격으로 총합 계산
+  }, 0);
+};
+
 
   // 사용자 정보 가져오기 함수
   const fetchUserNo = useCallback(async () => {
@@ -154,14 +175,20 @@ const Pay = () => {
           <div className="order-item" key={index}>
             <img src={item.image} alt={item.name} className="product-img" />
             <div className="product-info">
-              <p>상품명: {item.name}</p>
+              <p>상품명: {item.name}</p><br></br>
               <p>가격: {item.price.toLocaleString()}원</p>
-              <p>개수: {item.quantity}개</p>
+              <p>개수: {item.quantity}개</p><br></br>
+              <HLine></HLine>
+              <p>할인율: {item.discount}%</p>
             </div>
           </div>
         ))}
         <div className="total-price">
-          총 결제 금액: {calculateTotalPrice().toLocaleString()}원
+          <br></br>
+        상품 금액: {calculateTotalPrice().toLocaleString()}원<br />
+         <div className="discount">할인: -{calculateDiscountedPrice().toLocaleString()}원</div>
+         <HLine></HLine>
+        총 결제 금액: {calculateTotalPrice2().toLocaleString()}원
         </div>
       </div>
 
@@ -194,14 +221,14 @@ const Pay = () => {
 
       {/* 결제 버튼 */}
       <button className="payment-button" onClick={handleOpenPopup}>
-        결제하기
+        결제 수단 선택
       </button>
 
       {/* 팝업창 */}
       {isPopupOpen && (
         <div className="popup-overlay">
           <div className="popup">
-            <h2>결제 방식 선택</h2>
+            <h2>결제 수단 선택</h2>
             <button onClick={() => handlePaymentSelect('카드')}>카드 결제</button>
             <button onClick={() => handlePaymentSelect('꿈돌이머니')}>꿈돌이 머니</button>
             <button onClick={() => handlePaymentSelect('휴대폰')}>카카오 페이</button>
@@ -215,7 +242,7 @@ const Pay = () => {
       {/* 선택된 결제 방식 표시 */}
       {paymentMethod && (
         <div className="selected-payment-method">
-          선택된 결제 방식: {paymentMethod}
+          선택된 결제 수단: {paymentMethod}
         </div>
       )}
       <br />

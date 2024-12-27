@@ -76,7 +76,7 @@
   margin-right: 20px; /* 검색창과 아이콘 사이의 여백 */
 }
 
-.search-bar {
+.header-container .search-bar {
   border: 1px solid #ccc;
   padding: 5px 10px;
   width: 200px; 

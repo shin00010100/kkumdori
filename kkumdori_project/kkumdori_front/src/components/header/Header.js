@@ -117,6 +117,7 @@ useEffect(() => {
 
       <header className="Header">
         {/* 소셜 미디어 링크와 네비게이션 */}
+        <div className="header-container">
         <div className="header-top">
           <div className="social-links">
             <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
@@ -198,6 +199,7 @@ useEffect(() => {
             <li><Link to="/category/toys">카테고리E</Link></li>
             <li><Link to="/category/beauty">카테고리F</Link></li>
           </ul>
+        </div>
         </div>
       </header>
     </div>

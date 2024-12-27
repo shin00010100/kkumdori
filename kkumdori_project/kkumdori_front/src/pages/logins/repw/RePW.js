@@ -35,33 +35,38 @@ export default function RePW() {
 
 
   const handleResetPassword = async () => {
-   // localStorage에서 토큰을 가져옴
-   const token = localStorage.getItem("resetToken");
-
-   if (!token) {
-     alert("유효한 토큰이 없습니다.");
-     return;
-   }
-
+    let token = sessionStorage.getItem("jwt"); // 세션에서 먼저 확인
+    if (!token) {
+      token = localStorage.getItem("jwt"); // 세션에 없으면 로컬스토리지에서 가져오기
+    }
+  
+    if (!token) {
+      token = localStorage.getItem("resetToken"); // JWT가 없으면 resetToken에서 가져오기
+      if (!token) {
+        alert("유효한 토큰이 없습니다.");
+        return;
+      }
+    }
+  
     if (newPassword === confirmPassword) {
       if (validatePassword(newPassword)) {
         try {
           const resetRequest = {
             newPassword: newPassword, // 새 비밀번호
+            token: token // resetToken 또는 jwt 토큰
           };
-
+  
           const response = await fetch("http://localhost:8090/api/auth/resetPassword", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`, // 헤더에 토큰 추가
+              "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify(resetRequest),
           });
-
+  
           if (response.ok) {
             alert("비밀번호가 성공적으로 재설정되었습니다.");
-            // 비밀번호 재설정 완료 후 토큰 삭제
             localStorage.removeItem("resetToken");
             navigate("/login");
           } else {

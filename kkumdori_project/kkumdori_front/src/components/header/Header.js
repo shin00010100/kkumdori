@@ -53,15 +53,27 @@ const Header = () => {
     }
   }, [isAuth, fetchUserInfo, setUser]); // isAuth와 fetchUserInfo, setUser를 의존성 배열에 추가
 
-  // 새로고침 시 localStorage에서 토큰을 확인하고 로그인 상태 설정
-  useEffect(() => {
-    const token = localStorage.getItem("jwt");
-    if (token) {
-      setIsAuth(true);  // 새로고침 시, localStorage에 토큰이 있다면 로그인 상태로 설정
-    } else {
-      setIsAuth(false);  // 토큰이 없으면 로그인 상태 false로 설정
-    }
-  }, [setIsAuth]); // setIsAuth만 의존성으로 추가
+
+ // 새로고침 시 localStorage와 sessionStorage에서 토큰 확인 및 로그인 상태 설정
+useEffect(() => {
+  // localStorage에서 토큰 확인
+  const localToken = localStorage.getItem("jwt");
+  // sessionStorage에서 토큰 확인
+  const sessionToken = sessionStorage.getItem("jwt");
+
+  if (sessionToken) {
+      // sessionStorage에 토큰이 있으면 삭제
+      sessionStorage.removeItem("jwt");
+      console.log("Session token removed.");
+  }
+
+  if (localToken) {
+      setIsAuth(true); // localStorage에 토큰이 있다면 로그인 상태로 설정
+  } else {
+      setIsAuth(false); // 토큰이 없으면 로그인 상태 false로 설정
+  }
+}, [setIsAuth]); // setIsAuth만 의존성으로 추가
+
 
   const handleLogout = () => {
     const kakaoClientId = 'bfd9db6caa0b2e92f3dbfac391a12ead'; // 카카오 REST API 키

@@ -20,11 +20,25 @@ function CartButton({ product }) {
             return;
         }
 
+        // JWT 토큰 확인
+        let token = sessionStorage.getItem("jwt"); // 세션 스토리지에서 토큰 확인
+        if (!token) {
+            token = localStorage.getItem("jwt"); // 로컬 스토리지에서 토큰 확인
+        }
+
+        if (!token) {
+            alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+            navigate('/login'); // 로그인 페이지로 리디렉션
+            return;
+        }
+
+        // 토큰이 있는 경우 Pay 페이지로 이동
         navigate('/pay', {
             state: {
                 selectedItems: [
                     {
                         ...product,
+                        name: product.goodsName,
                         quantity: quantity,
                     },
                 ],

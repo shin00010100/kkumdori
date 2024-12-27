@@ -1,20 +1,44 @@
-import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom'; 
-import products from '../../data/product';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
 import CartButton from '../cartbutton/CartButton';
 import WishlistButton from '../wishlistbutton/WishlistButton';
 import ReviewList from '../reviewlist/ReviewList';
 import './ProductDetail.css';
 
 function ProductDetail() {
-    const { id } = useParams();
+    const { goods_no } = useParams();  // URL에서 상품 번호(goods_no) 추출
+    const [product, setProduct] = useState(null);
     const [reviewCount, setReviewCount] = useState(0);
 
-    const product = products.find(product => product.id === parseInt(id));
+    useEffect(() => {
+        // goods_no 값이 유효한지 확인
+        if (!goods_no) {
+            console.error("상품 번호가 유효하지 않습니다.");
+            console.log("상품 번호:", goods_no);  // 값 확인
+            return;
+        }
+
+        const fetchProductDetails = async () => {
+            try {
+                console.log("상품 번호:", goods_no);  // goods_no 값 확인
+                // 상품 번호를 URL에 동적으로 삽입
+                const response = await axios.get(`http://localhost:8090/api/goods/goodsDetail/${goods_no}`);
+                console.log("Fetched Product Data:", response.data); // 데이터 확인
+                setProduct(response.data);  // 상품 정보 저장
+            } catch (error) {
+                console.error('상품 상세 정보를 가져오는 데 실패했습니다.', error);
+            }
+        };
+
+        fetchProductDetails();  // 상품 정보 가져오기
+    }, [goods_no]);  // goods_no가 변경될 때마다 새로 fetch
+
     if (!product) {
-        return <div>상품을 찾을 수 없습니다.</div>;
+        return <div>상품을 찾을 수 없습니다.</div>;  // 상품이 없으면 에러 메시지 출력
     }
 
+    // 별점 렌더링 함수
     const renderStars = (rating) => {
         const fullStars = Math.floor(rating);
         const halfStar = rating % 1 !== 0;
@@ -49,12 +73,12 @@ function ProductDetail() {
             <img src="/img/event1.jpg" alt="상품 이미지" className="banner-image" />
             <div className="product-detail">
                 <div className="product-image">
-                    <img src={product.image} alt={product.name} />
+                    <img src={product.imagePath} alt={product.goodsName} />
                 </div>
                 <div className="product-info">
-                    <h1>{product.name}</h1>
+                    <h1>{product.goodsName}</h1>
                     <p className="rating">
-                        별점: {product.rating} / 5.0 {renderStars(product.rating)}
+                        별점: {product.starRank} / 5.0 {renderStars(product.starRank)}
                         ({reviewCount}개의 리뷰)
                     </p>
                     <p>{price} 원</p>

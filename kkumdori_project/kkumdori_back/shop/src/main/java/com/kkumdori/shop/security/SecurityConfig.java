@@ -70,11 +70,13 @@ public class SecurityConfig {
                     "/api/images/**", // 이미지 경로 허용 추가,
                     "/qna/**",
                     "/onetoone/**",
-                    "/notice/**"
-                    
+                    "/notice/**",
+                    "/api/goods/goodslist",
+                    "/api/goods/goodsDetail/**",
+                    "/api/auth/resetPassword"
                     
                 ).permitAll()
-                .requestMatchers("/api/auth/resetPassword","/api/goods/{goodsId}" ).authenticated()
+                .requestMatchers("/api/goods/{goodsId}" ).authenticated()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

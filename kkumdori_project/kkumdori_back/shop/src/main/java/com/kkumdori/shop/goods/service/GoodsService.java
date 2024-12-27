@@ -2,15 +2,20 @@ package com.kkumdori.shop.goods.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.kkumdori.shop.category.entity.Category;
 import com.kkumdori.shop.category.repository.CategoryRepository;
 import com.kkumdori.shop.goods.dto.GoodsDTO;
+import com.kkumdori.shop.goods.dto.ProductListResponse;
 import com.kkumdori.shop.goods.entity.Goods;
 import com.kkumdori.shop.goods.repository.GoodsRepository;
 
@@ -97,4 +102,26 @@ public class GoodsService {
         image.transferTo(file); // 이미지 저장
         return "uploads/images/" + fileName;
     }
+    
+    // 상품 리스트 조회
+    public ProductListResponse getProducts(String query, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // 페이지는 0부터 시작
+        Page<Goods> goodsPage = goodsRepository.findByGoodsNameContaining(query, pageable);
+
+        List<GoodsDTO> products = goodsPage.getContent().stream()
+                .map(GoodsDTO::new) // Goods 객체를 GoodsDTO로 변환
+                .collect(Collectors.toList());
+
+        long totalItems = goodsPage.getTotalElements(); // 총 데이터 개수
+        int totalPages = goodsPage.getTotalPages(); // 총 페이지 수
+
+        return new ProductListResponse(totalItems, totalPages, products);
+    }
+    
+    // 상품 번호로 상품 조회
+    public Goods getGoodsByGoodsNo(Long goods_no) {
+        return goodsRepository.findById(goods_no).orElse(null);  // 상품 번호로 조회
+    }
+    
+
 }

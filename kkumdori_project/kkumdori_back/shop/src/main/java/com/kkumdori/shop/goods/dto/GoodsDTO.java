@@ -9,7 +9,8 @@ import com.kkumdori.shop.goods.entity.Goods;
 @Getter
 @Setter
 public class GoodsDTO {
-	private String goodsName; // 상품명
+    private Long goodsNo; // 상품 고유 번호 추가
+    private String goodsName; // 상품명
     private Long categoryNo;  // 카테고리 번호
     private double price;     // 가격
     private int stock;        // 재고 수량
@@ -24,6 +25,7 @@ public class GoodsDTO {
 
     // Goods 객체를 매개변수로 받는 생성자
     public GoodsDTO(Goods goods) {
+        this.goodsNo = goods.getGoodsNo(); // goodsNo 필드 추가
         this.goodsName = goods.getGoodsName();
         this.categoryNo = goods.getCategory() != null ? goods.getCategory().getCategoryNo() : null;
         this.price = goods.getPrice();

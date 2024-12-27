@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Pay.css';
 
 const Pay = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const selectedItems = location.state?.selectedItems || []; // 전달받은 상품 정보
 
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const Pay = () => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false); // 팝업창 상태
   const [paymentMethod, setPaymentMethod] = useState(''); // 선택된 결제 방식
+  const [userNo, setUserNo] = useState(null); // 사용자 번호 저장
 
   // 총 결제 금액 계산 함수
   const calculateTotalPrice = () => {
@@ -25,39 +27,100 @@ const Pay = () => {
     );
   };
 
-  // 우편번호 찾기 함수
-  const handlePostcode = () => {
-    const script = document.createElement('script');
-    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-    document.body.appendChild(script);
+  // 사용자 정보 가져오기 함수
+  const fetchUserNo = useCallback(async () => {
+    let token = sessionStorage.getItem('jwt'); // 세션에서 먼저 확인
+    if (!token) {
+      token = localStorage.getItem('jwt'); // 세션에 없으면 로컬스토리지에서 가져오기
+    }
 
-    script.onload = () => {
-      new window.daum.Postcode({
-        oncomplete: (data) => {
-          const fullAddress = data.address;
-          const extraAddress = data.addressType === 'R' ? data.bname : '';
+    if (!token) {
+      console.log('로그인 정보가 없습니다.');
+      alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+      navigate('/login');
+      return;
+    }
 
-          setFormData({
-            ...formData,
-            zipcode: data.zonecode,
-            address: fullAddress + (extraAddress ? ` ${extraAddress}` : ''),
-            detailAddress: '',
-          });
+    try {
+      const response = await fetch('http://localhost:8090/api/auth/getuser', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`, // JWT 토큰 추가
         },
-      }).open();
-    };
-  };
+      });
 
-  // 내 정보 가져오기 함수
-  const handleFetchMyInfo = () => {
-    setFormData({
-      name: '홍길동', // 예시 데이터
-      phone: '010-1234-5678',
-      zipcode: '12345',
-      address: '서울특별시 강남구 테헤란로',
-      detailAddress: '1003호',
-    });
-  };
+      if (response.ok) {
+        const data = await response.json();
+        console.log('사용자 정보:', data);
+
+        // userNo를 상태에 저장
+        setUserNo(data.userNo);
+      } else {
+        console.error('사용자 정보를 가져오지 못했습니다.');
+      }
+    } catch (error) {
+      console.error('에러 발생:', error);
+    }
+  }, [navigate]);
+
+  // 사용자 정보 가져오기
+  const fetchUserInfo = useCallback(async () => {
+    if (!userNo) return; // userNo가 없으면 API 호출하지 않음
+
+    let token = sessionStorage.getItem('jwt'); // 세션에서 먼저 확인
+    if (!token) {
+      token = localStorage.getItem('jwt'); // 세션에 없으면 로컬스토리지에서 가져오기
+    }
+
+    if (!token) {
+      console.log('로그인 정보가 없습니다.');
+      alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8090/api/user/${userNo}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`, // JWT 토큰 추가
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('사용자 상세 정보:', data);
+        
+        // 전화번호에서 앞의 두 자리를 제외한 나머지 부분만 저장
+      const formattedPhone = data.tel ? data.tel.slice(2) : ''; 
+
+      // 사용자 정보 상태 업데이트
+      setFormData({
+        name: data.fullname || '',
+        phone: formattedPhone, // 수정된 전화번호
+        zipcode: data.zipcode || '',
+        address: data.address || '',
+        detailAddress: data.detailAddress || '',
+      });
+
+      } else {
+        console.error('사용자 정보를 가져오지 못했습니다.');
+      }
+    } catch (error) {
+      console.error('에러 발생:', error);
+    }
+  }, [navigate, userNo]);
+
+  // 컴포넌트가 마운트될 때 사용자 정보 가져오기
+  useEffect(() => {
+    fetchUserNo(); // 처음에 사용자 번호를 가져옴
+  }, [fetchUserNo]);
+
+  useEffect(() => {
+    if (userNo) {
+      fetchUserInfo(); // userNo가 있을 때만 사용자 정보 조회
+    }
+  }, [fetchUserInfo, userNo]);
 
   // 팝업 열기 함수
   const handleOpenPopup = () => {
@@ -73,6 +136,11 @@ const Pay = () => {
   const handlePaymentSelect = (method) => {
     setPaymentMethod(method);
     setIsPopupOpen(false); // 팝업 닫기
+  };
+
+  // 마이페이지로 이동하는 함수
+  const handleGoToMemberInfoEdit = () => {
+    navigate('/MemberInfoEdit'); // /MemberInfoEdit 페이지로 이동
   };
 
   return (
@@ -100,57 +168,29 @@ const Pay = () => {
       {/* 배송 정보 */}
       <div className="shipping-info">
         <h2>배송 정보</h2>
-        <button className="fetch-my-info-button" onClick={handleFetchMyInfo}>
-          내 정보 가져오기
+        <button className="fetch-my-info-button" onClick={handleGoToMemberInfoEdit}>
+          마이페이지에서 수정하기
         </button>
+        <br />
         <label>
           이름:
-          <input
-            type="text"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
+          <input type="text" value={formData.name} disabled />
         </label>
         <label>
           전화번호:
-          <input
-            type="text"
-            value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          />
+          <input type="text" value={formData.phone} disabled />
         </label>
         <label>
           우편번호:
-          <div className="address-container">
-            <input
-              type="text"
-              value={formData.zipcode}
-              onChange={(e) => setFormData({ ...formData, zipcode: e.target.value })}
-              disabled
-            />
-            <button type="button" onClick={handlePostcode}>
-              우편번호 찾기
-            </button>
-          </div>
+          <input type="text" value={formData.zipcode} disabled />
         </label>
         <label>
           주소:
-          <input
-            type="text"
-            value={formData.address}
-            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              disabled
-            />
+          <input type="text" value={formData.address} disabled />
         </label>
-        <label>
-          상세 주소:
-          <input
-            type="text"
-            value={formData.detailAddress}
-            onChange={(e) => setFormData({ ...formData, detailAddress: e.target.value })}
-          />
-        </label>
+
       </div>
+      <br />
 
       {/* 결제 버튼 */}
       <button className="payment-button" onClick={handleOpenPopup}>
@@ -178,6 +218,7 @@ const Pay = () => {
           선택된 결제 방식: {paymentMethod}
         </div>
       )}
+      <br />
     </div>
   );
 };

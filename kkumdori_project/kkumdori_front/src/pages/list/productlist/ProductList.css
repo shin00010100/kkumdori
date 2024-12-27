@@ -1,6 +1,12 @@
 .product-list {
   padding: 20px;
-  margin-top: 100px; /* 상품 목록 상단에 100px 여백 추가 */
+  margin-top: 5%; /* 상품 목록 상단에 100px 여백 추가 */
+  width: 75%;
+  flex-direction: column; /* 세로 방향으로 배치 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
+  margin-left: auto; /* 왼쪽 여백을 자동으로 설정하여 중앙 정렬 */
+  margin-right: auto; /* 오른쪽 여백을 자동으로 설정하여 중앙 정렬 */
   /* background-color: #d0acff; */
 }
 

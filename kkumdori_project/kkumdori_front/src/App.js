@@ -199,7 +199,7 @@ const App = () => {
             <Route path="/faqboard" element={<FAQBoard />} />
 
             {/*purchase*/}
-            <Route path="/productDetail/:id" element={<ProductDetail />} /> {/* 상품 상세 페이지 */}
+            <Route path="/productDetail/:goods_no" element={<ProductDetail />} /> {/* 상품 상세 페이지 */}
             <Route path="/productlist" element={<ProductList />} /> {/* 상품 리스트 페이지 */}
           </Routes>
         </Layout>

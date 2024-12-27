@@ -365,7 +365,6 @@ handleSubmit = (e) => {
 
         return {
           formData: updatedFormData,
-          isIdChecked: false,  // 아이디 변경 시 중복 확인 상태를 초기화
         };
       });
     } else if (name === 'username') {

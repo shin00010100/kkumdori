@@ -67,13 +67,16 @@ public class SecurityConfig {
                     "/api/auth/login/naver",
                     "/api/auth/login/google",
                     "/api/auth/getuser",
+                    "api/wishlist/**",
                     "/api/images/**", // 이미지 경로 허용 추가,
                     "/qna/**",
                     "/onetoone/**",
                     "/notice/**",
                     "/api/goods/goodslist",
                     "/api/goods/goodsDetail/**",
-                    "/api/auth/resetPassword"
+                    "/api/auth/resetPassword",
+                    "/api/banners/**",
+                    "/api/popups/**"
                     
                 ).permitAll()
                 .requestMatchers("/api/goods/{goodsId}" ).authenticated()

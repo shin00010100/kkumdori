@@ -73,7 +73,9 @@ public class SecurityConfig {
                     "/notice/**",
                     "/api/goods/goodslist",
                     "/api/goods/goodsDetail/**",
-                    "/api/auth/resetPassword"
+                    "/api/auth/resetPassword",
+                    "/api/banners/**",
+                    "/api/popups/**"
                     
                 ).permitAll()
                 .requestMatchers("/api/goods/{goodsId}" ).authenticated()

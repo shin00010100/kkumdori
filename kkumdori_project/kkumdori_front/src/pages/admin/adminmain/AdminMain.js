@@ -24,8 +24,8 @@ const AdminMain = () => {
                     />
                     <Button
                         text={"상품 관리"}
-                        onClick={() => {alert("관리")}}
-                        // onClick={() => navigate("/editgoods/1")}
+                        // onClick={() => {alert("관리")}}
+                        onClick={() => navigate("/editgoods/1")}
                     />
                 </div>
             </section>

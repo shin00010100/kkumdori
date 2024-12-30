@@ -87,7 +87,7 @@ function EditGoods() {
     if (!categoryNo) return "카테고리를 선택해 주세요.";
     if (!price || price <= 0) return "유효한 판매가를 입력해 주세요.";
     if (!stock || stock <= 0) return "유효한 재고를 입력해 주세요.";
-    if (!discount || discount <= 0 || discount >= 100) return "유효한 할인율(0~100)을 입력해 주세요.";
+    if (discount === "" || discount < 0 || discount > 100) return "유효한 할인율(0~100)을 입력해 주세요.";
     if (!description.trim()) return "상품 설명을 입력해 주세요.";
     return null;
   };
@@ -125,6 +125,24 @@ function EditGoods() {
       setError("상품 수정에 실패했습니다.");
     }
   };
+
+  // const handleDelete = async () => {
+  //   const confirmDelete = window.confirm("정말로 이 상품을 삭제하시겠습니까?");
+  //   if (!confirmDelete) return;
+  
+  //   try {
+  //     await axios.delete(`http://localhost:8090/api/goods/${goodsId}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+  //       },
+  //     });
+  //     alert("상품이 성공적으로 삭제되었습니다.");
+  //     navigate(-1); // 이전 페이지로 이동
+  //   } catch (error) {
+  //     console.error("상품 삭제 실패:", error);
+  //     alert("상품 삭제 중 오류가 발생했습니다.");
+  //   }
+  // };
 
   return (
     <div className="edit-goods-container">

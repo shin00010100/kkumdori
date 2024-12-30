@@ -150,12 +150,12 @@ function ProductDetail() {
                         별점: {product.starRank} / 5.0 {renderStars(product.starRank)}
                         ({reviewCount}개의 리뷰)
                     </p>
-                    <p>{price} 원</p>
-                    <p>배송비: {shippingFee} 원</p>
-                    <p>도착 예정 날짜: {estimatedArrival}</p>
-                    <p>판매자: {seller}</p>
-                    <p>배송사: {shippingCompany}</p>
-
+                    <p>카테고리: {product.category.categoryName}</p>
+                    <p>남은 수량: {product.stock}</p>
+                    <p>할인율: {product.discount}%</p>
+                    <p>상품 가격: {price} 원</p>     
+                    <p>상품 소개: {product.description}</p>
+                    
                     <div className="purchase-actions">
                         <CartButton product={product} />
                         <button className="wishlist-button" onClick={handleWishlist}>

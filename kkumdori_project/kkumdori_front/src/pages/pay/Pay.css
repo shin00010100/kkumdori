@@ -114,8 +114,26 @@
   .payment-method input {
     margin-right: 10px;
   }
-  
-  /* 결제 버튼 */
+
+  .payment-button {
+    display: block;
+    width: 20%;
+    padding: 12px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    text-align: center;
+  }
+  .payment-button:hover {
+    background-color: #0056b3;
+  } 
+
+  /* 결제 버튼
   .payment-button {
     display: block;
     width: 100%;
@@ -133,7 +151,7 @@
   
   .payment-button:hover {
     background-color: #0056b3;
-  }
+  } */
   
   /* 내 정보 가져오기 버튼 */
 .fetch-my-info-button {
@@ -185,3 +203,6 @@
     color: white;
   }
   
+  .discount {
+    color: red;
+  }

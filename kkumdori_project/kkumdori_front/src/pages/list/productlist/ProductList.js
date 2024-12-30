@@ -88,7 +88,7 @@ const ProductList = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
-      />
+      /><br></br>
     </div>
   );
 };

@@ -652,25 +652,32 @@ public class AuthController {
     // 비밀번호 재설정
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequest request, @RequestHeader("Authorization") String token) {
-        // 토큰을 통해 사용자 정보 확인 (JwtTokenUtil 사용)
+        // Authorization 헤더에서 JWT 토큰을 먼저 확인합니다.
         String jwtToken = token.replace("Bearer ", "");
+        
+        // JWT 토큰이 없으면 resetToken을 사용
+        if (jwtToken.isEmpty()) {
+            jwtToken = request.getToken(); // PasswordResetRequest에서 받은 resetToken 사용
+        }
+
         if (jwtToken.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효한 토큰이 없습니다.");
         }
 
-        // JwtTokenUtil을 통해 토큰 검증 및 사용자 조회
+        // JWT 토큰을 통해 사용자 검증
         Optional<User> userOptional = jwtTokenUtil.verifyToken(jwtToken, userRepository);
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("유효하지 않거나 만료된 토큰입니다."));
 
-        // 비밀번호 암호화
+        // 새 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(request.getNewPassword());
-        user.setPassword(encodedPassword); // 새 비밀번호 설정
+        user.setPassword(encodedPassword);  // 새 비밀번호 설정
 
         // 비밀번호 업데이트
         userRepository.save(user);
 
         return ResponseEntity.ok("비밀번호가 성공적으로 재설정되었습니다.");
     }
+
     
     // 이메일 또는 전화번호 인증 후 토큰 발급
     @PostMapping("/resetToken")

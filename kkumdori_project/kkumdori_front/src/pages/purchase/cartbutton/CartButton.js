@@ -11,7 +11,7 @@ function CartButton({ product }) {
             alert("상품 정보를 불러오지 못했습니다.");
             return;
         }
-        alert(`${product.name} ${quantity}개를 장바구니에 담았습니다.`);
+        alert(`${product.goodsName} ${quantity}개를 장바구니에 담았습니다.`);
     };
 
     const handleBuyNow = () => {

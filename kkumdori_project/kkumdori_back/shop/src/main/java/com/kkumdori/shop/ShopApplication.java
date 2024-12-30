@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     "com.kkumdori.shop.notice.repository",
     "com.kkumdori.shop.onetoone.repository",
     "com.kkumdori.shop.qna.repository",
+    "com.kkumdori.shop.wishlist.repository",
     "com.kkumdori.shop.mypage.repository"
 })
 @EntityScan(basePackages = {
@@ -21,6 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
     "com.kkumdori.shop.notice.entity",
     "com.kkumdori.shop.onetoone.entity",
     "com.kkumdori.shop.qna.entity",
+    "com.kkumdori.shop.wishlist.entity",
     "com.kkumdori.shop.mypage.entity" 
 })
 @SpringBootApplication

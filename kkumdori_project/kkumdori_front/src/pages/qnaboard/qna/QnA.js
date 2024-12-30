@@ -11,8 +11,8 @@ const QnA = ({ addPost }) => {
     captchaInput: "",
     agree: false,
   });
-
   const [captcha, setCaptcha] = useState(generateCaptcha());
+  const [isAuth, setIsAuth] = useState(true);  // 로그인 상태
   const navigate = useNavigate();
 
   // CAPTCHA 생성 함수
@@ -23,9 +23,14 @@ const QnA = ({ addPost }) => {
 
   // fetchUserData 함수 정의 (useCallback 사용)
   const fetchUserData = useCallback(async () => {
-    const token = sessionStorage.getItem("jwt");
+    let token = sessionStorage.getItem("jwt");  // 세션에서 먼저 확인
     if (!token) {
-      alert("로그인이 필요합니다.");
+      token = localStorage.getItem("jwt");  // 세션에 없으면 로컬스토리지에서 가져오기
+    }
+
+    if (!token) {
+      console.log("로그인 정보가 없습니다."); // 로그인 정보가 없으면 콘솔에 출력
+      setIsAuth(false);  // 로그인 상태를 false로 업데이트
       navigate("/login"); // 로그인 페이지로 리디렉션
       return;
     }
@@ -116,6 +121,10 @@ const QnA = ({ addPost }) => {
       alert("글 작성 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
     }
   };
+
+  if (!isAuth) {
+    return null; // 로그인 상태가 아니면 아무 것도 렌더링하지 않음
+  }
 
   return (
     <div className="qna-page">

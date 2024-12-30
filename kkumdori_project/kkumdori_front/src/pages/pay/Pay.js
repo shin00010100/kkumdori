@@ -84,6 +84,104 @@ const calculateTotalPrice2 = () => {
     }
   }, [navigate]);
 
+  const handlePayment = async () => {
+    if (!paymentMethod) {
+      alert("결제 수단을 선택해주세요.");
+      return;
+    }
+
+    const token = sessionStorage.getItem("jwt") || localStorage.getItem("jwt");
+
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    const orderData = {
+      user_no: userNo,
+      order_address: `${formData.address} ${formData.detailAddress}`.trim(),
+      order_time: new Date().toISOString(),
+    };
+  
+    try {
+      // Step 1: Create Order
+      const orderResponse = await fetch("http://localhost:8090/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(orderData),
+      });
+      
+      if (!orderResponse.ok) {
+        alert("주문 생성에 실패했습니다.");
+        return;
+      }
+      
+      const orderResult = await orderResponse.json();  // 서버에서 반환된 JSON 데이터
+      console.log("주문 생성 결과:", orderResult);  // 이 데이터에서 order_no가 있는지 확인
+      
+      const orderNo = orderResult?.orderNo; // 대소문자 정확히 맞추기
+          
+      // Step 2: Create Order Products
+      const orderProductData = selectedItems.map((item) => {
+        return {
+          order_product_quantity: item.quantity,
+          order_price: item.price * (1 - item.discount / 100),
+          order_no: orderNo,  // 서버에서 받은 order_no 사용
+          goods_no: item.goodsNo,
+        };
+      });
+      
+      console.log("주문 상품 데이터:", orderProductData);
+
+const response = await fetch("http://localhost:8090/api/order_product/insert", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(orderProductData), // 모든 상품 데이터를 한 번에 전달
+});
+
+if (!response.ok) {
+  alert("주문 상품 등록에 실패했습니다.");
+  return;
+}
+  
+      // Step 3: Create Payment
+      const paymentData = {
+        amount: calculateTotalPrice2(),
+        status: "completed",
+        payment_time: new Date().toISOString(),
+        updated_time: new Date().toISOString(),
+        order_id: orderNo,
+        refund_status: "NONE",
+      };
+  
+      const paymentResponse = await fetch("http://localhost:8090/api/payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(paymentData),
+      });
+  
+      if (paymentResponse.ok) {
+        alert("결제가 완료되었습니다.");
+        navigate("/main");
+      } else {
+        alert("결제 처리 중 문제가 발생했습니다.");
+      }
+    } catch (error) {
+      console.error("결제 요청 에러:", error);
+      alert("결제 처리 중 문제가 발생했습니다.");
+    }
+  };
+
   // 사용자 정보 가져오기
   const fetchUserInfo = useCallback(async () => {
     if (!userNo) return; // userNo가 없으면 API 호출하지 않음
@@ -223,6 +321,7 @@ const calculateTotalPrice2 = () => {
       <button className="payment-button" onClick={handleOpenPopup}>
         결제 수단 선택
       </button>
+      
 
       {/* 팝업창 */}
       {isPopupOpen && (
@@ -246,6 +345,9 @@ const calculateTotalPrice2 = () => {
         </div>
       )}
       <br />
+      <button className="confirm-button" onClick={handlePayment}>
+        결제하기
+      </button>
     </div>
   );
 };

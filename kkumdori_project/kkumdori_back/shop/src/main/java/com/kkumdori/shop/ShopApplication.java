@@ -35,7 +35,6 @@ import jakarta.annotation.PostConstruct;
     "com.kkumdori.shop.mypage.entity",
     "com.kkumdori.shop.cart.entity",
     "com.kkumdori.shop.banner.entity"
-
 })
 @SpringBootApplication
 public class ShopApplication {

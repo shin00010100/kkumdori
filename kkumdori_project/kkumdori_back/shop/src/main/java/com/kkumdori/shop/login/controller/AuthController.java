@@ -78,7 +78,7 @@ public class AuthController {
             String token = jwtTokenUtil.generateToken(username, user.get().getRole());
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
-//            response.put("fullname", user.get().getFullname());
+            response.put("fullname", user.get().getFullname());
 //            response.put("role", user.get().getRole());
             return ResponseEntity.ok(response);
         } else {
@@ -131,9 +131,7 @@ public class AuthController {
 
             // 사용자 정보 DB에 저장
             Optional<User> user = userService.findByUsername(kakaoUserId);  // 카카오 ID로 사용자 찾기
-            boolean isNewUser = false;
             if (user.isEmpty()) {
-            	isNewUser = true;
                 // 신규 사용자라면 카카오 정보로 회원가입 처리
                 System.out.println("신규 사용자, 카카오 정보로 회원가입 처리 중...");  // 로그 추가
                 User newUser = new User();
@@ -169,12 +167,6 @@ public class AuthController {
             responseMap.put("token", token);
 //            responseMap.put("fullname", fullname);
 //            responseMap.put("role", "user");
-            
-         // 신규 사용자라면 리디렉션 URL 추가
-            if (isNewUser) {
-                responseMap.put("redirect", "/mypage");
-                responseMap.put("alert", "간편 로그인, 신규 사용자는 회원정보를 수정해주세요");
-            }
 
             return ResponseEntity.ok(responseMap);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -248,9 +240,7 @@ public class AuthController {
 
             // 사용자 정보 DB에 저장
             Optional<User> user = userService.findByUsername(naverUserId);
-            boolean isNewUser = false;
             if (user.isEmpty()) {
-            	isNewUser = true;
                 // 신규 사용자라면 네이버 정보로 회원가입 처리
                 System.out.println("신규 사용자, 네이버 정보로 회원가입 처리 중...");
                 
@@ -288,12 +278,6 @@ public class AuthController {
             responseMap.put("token", token);
 //            responseMap.put("fullname", fullname);
 //            responseMap.put("role", "user");
-            
-         // 신규 사용자라면 리디렉션 URL 추가
-            if (isNewUser) {
-                responseMap.put("redirect", "/mypage");
-                responseMap.put("alert", "간편 로그인, 신규 사용자는 회원정보를 수정해주세요");
-            }
 
             return ResponseEntity.ok(responseMap);
         } catch (HttpClientErrorException | HttpServerErrorException e) {

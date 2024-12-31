@@ -46,7 +46,7 @@ public class OneToOneController {
         Optional<OneToOnePost> postOptional = onetoonePostRepository.findById(postId);
 
         if (postOptional.isPresent()) {
-        	OneToOnePost post = postOptional.get();
+            OneToOnePost post = postOptional.get();
             post.setIsAnswered(post.getAnswer() != null); // 답변 여부 업데이트
             onetoonePostRepository.save(post); // 변경 사항 저장
             return ResponseEntity.ok(post);
@@ -56,7 +56,6 @@ public class OneToOneController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-
     // 답변 등록
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/onetooneview/{postId}/response")
@@ -64,7 +63,7 @@ public class OneToOneController {
         Optional<OneToOnePost> postOptional = onetoonePostRepository.findById(postId);
 
         if (postOptional.isPresent()) {
-        	OneToOnePost post = postOptional.get();
+            OneToOnePost post = postOptional.get();
             post.setAnswer(responseRequest.getResponse()); // 답변 저장
             post.setAnswerTime(LocalDateTime.now()); // 답변 시간 설정
             post.setIsAnswered(true); // 답변 여부 true로 설정
@@ -79,8 +78,15 @@ public class OneToOneController {
     // 게시글 목록 조회
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/onetooneboard")
-    public ResponseEntity<List<OneToOnePost>> getAllPosts() {
-        List<OneToOnePost> posts = onetoonePostRepository.findAll();
+    public ResponseEntity<List<OneToOnePost>> getAllPosts(@RequestParam(required = false) Long userNo) {
+        List<OneToOnePost> posts;
+        if (userNo != null) {
+            // 일반 사용자의 경우 자신의 게시글만 조회
+            posts = onetoonePostRepository.findByUserNo(userNo);
+        } else {
+            // 관리자의 경우 모든 게시글 조회
+            posts = onetoonePostRepository.findAll();
+        }
         return ResponseEntity.ok(posts);
     }
 }

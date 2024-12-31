@@ -10,7 +10,7 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_no")  // DB의 'cart_no' 컬럼과 매핑
-    private Long cartNo;  // 장바구니 ID (cart_no)
+    private Integer cartNo;  // 장바구니 ID (cart_no), 이제 Integer 타입
 
     @Column(nullable = false)
     private int quantity;  // 상품 수량 (quantity)
@@ -34,12 +34,12 @@ public class Cart {
         this.quantity = quantity;
     }
 
-    // Getter and Setter methods
-    public Long getCartNo() {
+    // Getter and Setter 메서드
+    public Integer getCartNo() {  // 반환 타입을 Integer로 변경
         return cartNo;
     }
 
-    public void setCartNo(Long cartNo) {
+    public void setCartNo(Integer cartNo) {  // 매개변수 타입을 Integer로 변경
         this.cartNo = cartNo;
     }
 

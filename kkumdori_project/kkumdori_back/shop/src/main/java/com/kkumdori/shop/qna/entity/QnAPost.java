@@ -34,6 +34,18 @@ public class QnAPost {
 
     @Column(name = "admin_no")
     private Long adminNo; // 관리자 번호 (FK, NULL 가능)
+    
+    @Transient // DB에 저장하지 않을 필드
+    private String userFullName; // 작성자 이름 추가
+
+    // Getters and Setters
+    public String getUserFullName() {
+        return userFullName;
+    }
+
+    public void setUserFullName(String userFullName) {
+        this.userFullName = userFullName;
+    }
 
     // Getters and Setters
     public Integer getQnaNo() {

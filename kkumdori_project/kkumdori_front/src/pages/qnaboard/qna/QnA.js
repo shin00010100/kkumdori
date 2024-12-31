@@ -158,21 +158,6 @@ const QnA = ({ addPost }) => {
           />
         </label>
 
-        {/* 사용자 번호 */}
-        <label className="label-userNo">
-          사용자 번호:
-          <input
-            type="number"
-            name="userNo"
-            className="inputer"
-            value={formData.userNo}
-            onChange={handleChange}
-            placeholder="사용자 번호를 입력하세요."
-            required
-            disabled // 사용자 번호는 자동으로 설정되므로 입력할 필요 없음
-          />
-        </label>
-
         {/* CAPTCHA */}
         <label className="label-captcha">
           자동등록방지:

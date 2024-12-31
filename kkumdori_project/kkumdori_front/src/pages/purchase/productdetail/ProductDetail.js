@@ -132,10 +132,6 @@ function ProductDetail() {
     };
 
     const price = product.price ? product.price.toLocaleString() : '가격 정보 없음';
-    const shippingFee = product.shippingFee ? product.shippingFee.toLocaleString() : '배송비 정보 없음';
-    const estimatedArrival = product.estimatedArrival || '도착 예정일 정보 없음';
-    const seller = product.seller || '판매자 정보 없음';
-    const shippingCompany = product.shippingCompany || '배송사 정보 없음';
 
     return (
         <div className="product-detail-container">

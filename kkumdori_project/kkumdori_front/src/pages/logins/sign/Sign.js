@@ -562,6 +562,7 @@ handleSubmit = (e) => {
                   placeholder="휴대폰 인증번호를 입력해주세요"
                   value={this.state.formData.phoneVerificationCode}
                   onChange={this.handleChange}
+                  disabled={this.state.isPhoneVerified}
                 />
                 <button type="button" className="telcheck-sign" onClick={this.verifyPhoneCode}
                 disabled={this.state.isPhoneVerified}>
@@ -610,6 +611,7 @@ handleSubmit = (e) => {
                   placeholder="이메일 인증번호를 입력해주세요"
                   value={this.state.formData.emailVerificationCode}
                   onChange={this.handleChange}
+                  disabled={this.state.isEmailVerified}
                 />
                 <button type="button" className="emailcheck-sign" onClick={this.verifyEmailCode} 
                 disabled={this.state.isEmailVerified}>

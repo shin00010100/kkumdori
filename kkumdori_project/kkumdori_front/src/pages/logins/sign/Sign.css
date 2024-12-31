@@ -68,7 +68,18 @@
     margin-right: 8px;
 }
 
-.input-field-sign:focus,.input-field2-sign:focus, .input-field3-sign:focus, select:focus, .postcodify {
+.input-field-sign2  {
+    width: 30%;
+    max-width: 500px;
+    height: 30px;
+    border: 1px solid rgb(163, 156, 231);
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-bottom: 10px;
+    margin-right: 8px;
+}
+
+.input-field-sign:focus,.input-field2-sign:focus, .input-field3-sign:focus, select:focus, .postcodify, .input-field-sign2:focus {
     border-color: #9e30f4;  /* 클릭했을 때 테두리 색 */
     outline: none;  /* 기본 outline 제거 */
 }

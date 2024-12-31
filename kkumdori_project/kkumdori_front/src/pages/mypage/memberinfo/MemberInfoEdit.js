@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom'; // Link 대신 useNavigate로 페이지 이동을 관리
+import { useNavigate } from 'react-router-dom'; // Link 대신 useNavigate로 페이지 이동을 관리
 import './memberinfoedit.css';
 import TOS from '../../logins/tos/Tos';
 
@@ -34,6 +34,12 @@ const MemberInfoEdit = () => {
 
   const [isTOSOpen, setIsTOSOpen] = useState(false);
   const [tosType, setTosType] = useState('');
+
+  // 이메일 인증 관련 상태 추가
+  const [emailVerificationCode, setEmailVerificationCode] = useState('');
+  const [emailSentCode, setEmailSentCode] = useState('');
+
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   // 페이지 이동을 위한 useNavigate 훅 사용
   const navigate = useNavigate();
@@ -84,6 +90,11 @@ const MemberInfoEdit = () => {
       let token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
       const updatedData = { [field]: userInfo[field] };
 
+      // 전화번호 수정 시 +1을 붙여서 저장
+    if (field === 'tel' && userInfo.tel && !userInfo.tel.startsWith("+1")) {
+      updatedData.tel = '+1' + userInfo.tel;
+    }
+
       if (field === 'bankAccount') {
         updatedData.bank = userInfo.bank;
         updatedData.account = userInfo.account;
@@ -102,6 +113,49 @@ const MemberInfoEdit = () => {
     }
 
     setEditModes((prev) => ({ ...prev, [field]: false }));
+  };
+
+  // 이메일 인증 전송
+  const handleEmailVerification = () => {
+    const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
+  
+    axios.post('http://localhost:8090/api/auth/SignEmailVerificationCode', 
+      { email: userInfo.email },
+      { headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } }
+    )
+    .then(response => {
+      if (response.data.success) {
+        // 인증번호가 성공적으로 전송되었을 때
+        setEmailSentCode(response.data.verificationCode);  // 서버에서 반환된 인증번호 저장
+        alert('이메일 인증번호가 전송되었습니다.');
+        console.log("이메일로 전송된 인증번호:", response.data.verificationCode);
+      } else {
+        alert('이메일 인증번호 전송에 실패했습니다.');
+      }
+    })
+    .catch(error => {
+      console.error('이메일 인증 전송 오류:', error);
+      alert('이메일 인증번호 전송에 실패했습니다.');
+    });
+  };
+  
+
+  // 이메일 인증번호 확인
+  const verifyEmailCode = () => {
+    console.log("입력한 인증번호:", emailVerificationCode);
+    console.log("전송된 인증번호:", emailSentCode);
+
+    if (!emailSentCode) {
+      alert("인증번호가 전송되지 않았습니다.");
+      return;
+    }
+
+    if (emailVerificationCode === emailSentCode) {
+      setIsEmailVerified(true);
+      alert("이메일 인증이 완료되었습니다.");
+    } else {
+      alert("이메일 인증번호가 틀렸습니다.");
+    }
   };
 
   // 주소 검색
@@ -145,12 +199,6 @@ const MemberInfoEdit = () => {
     <div className="member-info-edit">
       <h2>회원 정보 수정</h2>
 
-      {/* 아이디 */}
-      <div className="form-group">
-        <label>아이디</label>
-        <p>{userInfo.username}</p>
-      </div>
-
       {/* 이름 */}
       <div className="form-group">
         <label>이름</label>
@@ -158,12 +206,13 @@ const MemberInfoEdit = () => {
           <form onSubmit={(e) => handleSubmit(e, 'fullname')}>
             <input
               type="text"
+              className="input-field-sign2"
               name="fullname"
               value={userInfo.fullname}
               onChange={handleChange}
               required
             />
-            <button type="submit">수정 완료</button>
+            <button className="emailcheck-sign" type="submit">수정 완료</button>
           </form>
         ) : (
           <div>
@@ -173,50 +222,90 @@ const MemberInfoEdit = () => {
         )}
       </div>
 
-      {/* 이메일 */}
-      <div className="form-group">
-        <label>이메일</label>
-        {editModes.email ? (
-          <form onSubmit={(e) => handleSubmit(e, 'email')}>
-            <input
-              type="email"
-              name="email"
-              value={userInfo.email}
-              onChange={handleChange}
-              required
-            />
-            <button type="submit">수정 완료</button>
-          </form>
-        ) : (
-          <div>
-            <p>{userInfo.email}</p>
-            <button onClick={() => setEditModes((prev) => ({ ...prev, email: true }))}>수정</button>
-          </div>
-        )}
-      </div>
+    {/* 이메일 */}
+<div className="form-group">
+  <label>이메일</label>
+  {editModes.email ? (
+    <form onSubmit={(e) => handleSubmit(e, 'email')}>
+      <input
+        className="input-field-sign2"
+        type="email"
+        name="email"
+        value={userInfo.email}
+        onChange={handleChange}
+        required
+        disabled={isEmailVerified} // 인증 완료 시 비활성화
+      />
+      <button
+        type="button"
+        className="emailsendNum-sign"
+        onClick={handleEmailVerification}
+        disabled={isEmailVerified} // 인증 완료 시 버튼 비활성화
+      >
+        인증전송
+      </button>
+      &emsp;&emsp;&emsp;
+      <button
+        className="emailcheck-sign"
+        type="submit"
+        disabled={!isEmailVerified} // 인증 완료 전에는 비활성화
+      >
+        수정 완료
+      </button>
+      <br />
+      <input
+        type="text"
+        className="input-field-sign2"
+        maxLength="15"
+        value={emailVerificationCode}
+        onChange={(e) => setEmailVerificationCode(e.target.value)}
+        placeholder="이메일 인증번호를 입력해주세요"
+        disabled={isEmailVerified} // 인증 완료 시 비활성화
+      />
+      <button type="button" className="emailcheck-sign" onClick={verifyEmailCode}>
+        인증확인
+      </button>
+    </form>
+  ) : (
+    <div>
+      <p>{userInfo.email}</p>
+      <button 
+  onClick={() => {
+    setEditModes((prev) => ({ ...prev, email: true }));
+    setIsEmailVerified(false);  // 이메일 인증 초기화
+    setEmailVerificationCode('');  // 인증번호 입력값 초기화
+  }}
+>수정</button>
+      {/* 인증 상태에 따른 표시 */}
+      {isEmailVerified && <span style={{ color: 'green' }}></span>}
+    </div>
+  )}
+</div>
 
-      {/* 전화번호 */}
-      <div className="form-group">
-        <label>전화번호</label>
-        {editModes.tel ? (
-          <form onSubmit={(e) => handleSubmit(e, 'tel')}>
-            <input
-              type="text"
-              name="tel"
-              value={userInfo.tel}
-              onChange={handleChange}
-              required
-              placeholder="전화번호"
-            />
-            <button type="submit">수정 완료</button>
-          </form>
-        ) : (
-          <div>
-            <p>{userInfo.tel}</p>
-            <button onClick={() => setEditModes((prev) => ({ ...prev, tel: true }))}>수정</button>
-          </div>
-        )}
-      </div>
+
+     {/* 전화번호 */}
+<div className="form-group">
+  <label>전화번호</label>
+  {editModes.tel ? (
+    <form onSubmit={(e) => handleSubmit(e, 'tel')}>
+      <input
+      className="input-field-sign2"
+        type="text"
+        name="tel"
+        value={userInfo.tel && userInfo.tel.startsWith("+1") ? userInfo.tel.slice(2) : userInfo.tel} // +1 제거한 값 표시
+        onChange={handleChange}
+        required
+        placeholder="전화번호"
+      />
+      <button className="emailcheck-sign" type="submit">수정 완료</button>
+    </form>
+  ) : (
+    <div>
+      <p>{userInfo.tel && userInfo.tel.startsWith("+1") ? userInfo.tel.slice(2) : userInfo.tel}</p> {/* 화면에서 +1 제거 */}
+      <button onClick={() => setEditModes((prev) => ({ ...prev, tel: true }))}>수정</button>
+    </div>
+  )}
+</div>
 
       {/* 은행 및 계좌번호 */}
       <div className="form-group">
@@ -224,6 +313,7 @@ const MemberInfoEdit = () => {
         {editModes.bankAccount ? (
           <form onSubmit={(e) => handleSubmit(e, 'bankAccount')}>
             <select
+            className="register_email_select"
               name="bank"
               value={userInfo.bank}
               onChange={handleChange}
@@ -237,6 +327,7 @@ const MemberInfoEdit = () => {
               <option value="신한은행">신한은행</option>
             </select>
             <input
+            className="input-field-sign2"
               type="text"
               name="account"
               value={userInfo.account}
@@ -244,7 +335,7 @@ const MemberInfoEdit = () => {
               required
               placeholder="계좌번호"
             />
-            <button type="submit">수정 완료</button>
+            <button className="emailcheck-sign" type="submit">수정 완료</button>
           </form>
         ) : (
           <div>
@@ -260,22 +351,24 @@ const MemberInfoEdit = () => {
         {editModes.address ? (
           <form onSubmit={(e) => handleSubmit(e, 'address')}>
             <input
+            className="input-field-sign2"
               type="text"
               name="zipcode"
               value={userInfo.zipcode}
               onChange={handleChange}
               placeholder="우편번호"
             />
-            <button type="button" onClick={handlePostcode}>주소 검색</button>
+            <button className="emailcheck-sign" type="button" onClick={handlePostcode}>주소 검색</button>
             <br />
             <input
+            className="input-field-sign2"
               type="text"
               name="address"
               value={userInfo.address}
               onChange={handleChange}
               placeholder="주소 (상세주소 포함)"
             />
-            <button type="submit">수정 완료</button>
+            <button className="emailcheck-sign" type="submit">수정 완료</button>
           </form>
         ) : (
           <div>

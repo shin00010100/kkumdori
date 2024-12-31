@@ -96,7 +96,7 @@ function OneToOneBoard() {
                         <li key={post.onetooneNo} className="post-item" onClick={() => handlePostClick(post.onetooneNo)}>
                             <h3>{post.title}</h3>
                             <p className="post-date">{new Date(post.createdTime).toLocaleDateString()}</p>
-                            <p>작성자 번호: {post.userNo}</p>
+                            <p>작성자: {post.userNo}</p>
                             {post.answer && <span className="response-completed">답변 완료</span>}
                         </li>
                     ))}

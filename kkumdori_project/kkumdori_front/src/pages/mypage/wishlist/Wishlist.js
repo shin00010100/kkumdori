@@ -50,7 +50,7 @@ const Wishlist = () => {
     };
 
     fetchUserData();
-  }, []);  // 컴포넌트가 마운트 될 때만 실행
+  }, [setUserInfo]);  // 컴포넌트가 마운트 될 때만 실행
 
   // 수량 증가 함수
   const increaseQuantity = (index) => {

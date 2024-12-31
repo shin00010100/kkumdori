@@ -35,8 +35,15 @@ const NaverCallback = () => {
           setIsAuth(true);
           setUser({ fullname: data.fullname, role: data.role });
 
-          alert("네이버 로그인에 성공하였습니다.");
-          navigate("/main");
+          // 신규 사용자 처리
+          if (data.redirect) {
+            alert("네이버 로그인에 성공하였습니다.");
+            alert(data.alert); // 사용자에게 알림
+            navigate(data.redirect); // 지정된 경로로 이동
+          } else {
+            alert("네이버 로그인에 성공하였습니다.");
+            navigate("/main"); // 기존 사용자는 메인으로 이동
+          }
         } else {
           alert("네이버 로그인 실패: 서버 응답 에러");
         }

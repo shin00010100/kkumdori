@@ -5,7 +5,7 @@ import './wishlist.css';
 const Wishlist = () => {
   const [items, setItems] = useState([]);  // 위시리스트 아이템들
   const [selectAll, setSelectAll] = useState(false);  // 전체 선택
-  const [ setUserInfo] = useState(null);  // 사용자 정보
+  const [userInfo, setUserInfo] = useState(null);  // 사용자 정보
   const [loading, setLoading] = useState(true);  // 로딩 상태
 
   // 사용자 정보 및 위시리스트 아이템 가져오기

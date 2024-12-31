@@ -69,6 +69,10 @@ function OneToOneView() {
         );
     }
 
+    // 현재 사용자 확인
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
+    const isAdmin = currentUser && currentUser.fullname === "관리자나리"; // 관리자 여부 확인
+
     return (
         <div className="view-container">
             <h1>1대1 문의 게시글</h1>
@@ -86,18 +90,20 @@ function OneToOneView() {
                     <p>{post.answer}</p> {/* 등록된 답변 표시 */}
                 </div>
             ) : (
-                <div className="response-section">
-                    <h3>답변 작성</h3>
-                    <textarea
-                        value={response}
-                        onChange={handleResponseChange}
-                        placeholder="답변 내용을 입력하세요."
-                        rows="3"
-                    />
-                    <button onClick={handleAddResponse} className="submit-response-button">
-                        답변 등록
-                    </button>
-                </div>
+                isAdmin && ( // 관리자일 때만 답변 작성 가능
+                    <div className="response-section">
+                        <h3>답변 작성</h3>
+                        <textarea
+                            value={response}
+                            onChange={handleResponseChange}
+                            placeholder="답변 내용을 입력하세요."
+                            rows="3"
+                        />
+                        <button onClick={handleAddResponse} className="submit-response-button">
+                            답변 등록
+                        </button>
+                    </div>
+                )
             )}
 
             <button onClick={goBack} className="back-button">

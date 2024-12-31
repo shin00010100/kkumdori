@@ -12,10 +12,9 @@ export default function Login() {
   const navigate = useNavigate();
   const { setIsAuth, setUser } = useAuth();
 
-
   const handleGoogleLoginClick = () => {
     window.google.accounts.id.initialize({
-      client_id: "7747546491-3j85b2eb2548vf2d3p8kri9t83obfrii.apps.googleusercontent.com",  // 구글 클라이언트 ID 입력
+      client_id: "YOUR_GOOGLE_CLIENT_ID",  // 구글 클라이언트 ID 입력
       callback: (response) => {
         const googleAccessToken = response.credential;
         fetch("http://localhost:8090/api/auth/login/google", {
@@ -28,6 +27,10 @@ export default function Login() {
         .then((response) => response.json())
         .then((data) => {
           localStorage.setItem("jwt", data.token);
+          localStorage.setItem("currentUser", JSON.stringify({
+            fullname: data.fullname,
+            role: data.role,
+          })); // 사용자 정보 저장
           setIsAuth(true);
           setUser({ fullname: data.fullname, role: data.role });
           alert("구글 로그인에 성공하였습니다.");
@@ -43,12 +46,11 @@ export default function Login() {
     window.google.accounts.id.prompt();  // 로그인 프롬프트 표시
   };
 
-
   // 카카오 로그인 함수
   const handleKakaoLogin = async () => {
     try {
       if (!window.Kakao.isInitialized()) {
-        window.Kakao.init("e05c72e34a97a05070985a9422b9542f"); // 카카오 앱 키 입력
+        window.Kakao.init("YOUR_KAKAO_APP_KEY"); // 카카오 앱 키 입력
       }
 
       window.Kakao.Auth.login({
@@ -68,6 +70,10 @@ export default function Login() {
             const data = await response.json();
             const storage = rememberMe ? localStorage : sessionStorage;
             storage.setItem("jwt", data.token);
+            storage.setItem("currentUser", JSON.stringify({
+              fullname: data.fullname,
+              role: data.role,
+            })); // 사용자 정보 저장
 
             setIsAuth(true);
             setUser({ fullname: data.fullname, role: data.role });
@@ -78,15 +84,8 @@ export default function Login() {
               }
             });
 
-            // 신규 사용자 처리
-          if (data.redirect) {
-            alert("카카오 로그인에 성공하였습니다.");
-            alert(data.alert); // 사용자에게 알림
-            navigate(data.redirect); // 지정된 경로로 이동
-          } else {
-            alert("카카오 로그인에 성공하였습니다.");
-            navigate("/main"); // 기존 사용자는 메인으로 이동
-          }
+            alert("카카오톡 로그인에 성공하였습니다.");
+            navigate("/main");
           } else {
             setError("카카오톡 로그인 실패");
           }
@@ -105,8 +104,7 @@ export default function Login() {
   // 네이버 로그인 함수
   const handleNaverLogin = async () => {
     try {
-      const naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=token&client_id=G8xSn1hL4ylD1f0cVlPS&redirect_uri=http://localhost:3000/naver-callback";
-
+      const naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=token&client_id=YOUR_NAVER_CLIENT_ID&redirect_uri=http://localhost:3000/naver-callback";
       // 네이버 로그인 페이지로 리디렉션
       window.location.href = naverLoginUrl;
     } catch (err) {
@@ -114,7 +112,6 @@ export default function Login() {
       setError("네이버 로그인 중 문제가 발생했습니다.");
     }
   };
-
 
   // 기존 로그인 처리 함수
   const handleLogin = async () => {
@@ -137,6 +134,10 @@ export default function Login() {
         const data = await response.json();
         const storage = rememberMe ? localStorage : sessionStorage;
         storage.setItem("jwt", data.token);
+        storage.setItem("currentUser", JSON.stringify({
+          fullname: data.fullname,
+          role: data.role,
+        })); // 사용자 정보 저장
 
         setIsAuth(true);
         setUser({ fullname: data.fullname, role: data.role });
@@ -167,22 +168,9 @@ export default function Login() {
 
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init("e05c72e34a97a05070985a9422b9542f");
+      window.Kakao.init("YOUR_KAKAO_APP_KEY");
     }
   }, []);
-
-  useEffect(() => {
-    let token = sessionStorage.getItem("jwt");
-    if (!token) {
-      token = localStorage.getItem("jwt");
-    }
-
-    if (token) {
-      navigate("/main", { replace: true }); // 메인 페이지로 리디렉션
-      alert("이미 로그인 상태입니다.");
-      sessionStorage.removeItem("jwt");
-    }
-  }, [navigate]);
 
   return (
     <div className="Login-body-page">

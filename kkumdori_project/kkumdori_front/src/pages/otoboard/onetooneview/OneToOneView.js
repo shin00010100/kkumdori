@@ -8,6 +8,10 @@ function OneToOneView() {
     const [post, setPost] = useState(null); // 단일 게시글 상태
     const [response, setResponse] = useState(""); // 답변 상태
     const navigate = useNavigate();
+    
+    // sessionStorage에서 로그인한 사용자 정보 가져오기
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser")); 
+    console.log("Current User:", currentUser); // 사용자 정보 확인
 
     // 게시글 상세 정보 가져오기
     const fetchPostDetails = useCallback(async () => {
@@ -69,17 +73,13 @@ function OneToOneView() {
         );
     }
 
-    // 현재 사용자 확인
-    const currentUser = JSON.parse(sessionStorage.getItem("currentUser"));
-    const isAdmin = currentUser && currentUser.fullname === "관리자나리"; // 관리자 여부 확인
-
     return (
         <div className="view-container">
             <h1>1대1 문의 게시글</h1>
             <div className="post-detail">
                 <h2>{post.title}</h2>
                 <p className="post-date">작성일: {new Date(post.createdTime).toLocaleString()}</p>
-                <p>작성자: {post.userNo}</p>
+                <p>작성자: {post.userFullName ? post.userFullName : '알 수 없음'}</p>
                 <p>{post.content}</p>
             </div>
 
@@ -90,7 +90,7 @@ function OneToOneView() {
                     <p>{post.answer}</p> {/* 등록된 답변 표시 */}
                 </div>
             ) : (
-                isAdmin && ( // 관리자일 때만 답변 작성 가능
+                currentUser?.fullname === "관리자나리" && ( // localStorage에서 사용자 이름 확인
                     <div className="response-section">
                         <h3>답변 작성</h3>
                         <textarea

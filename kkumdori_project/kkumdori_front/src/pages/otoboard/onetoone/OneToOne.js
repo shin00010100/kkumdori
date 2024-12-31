@@ -8,14 +8,12 @@ const OneToOne = ({ addPost }) => {
     title: "",
     content: "",
     userNo: "", // 사용자 번호
-    userFullName: "", // 사용자 이름
     captchaInput: "",
     agree: false,
   });
-
   const [captcha, setCaptcha] = useState(generateCaptcha());
+  const [isAuth, setIsAuth] = useState(true);  // 로그인 상태
   const navigate = useNavigate();
-  const [isAuth, setIsAuth] = useState(true); // 로그인 상태
 
   // CAPTCHA 생성 함수
   function generateCaptcha() {
@@ -25,14 +23,14 @@ const OneToOne = ({ addPost }) => {
 
   // fetchUserData 함수 정의 (useCallback 사용)
   const fetchUserData = useCallback(async () => {
-    let token = sessionStorage.getItem("jwt"); // 세션에서 먼저 확인
+    let token = sessionStorage.getItem("jwt");  // 세션에서 먼저 확인
     if (!token) {
-      token = localStorage.getItem("jwt"); // 세션에 없으면 로컬스토리지에서 가져오기
+      token = localStorage.getItem("jwt");  // 세션에 없으면 로컬스토리지에서 가져오기
     }
 
     if (!token) {
       console.log("로그인 정보가 없습니다."); // 로그인 정보가 없으면 콘솔에 출력
-      setIsAuth(false); // 로그인 상태를 false로 업데이트
+      setIsAuth(false);  // 로그인 상태를 false로 업데이트
       navigate("/login"); // 로그인 페이지로 리디렉션
       return;
     }
@@ -44,14 +42,11 @@ const OneToOne = ({ addPost }) => {
         },
       });
 
-      // 사용자 번호 및 이름을 추출하여 formData에 설정
+      // 사용자 번호만 추출하여 formData에 설정
       const userNo = response.data.userNo;
-      const userFullName = response.data.fullname; // fullname을 바로 가져오기
-
       setFormData((prevData) => ({
         ...prevData,
         userNo: userNo, // 사용자 번호를 폼 데이터에 설정
-        userFullName: userFullName, // 사용자 이름을 폼 데이터에 설정
       }));
     } catch (error) {
       console.error("사용자 정보를 가져오는 데 실패했습니다:", error);
@@ -95,7 +90,6 @@ const OneToOne = ({ addPost }) => {
       title: formData.title,
       content: formData.content,
       userNo: parseInt(formData.userNo), // 사용자 번호는 숫자로 변환
-      userFullName: formData.userFullName, // 사용자 이름 추가
     };
 
     console.log("Sending post data:", postData);
@@ -116,7 +110,6 @@ const OneToOne = ({ addPost }) => {
           title: "",
           content: "",
           userNo: "",
-          userFullName: "",
           captchaInput: "",
           agree: false,
         });
@@ -162,21 +155,6 @@ const OneToOne = ({ addPost }) => {
             placeholder="질문 내용을 입력하세요."
             rows="5"
             required
-          />
-        </label>
-
-        {/* 사용자 번호 */}
-        <label className="label-userNo">
-          사용자 번호:
-          <input
-            type="number"
-            name="userNo"
-            className="inputer"
-            value={formData.userNo}
-            onChange={handleChange}
-            placeholder="사용자 번호를 입력하세요."
-            required
-            disabled // 사용자 번호는 자동으로 설정되므로 입력할 필요 없음
           />
         </label>
 

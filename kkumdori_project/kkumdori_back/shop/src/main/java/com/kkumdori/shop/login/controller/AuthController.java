@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -671,14 +672,14 @@ public class AuthController {
         // Authorization 헤더에서 JWT 토큰을 먼저 확인합니다.
         String jwtToken = token.replace("Bearer ", "");
         
-        // JWT 토큰이 없으면 resetToken을 사용
-        if (jwtToken.isEmpty()) {
-            jwtToken = request.getToken(); // PasswordResetRequest에서 받은 resetToken 사용
-        }
-
-        if (jwtToken.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효한 토큰이 없습니다.");
-        }
+//        // JWT 토큰이 없으면 resetToken을 사용
+//        if (jwtToken.isEmpty()) {
+//            jwtToken = request.getToken(); // PasswordResetRequest에서 받은 resetToken 사용
+//        }
+//
+//        if (jwtToken.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유효한 토큰이 없습니다.");
+//        }
 
         // JWT 토큰을 통해 사용자 검증
         Optional<User> userOptional = jwtTokenUtil.verifyToken(jwtToken, userRepository);
@@ -723,6 +724,44 @@ public class AuthController {
         return ResponseEntity.ok("{\"token\":\"" + token + "\"}");
     }
     
+    // 마이페이지 리셋토큰 생성
+    @PostMapping("/mypageresetToken")
+    public ResponseEntity<String> issueTokenAfterPasswordCheck(
+            @RequestHeader("Authorization") String token,
+            @RequestBody Map<String, String> requestData) {
+
+        // Authorization 헤더에서 "Bearer " 제거한 토큰 추출
+        String jwtToken = token.replace("Bearer ", "");
+        System.out.println("Received Token: " + jwtToken); // 서버 로그에 토큰 확인
+
+        // 토큰 검증 및 사용자 정보 조회
+        Optional<User> userOptional = jwtTokenUtil.verifyToken(jwtToken, userRepository);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않거나 만료된 토큰입니다.");
+        }
+
+        User user = userOptional.get();
+
+        // 요청에서 입력된 비밀번호 추출
+        String inputPassword = requestData.get("password");
+        if (inputPassword == null || inputPassword.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호가 필요합니다.");
+        }
+
+        // 비밀번호 확인
+        if (!userService.checkPassword(user, inputPassword)) { // checkPassword 메서드: 비밀번호 일치 여부 확인
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 일치하지 않습니다.");
+        }
+
+        // resetToken 생성
+        String resetToken = jwtTokenUtil.generateToken(user.getUsername(), user.getRole());
+
+        // resetToken 반환
+        return ResponseEntity.ok("{\"resetToken\":\"" + resetToken + "\"}");
+    }
+
+    
     // 관리자 이메일 전송 메서드
     @PostMapping("/sendAdminEmail")
     public ResponseEntity<String> sendAdminEmail(
@@ -740,6 +779,31 @@ public class AuthController {
             return ResponseEntity.ok("이메일이 성공적으로 전송되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("이메일 전송 실패: " + e.getMessage());
+        }
+    }
+    
+    // 회원 탈퇴 API
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token) {
+        // Authorization 헤더에서 "Bearer " 제거한 토큰 추출
+        String jwtToken = token.replace("Bearer ", "");
+        System.out.println("Received Token: " + jwtToken); // 서버 로그에 토큰 확인
+
+        // 토큰 검증 및 사용자 정보 조회
+        Optional<User> userOptional = jwtTokenUtil.verifyToken(jwtToken, userRepository);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않거나 만료된 토큰입니다.");
+        }
+
+        User user = userOptional.get();
+
+        // 사용자 삭제
+        try {
+            userRepository.delete(user); // 사용자 삭제
+            return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 탈퇴 중 오류가 발생했습니다.");
         }
     }
     

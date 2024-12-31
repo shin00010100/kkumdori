@@ -35,18 +35,13 @@ export default function RePW() {
 
 
   const handleResetPassword = async () => {
-    let token = sessionStorage.getItem("jwt"); // 세션에서 먼저 확인
-    if (!token) {
-      token = localStorage.getItem("jwt"); // 세션에 없으면 로컬스토리지에서 가져오기
-    }
-  
-    if (!token) {
-      token = localStorage.getItem("resetToken"); // JWT가 없으면 resetToken에서 가져오기
-      if (!token) {
-        alert("유효한 토큰이 없습니다.");
-        return;
-      }
-    }
+    const token = sessionStorage.getItem("resetToken");
+
+if (!token) {
+  alert("유효한 토큰이 없습니다.");
+  navigate("/main");
+  return;
+}
   
     if (newPassword === confirmPassword) {
       if (validatePassword(newPassword)) {
@@ -67,8 +62,8 @@ export default function RePW() {
   
           if (response.ok) {
             alert("비밀번호가 성공적으로 재설정되었습니다.");
-            localStorage.removeItem("resetToken");
-            navigate("/login");
+            sessionStorage.removeItem("resetToken");
+            navigate("/main");
           } else {
             alert("비밀번호 재설정에 실패했습니다.");
           }

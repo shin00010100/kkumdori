@@ -184,4 +184,8 @@ public class UserService {
 
         return code.toString();
     }
+    public boolean checkPassword(User user, String inputPassword) {
+        // 입력된 비밀번호와 저장된 비밀번호를 비교
+        return passwordEncoder.matches(inputPassword, user.getPassword());
+    }
 }

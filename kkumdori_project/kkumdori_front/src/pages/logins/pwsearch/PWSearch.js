@@ -217,8 +217,8 @@ export default function PWSearch() {
       const data = await response.json();
       console.log("발급된 토큰:", data.token);
 
-      // 토큰을 localStorage에 저장
-      localStorage.setItem("resetToken", data.token);
+      // 토큰을 sessionStorage에 저장
+      sessionStorage.setItem("resetToken", data.token);
 
       alert("토큰이 발급되었습니다.");
       navigate("/repw"); // 토큰을 URL에 담아서 비밀번호 재설정 페이지로 이동

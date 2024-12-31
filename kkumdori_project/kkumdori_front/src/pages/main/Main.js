@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';  // Link 추가
 import './Main.css';
 
@@ -29,10 +29,13 @@ const Main = () => {
   };
 
   // 팝업 배너가 오늘 하루 보지 않기 체크박스와 함께 표시되는지 확인
-  React.useEffect(() => {
+  useEffect(() => {
     if (localStorage.getItem('dismissedPopup') === 'true') {
       setShowPopup(false);
     }
+
+    // 페이지가 로드될 때 resetToken 제거
+    sessionStorage.removeItem('resetToken');
   }, []);
 
   return (

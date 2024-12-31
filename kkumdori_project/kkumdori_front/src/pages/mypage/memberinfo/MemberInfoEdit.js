@@ -10,7 +10,7 @@ const MemberInfoEdit = () => {
     username: '',
     fullname: '',
     email: '',
-    tel: '', // 전화번호 추가
+    tel: '', 
     bank: '',
     account: '',
     zipcode: '',

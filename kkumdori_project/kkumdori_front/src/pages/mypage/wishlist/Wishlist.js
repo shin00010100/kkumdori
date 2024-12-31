@@ -30,7 +30,14 @@ const Wishlist = () => {
 
           // 위시리스트 아이템 저장
           console.log('Fetched wishlist:', wishlistResponse.data); // 응답 데이터 확인
-          setItems(wishlistResponse.data);  
+          
+          // 초기 quantity 값 설정 (없으면 1로 설정)
+          const updatedItems = wishlistResponse.data.map(item => ({
+            ...item,
+            quantity: item.quantity || 1,  // quantity가 없으면 1로 설정
+          }));
+          
+          setItems(updatedItems);
           setLoading(false);  // 로딩 완료
         } catch (error) {
           console.error('데이터를 가져오는 데 실패했습니다.', error);
@@ -48,16 +55,20 @@ const Wishlist = () => {
   // 수량 증가 함수
   const increaseQuantity = (index) => {
     const updatedItems = [...items];
-    updatedItems[index].quantity += 1;
+    const currentQuantity = updatedItems[index].quantity;
+
+    // 수량이 NaN이 아닌지 확인하고 증가
+    updatedItems[index].quantity = currentQuantity && !isNaN(currentQuantity) ? currentQuantity + 1 : 1;
     setItems(updatedItems);
   };
 
   // 수량 감소 함수
   const decreaseQuantity = (index) => {
     const updatedItems = [...items];
-    if (updatedItems[index].quantity > 1) {
-      updatedItems[index].quantity -= 1;
-    }
+    const currentQuantity = updatedItems[index].quantity;
+
+    // 수량이 NaN이 아닌지 확인하고, 최소 1로 제한
+    updatedItems[index].quantity = currentQuantity && !isNaN(currentQuantity) && currentQuantity > 1 ? currentQuantity - 1 : 1;
     setItems(updatedItems);
   };
 
@@ -113,19 +124,31 @@ const Wishlist = () => {
     }
   };
 
-  // 장바구니 담기 함수
-  const addSelectedToCart = () => {
+  // 장바구니 담기 함수 (수량 포함)
+  const addSelectedToCart = async () => {
     const selectedItems = items.filter((item) => item.selected);
     if (selectedItems.length > 0) {
-      // 장바구니에 이미 있는 아이템을 중복으로 추가하지 않도록 처리
-      const updatedItems = selectedItems.map((item) => ({
-        ...item,
-        quantity: item.quantity,  // 수량도 함께 전달
-      }));
+      const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
+      const userNo = userInfo.userNo;
 
-      alert('Added to cart: ' + updatedItems.map((item) => item.goods.goodsName).join(', '));
+      try {
+        // 선택된 아이템들을 장바구니에 추가하는 API 호출
+        await Promise.all(selectedItems.map(item =>
+          axios.post('http://localhost:8090/api/mycart', {
+            userNo: userNo,  // 사용자 번호
+            goodsNo: item.goods.goodsNo,  // 상품 번호
+            quantity: item.quantity,  // 수량
+          }, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        ));
+
+        alert('선택된 아이템이 장바구니에 추가되었습니다.');
+      } catch (error) {
+        console.error('장바구니에 아이템을 추가하는 데 실패했습니다.', error);
+      }
     } else {
-      alert('Please select items to add to the cart.');
+      alert('장바구니에 담을 아이템을 선택하세요.');
     }
   };
 

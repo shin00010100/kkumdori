@@ -17,10 +17,15 @@ import jakarta.annotation.PostConstruct;
     "com.kkumdori.shop.notice.repository",
     "com.kkumdori.shop.onetoone.repository",
     "com.kkumdori.shop.qna.repository",
+<<<<<<< HEAD
+    "com.kkumdori.shop.mypage.repository",
+    "com.kkumdori.shop.order.repository"
+=======
     "com.kkumdori.shop.wishlist.repository",
     "com.kkumdori.shop.mypage.repository",
     "com.kkumdori.shop.cart.repository",
     "com.kkumdori.shop.banner.repository"
+>>>>>>> 4383928afaba407eddae805ed06b5719cb4fde72
 })
 @EntityScan(basePackages = {
     "com.kkumdori.shop.category.entity", 
@@ -29,10 +34,15 @@ import jakarta.annotation.PostConstruct;
     "com.kkumdori.shop.notice.entity",
     "com.kkumdori.shop.onetoone.entity",
     "com.kkumdori.shop.qna.entity",
+<<<<<<< HEAD
+    "com.kkumdori.shop.mypage.entity",
+    "com.kkumdori.shop.order.entity"
+=======
     "com.kkumdori.shop.wishlist.entity",
     "com.kkumdori.shop.mypage.entity",
     "com.kkumdori.shop.cart.entity",
     "com.kkumdori.shop.banner.entity"
+>>>>>>> 4383928afaba407eddae805ed06b5719cb4fde72
 })
 @SpringBootApplication
 public class ShopApplication {

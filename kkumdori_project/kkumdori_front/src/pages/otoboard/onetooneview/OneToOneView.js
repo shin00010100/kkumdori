@@ -8,6 +8,10 @@ function OneToOneView() {
     const [post, setPost] = useState(null); // 단일 게시글 상태
     const [response, setResponse] = useState(""); // 답변 상태
     const navigate = useNavigate();
+    
+    // sessionStorage에서 로그인한 사용자 정보 가져오기
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser")); 
+    console.log("Current User:", currentUser); // 사용자 정보 확인
 
     // 게시글 상세 정보 가져오기
     const fetchPostDetails = useCallback(async () => {
@@ -75,7 +79,7 @@ function OneToOneView() {
             <div className="post-detail">
                 <h2>{post.title}</h2>
                 <p className="post-date">작성일: {new Date(post.createdTime).toLocaleString()}</p>
-                <p>작성자: {post.userNo}</p>
+                <p>작성자: {post.userFullName ? post.userFullName : '알 수 없음'}</p>
                 <p>{post.content}</p>
             </div>
 
@@ -86,18 +90,20 @@ function OneToOneView() {
                     <p>{post.answer}</p> {/* 등록된 답변 표시 */}
                 </div>
             ) : (
-                <div className="response-section">
-                    <h3>답변 작성</h3>
-                    <textarea
-                        value={response}
-                        onChange={handleResponseChange}
-                        placeholder="답변 내용을 입력하세요."
-                        rows="3"
-                    />
-                    <button onClick={handleAddResponse} className="submit-response-button">
-                        답변 등록
-                    </button>
-                </div>
+                currentUser?.fullname === "관리자나리" && ( // localStorage에서 사용자 이름 확인
+                    <div className="response-section">
+                        <h3>답변 작성</h3>
+                        <textarea
+                            value={response}
+                            onChange={handleResponseChange}
+                            placeholder="답변 내용을 입력하세요."
+                            rows="3"
+                        />
+                        <button onClick={handleAddResponse} className="submit-response-button">
+                            답변 등록
+                        </button>
+                    </div>
+                )
             )}
 
             <button onClick={goBack} className="back-button">

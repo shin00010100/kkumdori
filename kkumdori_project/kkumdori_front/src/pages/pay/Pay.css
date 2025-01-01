@@ -24,29 +24,35 @@
     font-size: 18px;
     margin-bottom: 10px;
   }
-  
-  .order-item {
+
+  .payment-page .order-item {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    width: 100%;  /* 전체 너비를 꽉 채우도록 */
+    margin-bottom: 20px;
   }
   
-  .product-img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    margin-right: 15px;
-    border-radius: 5px;
+  .payment-page .product-image {
+    flex: 1 1 55%;   /* 이미지 영역을 55%로 설정, 나머지는 정보 영역이 차지 */
+    max-width: 350px; /* 최대 너비 제한 */
+    height: auto;     /* 높이는 비율에 맞게 자동 조절 */
+    object-fit: cover;  /* 이미지 비율 유지하며 크기 맞춤 */
+    margin-right: 20px;  /* 이미지와 정보 간의 간격 */
   }
   
-  .product-info p {
-    margin: 0;
+  .payment-page .product-info {
+    flex: 1 1 45%;   /* 정보 영역을 45%로 설정 */
+    display: flex;
+    flex-direction: column;  /* 정보 항목들을 세로로 나열 */
+    justify-content: center;  /* 세로로 가운데 정렬 */
     font-size: 14px;
+    line-height: 1.5;  /* 줄 간격을 여유롭게 설정 */
   }
+  
+  .payment-page .product-info p {
+    margin: 0 0 5px 0;  /* 각 텍스트 간 간격 설정 */
+  }
+  
   
   .total-price {
     text-align: right;

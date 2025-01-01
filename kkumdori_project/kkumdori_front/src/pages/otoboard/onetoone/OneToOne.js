@@ -11,10 +11,9 @@ const OneToOne = ({ addPost }) => {
     captchaInput: "",
     agree: false,
   });
-
   const [captcha, setCaptcha] = useState(generateCaptcha());
-  const navigate = useNavigate();
   const [isAuth, setIsAuth] = useState(true);  // 로그인 상태
+  const navigate = useNavigate();
 
   // CAPTCHA 생성 함수
   function generateCaptcha() {

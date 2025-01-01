@@ -144,7 +144,7 @@ h2 {
 /* 수정된 폼 내 div 스타일 */
 .form-group div {
   display: flex;
-  align-items: center;
+  align-items: center; 
   justify-content: space-between;
 }
 
@@ -189,4 +189,21 @@ h2 {
     margin-bottom: 20px;
   }
 }
+
+.password-input {
+  background-color: rgb(163, 156, 231);
+  color: white;
+  width: 265px;
+  height: 50px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+.password-input:hover{
+  background-color: rgb(138, 132, 195);
+}
+
 

@@ -25,6 +25,12 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+ // 사용자 번호로 사용자 이름 가져오기
+ 	public String getFullNameByUserNo(Long userNo) {
+ 		Optional<User> userOptional = userRepository.findById(userNo);
+ 		return userOptional.map(User::getFullname).orElse(null); // 사용자 이름 반환 또는 null
+ 	}
+    
     // 사용자 저장 메소드
     public User save(User user) {
         return userRepository.save(user);  // 사용자 정보를 데이터베이스에 저장
@@ -183,5 +189,9 @@ public class UserService {
         }
 
         return code.toString();
+    }
+    public boolean checkPassword(User user, String inputPassword) {
+        // 입력된 비밀번호와 저장된 비밀번호를 비교
+        return passwordEncoder.matches(inputPassword, user.getPassword());
     }
 }

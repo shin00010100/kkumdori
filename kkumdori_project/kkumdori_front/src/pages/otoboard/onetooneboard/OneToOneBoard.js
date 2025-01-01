@@ -11,6 +11,14 @@ function OneToOneBoard() {
     const [posts, setPosts] = useState([]); // 전체 게시글 목록
     const [filteredPosts, setFilteredPosts] = useState([]); // 필터링된 게시글 목록
     const navigate = useNavigate();
+    const currentUser = JSON.parse(sessionStorage.getItem("currentUser")); // 현재 사용자 정보 가져오기
+
+    // 로그인 여부 확인
+    useEffect(() => {
+        if (!currentUser) {
+            navigate("/login"); // 로그인 화면으로 이동
+        }
+    }, [currentUser, navigate]);
 
     // 게시글 데이터 가져오기
     useEffect(() => {
@@ -19,30 +27,35 @@ function OneToOneBoard() {
                 const response = await axios.get("http://localhost:8090/onetoone/onetooneboard");
                 if (response.status === 200) {
                     setPosts(response.data);
-                    setFilteredPosts(response.data);
                 }
             } catch (error) {
                 console.error("Error fetching posts:", error);
                 setPosts([]);
-                setFilteredPosts([]);
             }
         };
 
         fetchPosts();
     }, []);
 
-    // 날짜 범위로 게시글 필터링
+    // 게시글 필터링
     useEffect(() => {
-        if (!startDate && !endDate) {
-            setFilteredPosts(posts); // 날짜 선택 해제 시 전체 게시글 표시
-            return;
-        }
         const filtered = posts.filter((post) => {
+            const postDate = new Date(post.createdTime);
+            const isAdmin = currentUser?.fullname === "관리자나리";
+            const isAuthorMatch = currentUser?.fullname === post.userFullName;
+
+            // 관리자나리 또는 작성자와 일치할 경우 필터링
+            return (isAdmin || isAuthorMatch);
+        });
+
+        // 날짜 범위로 추가 필터링
+        const dateFiltered = filtered.filter((post) => {
             const postDate = new Date(post.createdTime);
             return (!startDate || postDate >= startDate) && (!endDate || postDate <= endDate);
         });
-        setFilteredPosts(filtered);
-    }, [startDate, endDate, posts]);
+
+        setFilteredPosts(dateFiltered);
+    }, [startDate, endDate, posts, currentUser]);
 
     // 게시글 클릭 시 상세보기로 이동
     const handlePostClick = async (postId) => {
@@ -57,7 +70,7 @@ function OneToOneBoard() {
 
     return (
         <div className="board-container">
-            <h1>1:1 문의 게시판</h1>
+            <h1>1대1 문의 게시판</h1>
             <div className="buttons">
                 <button className="write-button" onClick={() => navigate("/onetoone")}>
                     글쓰기
@@ -96,7 +109,7 @@ function OneToOneBoard() {
                         <li key={post.onetooneNo} className="post-item" onClick={() => handlePostClick(post.onetooneNo)}>
                             <h3>{post.title}</h3>
                             <p className="post-date">{new Date(post.createdTime).toLocaleDateString()}</p>
-                            <p>작성자: {post.userNo}</p>
+                            <p>작성자: {post.userFullName ? post.userFullName : '알 수 없음'}</p> {/* 사용자 이름 표시 */}
                             {post.answer && <span className="response-completed">답변 완료</span>}
                         </li>
                     ))}

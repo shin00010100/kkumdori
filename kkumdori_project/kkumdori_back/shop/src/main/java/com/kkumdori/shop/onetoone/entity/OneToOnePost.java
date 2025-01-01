@@ -6,13 +6,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "onetoone") // 테이블 이름 매핑
 public class OneToOnePost {
-	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "onetoone_no")
-    private Long onetooneNo;
+    @Column(name = "onetoone_no") // 테이블의 onetoone_no와 매핑
+    private Integer onetooneNo;
 
-    @Column(nullable = false, length = 45) // VARCHAR(45)
+    @Column(nullable = false, length = 100) // VARCHAR(100)
     private String title;
 
     @Column(columnDefinition = "TEXT", nullable = false)
@@ -35,13 +34,25 @@ public class OneToOnePost {
 
     @Column(name = "admin_no")
     private Long adminNo; // 관리자 번호 (FK, NULL 가능)
+    
+    @Transient // DB에 저장하지 않을 필드
+    private String userFullName; // 작성자 이름 추가
 
     // Getters and Setters
-    public Long getOnetooneNo() {
+    public String getUserFullName() {
+        return userFullName;
+    }
+
+    public void setUserFullName(String userFullName) {
+        this.userFullName = userFullName;
+    }
+
+    // Getters and Setters
+    public Integer getOnetooneNo() {
         return onetooneNo;
     }
 
-    public void setOnetooneNo(Long onetooneNo) {
+    public void setOnetooneNo(Integer onetooneNo) {
         this.onetooneNo = onetooneNo;
     }
 

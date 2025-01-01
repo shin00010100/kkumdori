@@ -96,7 +96,7 @@ function QnABoard() {
                         <li key={post.qnaNo} className="post-item" onClick={() => handlePostClick(post.qnaNo)}>
                             <h3>{post.title}</h3>
                             <p className="post-date">{new Date(post.createdTime).toLocaleDateString()}</p>
-                            <p>작성자 번호: {post.userNo}</p>
+                            <p>작성자: {post.userFullName ? post.userFullName : '알 수 없음'}</p> {/* 사용자 이름 표시 */}
                             {post.answer && <span className="response-completed">답변 완료</span>}
                         </li>
                     ))}

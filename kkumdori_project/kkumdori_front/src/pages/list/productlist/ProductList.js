@@ -69,11 +69,11 @@ const ProductList = () => {
           products.map((product) => (
             <div key={product.goodsNo} className="product-item">
               <Link to={`/productDetail/${product.goodsNo}`}>
-                <img
-                  src={product.imagePath ? `http://localhost:8090/api/images/${product.imagePath.replace('uploads/images/', '')}` : "path/to/default/image.png"}
-                  alt={product.goodsName}
-                  className="product-image"
-                />
+              <img
+                src={product.imagePath ? `http://localhost:8090/api/images/${product.imagePath.split('uploads/images/')[1]}` : "path/to/default/image.png"}
+                alt={product.goodsName}
+                className="product-image"
+              />
               </Link>
               <h3>{product.goodsName}</h3>
               <p>{product.price} 원</p>

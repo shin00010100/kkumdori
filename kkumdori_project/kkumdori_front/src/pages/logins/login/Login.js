@@ -14,7 +14,7 @@ export default function Login() {
 
   const handleGoogleLoginClick = () => {
     window.google.accounts.id.initialize({
-      client_id: "YOUR_GOOGLE_CLIENT_ID",  // 구글 클라이언트 ID 입력
+      client_id: "7747546491-3j85b2eb2548vf2d3p8kri9t83obfrii.apps.googleusercontent.com",  // 구글 클라이언트 ID 입력
       callback: (response) => {
         const googleAccessToken = response.credential;
         fetch("http://localhost:8090/api/auth/login/google", {
@@ -50,7 +50,7 @@ export default function Login() {
   const handleKakaoLogin = async () => {
     try {
       if (!window.Kakao.isInitialized()) {
-        window.Kakao.init("YOUR_KAKAO_APP_KEY"); // 카카오 앱 키 입력
+        window.Kakao.init("e05c72e34a97a05070985a9422b9542f"); // 카카오 앱 키 입력
       }
 
       window.Kakao.Auth.login({
@@ -104,7 +104,7 @@ export default function Login() {
   // 네이버 로그인 함수
   const handleNaverLogin = async () => {
     try {
-      const naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=token&client_id=YOUR_NAVER_CLIENT_ID&redirect_uri=http://localhost:3000/naver-callback";
+      const naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=token&client_id=G8xSn1hL4ylD1f0cVlPS&redirect_uri=http://localhost:3000/naver-callback";
       // 네이버 로그인 페이지로 리디렉션
       window.location.href = naverLoginUrl;
     } catch (err) {
@@ -168,7 +168,7 @@ export default function Login() {
 
   useEffect(() => {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-      window.Kakao.init("YOUR_KAKAO_APP_KEY");
+      window.Kakao.init("e05c72e34a97a05070985a9422b9542f");
     }
   }, []);
 

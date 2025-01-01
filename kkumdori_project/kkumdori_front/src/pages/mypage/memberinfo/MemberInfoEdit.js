@@ -24,6 +24,7 @@ const MemberInfoEdit = () => {
     tel: false, // 전화번호 수정 모드 추가
     bankAccount: false,
     address: false,
+    password: false,
   });
 
   const [marketingConsent, setMarketingConsent] = useState(false);
@@ -50,6 +51,10 @@ const MemberInfoEdit = () => {
   // 페이지 이동을 위한 useNavigate 훅 사용
   const navigate = useNavigate();
 
+  const handleEditPassword = () => {
+    setEditModes((prev) => ({ ...prev, password: !prev.password })); // 비밀번호 수정 모드를 토글
+  };
+
   const handleLogout = () => {
     const kakaoClientId = 'bfd9db6caa0b2e92f3dbfac391a12ead'; // 카카오 REST API 키
     const naverLogoutUrl = "http://nid.naver.com/nidlogin.logout";
@@ -64,6 +69,8 @@ const MemberInfoEdit = () => {
     // 일반 로그아웃 처리 (JWT 제거)
     localStorage.removeItem("jwt");  // JWT 토큰 제거
     sessionStorage.removeItem("jwt");  // 세션 스토리지에서도 JWT 제거
+    localStorage.removeItem("currentUser"); // fullname 제거
+    sessionStorage.removeItem("currentUser"); // fullname 제거
 
     // 네이버 로그아웃 URL로 이동
     const naverLogoutRedirectUri = naverLogoutUrl;
@@ -230,7 +237,9 @@ const MemberInfoEdit = () => {
   };
 
   // 리셋토큰 발급(비밀번호 변경)
-   const handlePasswordReset = async () => {
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();  // 폼 제출 시 새로고침 방지
+  
     if (!currentPassword) {
       alert("비밀번호를 입력해주세요.");
       return;
@@ -532,20 +541,27 @@ const MemberInfoEdit = () => {
 
       {/* 비밀번호 변경하기 버튼 */}
       <div className="form-group">
-      <label>비밀번호</label>
-      <div>
+  <label>비밀번호</label>
+  {editModes.password ? (
+    <form onSubmit={handlePasswordReset}>
       <input
-      className="input-field-sign2"
-      type="password"
-      name="currentPassword"
-      value={currentPassword} // 상태로 연결
-          onChange={(e) => setCurrentPassword(e.target.value)} // 입력값 저장
-      placeholder="현재 비밀번호를 입력해주세요"
-    /> 
-        <button className="password-input" onClick={handlePasswordReset}>비밀번호 변경하기</button>
-        </div>
-        
-      </div>
+        className="input-field-sign2"
+        type="password"
+        name="currentPassword"
+        value={currentPassword}
+        onChange={(e) => setCurrentPassword(e.target.value)}
+        placeholder="현재 비밀번호를 입력해주세요"
+      />
+      <br />
+      <button className="password-input" type="submit">비밀번호 변경하기</button>
+    </form>
+  ) : (
+    <div>
+      <p>비밀번호는 숨겨져 있습니다.</p>
+      <button onClick={handleEditPassword}>수정</button>
+    </div>
+  )}
+</div>
 
 
       {/* 마케팅 동의 */}

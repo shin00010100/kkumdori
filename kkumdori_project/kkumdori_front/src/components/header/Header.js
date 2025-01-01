@@ -64,6 +64,7 @@ useEffect(() => {
   if (sessionToken) {
       // sessionStorage에 토큰이 있으면 삭제
       sessionStorage.removeItem("jwt");
+      sessionStorage.removeItem("currentUser"); // fullname 제거
       console.log("Session token removed.");
   }
 
@@ -89,6 +90,8 @@ useEffect(() => {
     // 일반 로그아웃 처리 (JWT 제거)
     localStorage.removeItem("jwt");  // JWT 토큰 제거
     sessionStorage.removeItem("jwt");  // 세션 스토리지에서도 JWT 제거
+    localStorage.removeItem("currentUser"); // fullname 제거
+    sessionStorage.removeItem("currentUser"); // fullname 제거
 
     // 네이버 로그아웃 URL로 이동
     const naverLogoutRedirectUri = naverLogoutUrl;

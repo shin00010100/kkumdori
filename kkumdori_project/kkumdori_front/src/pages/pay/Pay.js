@@ -9,6 +9,8 @@ const Pay = () => {
   const navigate = useNavigate();
   const selectedItems = location.state?.selectedItems || []; // 전달받은 상품 정보
 
+  console.log("Pay 페이지로 전달된 데이터:", selectedItems);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -271,7 +273,11 @@ if (!response.ok) {
         <h2>주문 상품</h2>
         {selectedItems.map((item, index) => (
           <div className="order-item" key={index}>
-            <img src={item.image} alt={item.name} className="product-img" />
+            <img
+                src={item.imagePath ? `http://localhost:8090/api/images/${item.imagePath.split('uploads/images/')[1]}` : "path/to/default/image.png"}
+                alt={item.name}
+                className="product-image"
+              />
             <div className="product-info">
               <p>상품명: {item.name}</p><br></br>
               <p>가격: {item.price.toLocaleString()}원</p>

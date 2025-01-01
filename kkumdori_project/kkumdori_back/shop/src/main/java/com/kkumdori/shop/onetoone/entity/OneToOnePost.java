@@ -9,7 +9,7 @@ public class OneToOnePost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "onetoone_no") // 테이블의 onetoone_no와 매핑
-    private Integer onetooneNo;
+    private Long onetooneNo; // Integer에서 Long으로 변경
 
     @Column(nullable = false, length = 100) // VARCHAR(100)
     private String title;
@@ -48,11 +48,11 @@ public class OneToOnePost {
     }
 
     // Getters and Setters
-    public Integer getOnetooneNo() {
+    public Long getOnetooneNo() { // 반환 타입도 Long으로 변경
         return onetooneNo;
     }
 
-    public void setOnetooneNo(Integer onetooneNo) {
+    public void setOnetooneNo(Long onetooneNo) {
         this.onetooneNo = onetooneNo;
     }
 

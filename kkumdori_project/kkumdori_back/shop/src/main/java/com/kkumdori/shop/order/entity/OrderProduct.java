@@ -2,6 +2,7 @@ package com.kkumdori.shop.order.entity;
 
 import com.kkumdori.shop.goods.entity.Goods;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -16,9 +17,13 @@ public class OrderProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_product_no")  // 물리적 컬럼 이름을 명시적으로 지정
     private Long orderProductNo;
 
+    @Column(name = "order_product_quantity")
     private Integer orderProductQuantity;
+
+    @Column(name = "order_price")
     private Integer orderPrice;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -70,8 +75,6 @@ public class OrderProduct {
         this.goods = goods;
     }
 
-    
-    // toString 메서드 추가
     @Override
     public String toString() {
         return "OrderProduct{" +
@@ -83,3 +86,4 @@ public class OrderProduct {
                 '}';
     }
 }
+

@@ -4,16 +4,15 @@ import axios from "axios";
 import "./NoticeView.css";
 
 function NoticeView() {
-    const { postId } = useParams(); // URL 파라미터에서 postId 가져오기
-    const [post, setPost] = useState(null); // 단일 게시글 상태
+    const { postId } = useParams();
+    const [post, setPost] = useState(null);
     const navigate = useNavigate();
 
-    // 게시글 상세 정보 가져오기
     const fetchPostDetails = useCallback(async () => {
         try {
             const response = await axios.get(`http://localhost:8090/notice/noticeview/${postId}/views`);
             if (response.status === 200) {
-                setPost(response.data); // 게시글 데이터 설정
+                setPost(response.data);
             }
         } catch (error) {
             console.error("Error fetching post details:", error);
@@ -22,15 +21,29 @@ function NoticeView() {
     }, [postId]);
 
     useEffect(() => {
-        fetchPostDetails(); // 페이지 로드 시 게시글 데이터 가져오기
+        fetchPostDetails();
     }, [fetchPostDetails]);
 
-    // 게시판으로 돌아가기
     const goBack = () => {
         navigate("/noticeboard");
     };
 
-    // 게시글이 로드되지 않은 경우 에러 메시지
+    const deletePost = async () => {
+        if (window.confirm("정말로 게시글을 삭제하시겠습니까?")) {
+            try {
+                 const response = await axios.delete(`http://localhost:8090/notice/noticeview/${postId}/views`);
+                alert(response.data); // 삭제 성공 메시지 표시
+                navigate("/noticeboard"); // 게시판으로 이동
+            } catch (error) {
+                console.error("Error deleting post:", error);
+                alert("게시글 삭제 중 오류가 발생했습니다.");
+            }
+        }
+    };
+
+    const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    const isAdmin = currentUser && currentUser.fullname === "관리자나리"; // 관리자 확인
+
     if (!post) {
         return (
             <div className="Error">
@@ -52,9 +65,17 @@ function NoticeView() {
                 <p>{post.content}</p>
             </div>
 
-            <button onClick={goBack} className="back-button">
-                게시판으로 돌아가기
-            </button>
+            <div className="button-container">
+                <button onClick={goBack} className="back-button">
+                    게시판으로 돌아가기
+                </button>
+                {/* 관리자일 때만 삭제 버튼 표시 */}
+                {isAdmin && (
+                    <button onClick={deletePost} className="delete-button">
+                        게시글 삭제
+                    </button>
+                )}
+            </div>
         </div>
     );
 }

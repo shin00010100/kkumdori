@@ -1,6 +1,8 @@
 package com.kkumdori.shop.mypage.entity;
 
 import com.kkumdori.shop.goods.entity.Goods;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -10,21 +12,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 
 @Entity
-@Table(name = "order_product")  // 동일한 테이블 사용
+@Table(name = "order_product")
 public class MyOrderProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_product_no")  // 물리적 컬럼 이름을 명시적으로 지정
-    private Long orderProductNo;  // 필드명은 'orderProductNo'로 그대로 사용
+    @Column(name = "order_product_no")
+    private Long orderProductNo;
 
-    @Column(name = "order_product_quantity")  // 동일한 컬럼명 사용
+    @Column(name = "order_product_quantity")
     private Integer quantity;
 
-    @Column(name = "order_price")  // 동일한 컬럼명 사용
+    @Column(name = "order_price")
     private Integer price;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -75,5 +76,12 @@ public class MyOrderProduct {
     public void setGoods(Goods goods) {
         this.goods = goods;
     }
-}
 
+    public String getGoodsImage() {
+        if (goods != null) {
+            return goods.getImagePath(); // 이미지 경로 반환
+        }
+        return null; // goods가 없으면 null 반환
+    }
+
+}

@@ -4,6 +4,7 @@ public class MyOrderProductDto {
     private String productName;
     private Integer quantity;
     private Integer price;
+    private String imagePath;  
 
     // Getters and Setters
     public String getProductName() {
@@ -28,5 +29,13 @@ public class MyOrderProductDto {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

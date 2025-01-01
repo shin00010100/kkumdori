@@ -36,11 +36,12 @@ const SummaryContainer = () => {
             params: {
               userNo: userNo,
               searchQuery: searchQuery,
-              startDate: startDate ? startDate.toISOString().split('T')[0] : null, // 'yyyy-MM-dd' 형식
-              endDate: endDate ? endDate.toISOString().split('T')[0] : null, // 'yyyy-MM-dd' 형식
+              startDate: startDate ? startDate.toISOString().split('T')[0] : null,
+              endDate: endDate ? endDate.toISOString().split('T')[0] : null,
             },
           });
 
+          console.log(orderResponse.data); // API 응답 구조 확인
           setPosts(orderResponse.data);
           setFilteredPosts(orderResponse.data); // 필터링된 데이터 초기화
           
@@ -65,31 +66,31 @@ const SummaryContainer = () => {
   };
 
   // 날짜 범위 및 상품명 필터링 함수
-  const filterPostsByDateAndSearch = async () => {
+  const filterPostsByDateAndSearch = () => {
     const filtered = posts.filter((post) => {
       // 날짜 필터링
       const postDate = new Date(post.date); // post.date가 실제로 올바른 날짜 형식인지 확인
       const isInDateRange =
         (!startDate || postDate >= startDate) && (!endDate || postDate <= endDate);
-
+  
       // 검색어가 비어있지 않은 경우에만 필터링을 진행
       const cleanSearchQuery = searchQuery.trim().replace(/\s+/g, '').toLowerCase();
       if (cleanSearchQuery === '') return isInDateRange; // 검색어가 없으면 날짜 범위만으로 필터링
-
+  
       // 상품명 필터링 부분: orderProducts 배열 내의 productName을 확인
       const matchesSearchQuery = post.orderProducts && post.orderProducts.some(product => {
-        if (product.productId) { // productId를 통해 상품을 goods 테이블에서 찾기
-          return product.productId.toString().includes(cleanSearchQuery); // 상품 ID를 기준으로 비교
+        if (product.productName) { // productName을 기준으로 비교
+          return product.productName.toLowerCase().includes(cleanSearchQuery); // 상품명 기준으로 비교
         }
-        return false; // productId가 없으면 제외
+        return false; // productName이 없으면 제외
       });
-
+  
       return isInDateRange && matchesSearchQuery; // 날짜와 상품명이 모두 일치하는 경우만 포함
     });
-
+  
     setFilteredPosts(filtered); // 필터링된 데이터 상태 업데이트
   };
-
+  
   // 기간 버튼 클릭 시 날짜 설정 함수
   const setDateRange = (months) => {
     const currentDate = new Date();
@@ -158,48 +159,12 @@ const SummaryContainer = () => {
           </div>
 
           <div className="period-buttons">
-            <button
-              type="button"
-              className={selectedPeriod === 1 ? 'active' : ''}
-              onClick={() => setDateRange(1)} // 클릭 시 1개월로 설정
-            >
-              1개월
-            </button>
-            <button
-              type="button"
-              className={selectedPeriod === 2 ? 'active' : ''}
-              onClick={() => setDateRange(2)}
-            >
-              2개월
-            </button>
-            <button
-              type="button"
-              className={selectedPeriod === 3 ? 'active' : ''}
-              onClick={() => setDateRange(3)}
-            >
-              3개월
-            </button>
-            <button
-              type="button"
-              className={selectedPeriod === 4 ? 'active' : ''}
-              onClick={() => setDateRange(4)}
-            >
-              4개월
-            </button>
-            <button
-              type="button"
-              className={selectedPeriod === 5 ? 'active' : ''}
-              onClick={() => setDateRange(5)}
-            >
-              5개월
-            </button>
-            <button
-              type="button"
-              className={selectedPeriod === 6 ? 'active' : ''}
-              onClick={() => setDateRange(6)}
-            >
-              6개월
-            </button>
+            <button type="button" className={selectedPeriod === 1 ? 'active' : ''} onClick={() => setDateRange(1)}>1개월</button>
+            <button type="button" className={selectedPeriod === 2 ? 'active' : ''} onClick={() => setDateRange(2)}>2개월</button>
+            <button type="button" className={selectedPeriod === 3 ? 'active' : ''} onClick={() => setDateRange(3)}>3개월</button>
+            <button type="button" className={selectedPeriod === 4 ? 'active' : ''} onClick={() => setDateRange(4)}>4개월</button>
+            <button type="button" className={selectedPeriod === 5 ? 'active' : ''} onClick={() => setDateRange(5)}>5개월</button>
+            <button type="button" className={selectedPeriod === 6 ? 'active' : ''} onClick={() => setDateRange(6)}>6개월</button>
           </div>
         </form>
       </div>
@@ -207,15 +172,20 @@ const SummaryContainer = () => {
       <div className="summaryContainer">
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => {
+            console.log(post); // 주문 데이터 확인
             return (
               <div key={post.orderNo} className="item">
                 <div className="productImage">
-                  <img 
-                    src={post.image_url || "https://via.placeholder.com/100"} 
-                    alt="상품 이미지" 
+                  {/* 상품 이미지 확인 및 대체 이미지 처리 */}
+                  {post.orderProducts && post.orderProducts.length > 0 && (
+                    <img
+                    src={post.orderProducts[0].imagePath ? `http://localhost:8090/api/images/${post.orderProducts[0].imagePath.split('uploads/images/')[1]}` : "path/to/default/image.png"}
+                    alt=""
+                    className="product-image"
                   />
+                  )}
                 </div>
-                
+
                 <div className="productDetails">
                   <div className="productName">
                     {post.orderProducts && post.orderProducts.length > 0 ? (
@@ -236,12 +206,6 @@ const SummaryContainer = () => {
                           <div>상품명: {product.productName}</div>
                           <div>상품 가격: {product.price}원</div>
                           <div>수량: {product.quantity}</div>
-                          {product.product && product.product.goods_image && (
-                            <img 
-                              src={product.product.goods_image || "https://via.placeholder.com/100"} 
-                              alt="상품 이미지" 
-                            />
-                          )}
                         </div>
                       ))}
                     </div>
@@ -271,7 +235,7 @@ const SummaryContainer = () => {
             );
           })
         ) : (
-          <p>검색된 결과가 없습니다.</p>
+          <p>해당 조건에 맞는 주문이 없습니다.</p>
         )}
       </div>
     </div>

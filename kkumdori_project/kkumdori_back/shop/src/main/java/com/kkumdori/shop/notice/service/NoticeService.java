@@ -18,4 +18,12 @@ public class NoticeService {
     public Optional<NoticePost> getPostById(Integer postId) {
         return noticePostRepository.findById(postId);
     }
+
+    // 게시글 삭제
+    public void deletePost(Integer postId) {
+        if (!noticePostRepository.existsById(postId)) {
+            throw new RuntimeException("게시글을 찾을 수 없습니다.");
+        }
+        noticePostRepository.deleteById(postId);
+    }
 }

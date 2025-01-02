@@ -20,6 +20,8 @@ function CartButton({ product }) {
             return;
         }
 
+        console.log("상품 이미지 URL:", product.imagePath);
+
         // JWT 토큰 확인
         let token = sessionStorage.getItem("jwt"); // 세션 스토리지에서 토큰 확인
         if (!token) {
@@ -40,6 +42,7 @@ function CartButton({ product }) {
                         ...product,
                         name: product.goodsName,
                         quantity: quantity,
+                        imageUrl: product.imagePath,
                     },
                 ],
             },

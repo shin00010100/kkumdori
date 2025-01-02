@@ -132,17 +132,17 @@ function ProductDetail() {
     };
 
     const price = product.price ? product.price.toLocaleString() : '가격 정보 없음';
-    const shippingFee = product.shippingFee ? product.shippingFee.toLocaleString() : '배송비 정보 없음';
-    const estimatedArrival = product.estimatedArrival || '도착 예정일 정보 없음';
-    const seller = product.seller || '판매자 정보 없음';
-    const shippingCompany = product.shippingCompany || '배송사 정보 없음';
 
     return (
         <div className="product-detail-container">
             <img src="/img/event1.jpg" alt="상품 이미지" className="banner-image" />
             <div className="product-detail">
                 <div className="product-image">
-                    <img src={product.imagePath} alt={product.goodsName} />
+                <img
+                src={product.imagePath ? `http://localhost:8090/api/images/${product.imagePath.split('uploads/images/')[1]}` : "path/to/default/image.png"}
+                alt={product.goodsName}
+                className="product-image"
+              />
                 </div>
                 <div className="product-info">
                     <h1>{product.goodsName}</h1>

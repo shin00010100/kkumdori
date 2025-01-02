@@ -38,6 +38,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 사용자명, 이름, 전화번호로 유저 찾기
     Optional<User> findByUsernameAndFullnameAndTel(String username, String fullname, String tel);
     
+    // 사용자 번호로 유저 찾기
+    Optional<User> findByUserNo(Long userNo);
+    
     @Query("SELECT u.email FROM User u")
     List<String> findAllEmails();
 }

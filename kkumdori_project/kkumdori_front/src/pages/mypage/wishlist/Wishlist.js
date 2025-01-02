@@ -1,157 +1,223 @@
-import React, { useState } from 'react';
-import "./wishlist.css";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './wishlist.css';
 
 const Wishlist = () => {
-  // 임의의 데이터로 초기값 설정 (상품명, 가격, 이미지, 상세 설명 포함)
-  const [아이템들, set아이템들] = useState([
-    {
-      상품명: '아이템 1',
-      가격: '10,000원',
-      이미지: "/img/ex01.png",
-      수량: 1, // 초기 수량은 1
-      선택됨: false, // 체크박스 상태 (선택되었는지 여부)
-      상세설명: '이 상품은 매우 고급스럽고 편리합니다.',
-    },
-    {
-      상품명: '아이템 2',
-      가격: '20,000원',
-      이미지: "/img/ex01.png",
-      수량: 1,
-      선택됨: false,
-      상세설명: '이 상품은 최신 기술을 사용하여 제작된 제품입니다.',
-    },
-    {
-      상품명: '아이템 3',
-      가격: '30,000원',
-      이미지: "/img/ex01.png",
-      수량: 1,
-      선택됨: false,
-      상세설명: '고객들의 사랑을 받는 인기 상품입니다.',
-    },
-  ]);
+  const [items, setItems] = useState([]);  // 위시리스트 아이템들
+  const [selectAll, setSelectAll] = useState(false);  // 전체 선택
+  const [userInfo, setUserInfo] = useState(null);  // 사용자 정보
+  const [loading, setLoading] = useState(true);  // 로딩 상태
 
-  // 전체 선택 상태
-  const [전체선택, set전체선택] = useState(false);
+  // 사용자 정보 및 위시리스트 아이템 가져오기
+  useEffect(() => {
+    const fetchUserData = async () => {
+      let token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
+      if (token) {
+        try {
+          // 첫 번째 API 호출: 사용자 정보 가져오기
+          const response = await axios.get('http://localhost:8090/api/auth/getuser', {
+            headers: { 'Authorization': `Bearer ${token}` },
+          });
 
-  // 장바구니에 담을 아이템 목록 (빈 배열로 초기화)
-  const [장바구니, set장바구니] = useState([]);
+          setUserInfo(response.data);  // 사용자 정보 저장
+          const userNo = response.data.userNo;
+
+          // 해당 사용자 번호로 위시리스트 가져오기
+          const wishlistResponse = await axios.get('http://localhost:8090/api/mywishlist', {
+            headers: { 'Authorization': `Bearer ${token}` },
+            params: { userNo },
+          });
+
+          // 위시리스트 아이템 저장
+          console.log('Fetched wishlist:', wishlistResponse.data); // 응답 데이터 확인
+          
+          // 초기 quantity 값 설정 (없으면 1로 설정)
+          const updatedItems = wishlistResponse.data.map(item => ({
+            ...item,
+            quantity: item.quantity || 1,  // quantity가 없으면 1로 설정
+          }));
+          
+          setItems(updatedItems);
+          setLoading(false);  // 로딩 완료
+        } catch (error) {
+          console.error('데이터를 가져오는 데 실패했습니다.', error);
+          setLoading(false);  // 로딩 완료
+        }
+      } else {
+        console.error("JWT 토큰이 없습니다.");
+        setLoading(false);  // 로딩 완료
+      }
+    };
+
+    fetchUserData();
+  }, [setUserInfo]);  // 컴포넌트가 마운트 될 때만 실행
 
   // 수량 증가 함수
-  const 수량증가 = (index) => {
-    const 업데이트된아이템들 = [...아이템들];
-    업데이트된아이템들[index].수량 += 1;
-    set아이템들(업데이트된아이템들);
+  const increaseQuantity = (index) => {
+    const updatedItems = [...items];
+    const currentQuantity = updatedItems[index].quantity;
+
+    // 수량이 NaN이 아닌지 확인하고 증가
+    updatedItems[index].quantity = currentQuantity && !isNaN(currentQuantity) ? currentQuantity + 1 : 1;
+    setItems(updatedItems);
   };
 
   // 수량 감소 함수
-  const 수량감소 = (index) => {
-    const 업데이트된아이템들 = [...아이템들];
-    if (업데이트된아이템들[index].수량 > 1) {
-      업데이트된아이템들[index].수량 -= 1;
+  const decreaseQuantity = (index) => {
+    const updatedItems = [...items];
+    const currentQuantity = updatedItems[index].quantity;
+
+    // 수량이 NaN이 아닌지 확인하고, 최소 1로 제한
+    updatedItems[index].quantity = currentQuantity && !isNaN(currentQuantity) && currentQuantity > 1 ? currentQuantity - 1 : 1;
+    setItems(updatedItems);
+  };
+
+  // 체크박스 상태 변경 함수
+  const toggleCheckbox = (index) => {
+    const updatedItems = [...items];
+    updatedItems[index].selected = !updatedItems[index].selected;
+    setItems(updatedItems);
+  };
+
+  // 아이템 삭제 함수
+  const deleteItem = async (index) => {
+    const itemToDelete = items[index];
+    try {
+      const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
+      // DELETE 요청: 위시리스트 아이템 삭제
+      await axios.delete(`http://localhost:8090/api/mywishlist/${itemToDelete.wishlistNo}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      const updatedItems = items.filter((_, idx) => idx !== index);
+      setItems(updatedItems);  // 삭제 후 아이템 리스트 업데이트
+    } catch (error) {
+      console.error('아이템을 삭제하는 데 실패했습니다.', error);
     }
-    set아이템들(업데이트된아이템들);
-  };
-
-  // 체크박스 선택 상태 변경 함수
-  const 체크박스변경 = (index) => {
-    const 업데이트된아이템들 = [...아이템들];
-    업데이트된아이템들[index].선택됨 = !업데이트된아이템들[index].선택됨;
-    set아이템들(업데이트된아이템들);
-  };
-
-  // 아이템을 삭제하는 함수
-  const 아이템삭제 = (index) => {
-    const 갱신된아이템들 = 아이템들.filter((_, idx) => idx !== index);
-    set아이템들(갱신된아이템들);
   };
 
   // 전체 선택/해제 함수
-  const 전체선택변경 = () => {
-    const 업데이트된아이템들 = 아이템들.map((아이템) => ({
-      ...아이템,
-      선택됨: !전체선택,
+  const toggleSelectAll = () => {
+    const updatedItems = items.map((item) => ({
+      ...item,
+      selected: !selectAll,
     }));
-    set아이템들(업데이트된아이템들);
-    set전체선택(!전체선택); // 전체 선택 상태 토글
+    setItems(updatedItems);
+    setSelectAll(!selectAll);  // 전체 선택 상태 토글
   };
 
   // 체크된 아이템만 삭제하는 함수
-  const 체크된아이템삭제 = () => {
-    const 갱신된아이템들 = 아이템들.filter((아이템) => !아이템.선택됨);
-    set아이템들(갱신된아이템들);
-  };
-
-  // 선택된 상품을 장바구니에 추가하는 함수
-  const 선택한상품장바구니담기 = () => {
-    const 선택된아이템들 = 아이템들.filter((아이템) => 아이템.선택됨);
-    if (선택된아이템들.length > 0) {
-      // 장바구니에 추가
-      set장바구니((prevState) => [...prevState, ...선택된아이템들]);
-      alert('장바구니에 담긴 상품: ' + 선택된아이템들.map((아이템) => 아이템.상품명).join(', '));
-    } else {
-      alert('장바구니에 담을 상품을 선택해주세요.');
+  const deleteSelectedItems = async () => {
+    const selectedItems = items.filter((item) => item.selected);
+    try {
+      const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
+      // 선택된 아이템 삭제
+      await Promise.all(selectedItems.map(item => 
+        axios.delete(`http://localhost:8090/api/mywishlist/${item.wishlistNo}`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        })
+      ));
+      // 선택된 아이템 삭제 후 리스트 갱신
+      const updatedItems = items.filter((item) => !item.selected);
+      setItems(updatedItems);
+    } catch (error) {
+      console.error('선택된 아이템을 삭제하는 데 실패했습니다.', error);
     }
   };
+
+  // 장바구니 담기 함수 (수량 포함)
+  const addSelectedToCart = async () => {
+    const selectedItems = items.filter((item) => item.selected);
+    if (selectedItems.length > 0) {
+      const token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
+      const userNo = userInfo.userNo;
+
+      try {
+        // 선택된 아이템들을 장바구니에 추가하는 API 호출
+        await Promise.all(selectedItems.map(item =>
+          axios.post('http://localhost:8090/api/mycart', {
+            userNo: userNo,  // 사용자 번호
+            goodsNo: item.goods.goodsNo,  // 상품 번호
+            quantity: item.quantity,  // 수량
+          }, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+        ));
+
+        alert('선택된 아이템이 장바구니에 추가되었습니다.');
+      } catch (error) {
+        console.error('장바구니에 아이템을 추가하는 데 실패했습니다.', error);
+      }
+    } else {
+      alert('장바구니에 담을 아이템을 선택하세요.');
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;  // 로딩 중 표시
+  }
 
   return (
     <div className="app">
       <h1 className="app__title">나의 위시리스트</h1>
 
-      {/* 모두 선택 체크박스와 삭제 버튼 */}
+      {/* 전체 선택 및 삭제 버튼 */}
       <div className="wishlist__header">
         <input
           type="checkbox"
-          checked={전체선택}
-          onChange={전체선택변경}
+          checked={selectAll}
+          onChange={toggleSelectAll}
           className="wishlist__select-all-checkbox"
         />
         <span>모두 선택</span>
         <button
           className="wishlist__delete-selected-btn"
-          onClick={체크된아이템삭제}
+          onClick={deleteSelectedItems}
         >
           선택된 아이템 삭제
         </button>
       </div>
 
-      {/* 위시리스트 항목들 */}
+      {/* 위시리스트 아이템들 */}
       <div className="wishlist">
         <h2 className="wishlist__title">당신의 위시리스트 아이템</h2>
         <ul className="wishlist__list">
-          {아이템들.length === 0 ? (
+          {items.length === 0 ? (
             <li className="wishlist__item--empty">위시리스트가 비어있습니다</li>
           ) : (
-            아이템들.map((아이템, index) => (
+            items.map((item, index) => (
               <li className="wishlist__item" key={index}>
                 <input
                   type="checkbox"
-                  checked={아이템.선택됨}
-                  onChange={() => 체크박스변경(index)}
+                  checked={item.selected}
+                  onChange={() => toggleCheckbox(index)}
                   className="wishlist__item-checkbox"
                 />
                 <img
                   className="wishlist__item-image"
-                  src={아이템.이미지}
-                  alt={아이템.상품명}
+                  src={item.goods.imagePath || 'default-image.jpg'}
+                  alt={item.goods.goodsName || '상품'}
                 />
                 <div className="wishlist__item-info">
-                  <span className="wishlist__item-name">{아이템.상품명}</span>
-                  <span className="wishlist__item-price">{아이템.가격}</span>
-                  {/* 상품 상세 설명 추가 */}
-                  <p className="wishlist__item-description">{아이템.상세설명}</p>
+                  <span className="wishlist__item-name">{item.goods.goodsName}</span>
+                  <span className="wishlist__item-price">
+                    {item.goods.price ? item.goods.price.toLocaleString() : '가격 정보 없음'}
+                  </span>
+                  <p className="wishlist__item-description">
+                    {item.goods.description || '설명 정보 없음'}
+                  </p>
 
                   {/* 수량 조절 버튼 */}
                   <div className="wishlist__item-quantity">
                     <button
                       className="wishlist__item-quantity-btn minus"
-                      onClick={() => 수량감소(index)}
+                      onClick={() => decreaseQuantity(index)}
                     >
-                      -
+                      - 
                     </button>
-                    <span className="wishlist__item-quantity-value">{아이템.수량}</span>
+                    <span className="wishlist__item-quantity-value">{item.quantity}</span>
                     <button
                       className="wishlist__item-quantity-btn plus"
-                      onClick={() => 수량증가(index)}
+                      onClick={() => increaseQuantity(index)}
                     >
                       +
                     </button>
@@ -159,7 +225,7 @@ const Wishlist = () => {
                 </div>
                 <button
                   className="wishlist__item-remove"
-                  onClick={() => 아이템삭제(index)}
+                  onClick={() => deleteItem(index)}
                 >
                   삭제
                 </button>
@@ -173,7 +239,7 @@ const Wishlist = () => {
       <div className="wishlist__footer">
         <button
           className="wishlist__add-to-cart-btn"
-          onClick={선택한상품장바구니담기}
+          onClick={addSelectedToCart}
         >
           장바구니 담기
         </button>

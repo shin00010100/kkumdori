@@ -12,7 +12,6 @@ export default function Login() {
   const navigate = useNavigate();
   const { setIsAuth, setUser } = useAuth();
 
-
   const handleGoogleLoginClick = () => {
     window.google.accounts.id.initialize({
       client_id: "7747546491-3j85b2eb2548vf2d3p8kri9t83obfrii.apps.googleusercontent.com",  // 구글 클라이언트 ID 입력
@@ -28,6 +27,10 @@ export default function Login() {
         .then((response) => response.json())
         .then((data) => {
           localStorage.setItem("jwt", data.token);
+          localStorage.setItem("currentUser", JSON.stringify({
+            fullname: data.fullname,
+            role: data.role,
+          })); // 사용자 정보 저장
           setIsAuth(true);
           setUser({ fullname: data.fullname, role: data.role });
           alert("구글 로그인에 성공하였습니다.");
@@ -42,7 +45,6 @@ export default function Login() {
     
     window.google.accounts.id.prompt();  // 로그인 프롬프트 표시
   };
-
 
   // 카카오 로그인 함수
   const handleKakaoLogin = async () => {
@@ -68,6 +70,10 @@ export default function Login() {
             const data = await response.json();
             const storage = rememberMe ? localStorage : sessionStorage;
             storage.setItem("jwt", data.token);
+            storage.setItem("currentUser", JSON.stringify({
+              fullname: data.fullname,
+              role: data.role,
+            })); // 사용자 정보 저장
 
             setIsAuth(true);
             setUser({ fullname: data.fullname, role: data.role });
@@ -99,7 +105,6 @@ export default function Login() {
   const handleNaverLogin = async () => {
     try {
       const naverLoginUrl = "https://nid.naver.com/oauth2.0/authorize?response_type=token&client_id=G8xSn1hL4ylD1f0cVlPS&redirect_uri=http://localhost:3000/naver-callback";
-
       // 네이버 로그인 페이지로 리디렉션
       window.location.href = naverLoginUrl;
     } catch (err) {
@@ -107,7 +112,6 @@ export default function Login() {
       setError("네이버 로그인 중 문제가 발생했습니다.");
     }
   };
-
 
   // 기존 로그인 처리 함수
   const handleLogin = async () => {
@@ -130,6 +134,10 @@ export default function Login() {
         const data = await response.json();
         const storage = rememberMe ? localStorage : sessionStorage;
         storage.setItem("jwt", data.token);
+        storage.setItem("currentUser", JSON.stringify({
+          fullname: data.fullname,
+          role: data.role,
+        })); // 사용자 정보 저장
 
         setIsAuth(true);
         setUser({ fullname: data.fullname, role: data.role });

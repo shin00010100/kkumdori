@@ -17,8 +17,10 @@ import jakarta.annotation.PostConstruct;
     "com.kkumdori.shop.notice.repository",
     "com.kkumdori.shop.onetoone.repository",
     "com.kkumdori.shop.qna.repository",
+    "com.kkumdori.shop.order.repository",
     "com.kkumdori.shop.wishlist.repository",
     "com.kkumdori.shop.mypage.repository",
+    "com.kkumdori.shop.cart.repository",
     "com.kkumdori.shop.banner.repository"
 })
 @EntityScan(basePackages = {
@@ -28,8 +30,10 @@ import jakarta.annotation.PostConstruct;
     "com.kkumdori.shop.notice.entity",
     "com.kkumdori.shop.onetoone.entity",
     "com.kkumdori.shop.qna.entity",
+    "com.kkumdori.shop.order.entity",
     "com.kkumdori.shop.wishlist.entity",
     "com.kkumdori.shop.mypage.entity",
+    "com.kkumdori.shop.cart.entity",
     "com.kkumdori.shop.banner.entity"
 })
 @SpringBootApplication

@@ -2,6 +2,7 @@ package com.kkumdori.shop.goods.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -10,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.kkumdori.shop.goods.service.ImageService;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +27,10 @@ public class ImageController {
 
 	@Value("${app.upload.dir}")
     private String uploadDir;
+	
+	@Autowired
+    private ImageService imageService;
+
 	
 	private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
     @GetMapping("/{filename}")
@@ -54,5 +62,12 @@ public class ImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
+    }
+    
+    @PostMapping
+    public ResponseEntity<String> uploadImage(@RequestPart("file") MultipartFile file) throws IOException {
+        // 이미지 파일 저장
+        String imageUrl = imageService.saveImage(file);
+        return ResponseEntity.ok(imageUrl); // 이미지 URL 반환
     }
 }

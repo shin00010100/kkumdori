@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class ImageService {
 	
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ImageService.class);
+	private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
     @Value("${app.upload.dir}")
     private String uploadDir;

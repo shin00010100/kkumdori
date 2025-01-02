@@ -84,8 +84,15 @@ export default function Login() {
               }
             });
 
-            alert("카카오톡 로그인에 성공하였습니다.");
-            navigate("/main");
+            // 신규 사용자 처리
+            if (data.redirect) {
+              alert("카카오톡 로그인에 성공하였습니다.");
+              alert(data.alert);
+              navigate(data.redirect);
+            } else {
+              alert("카카오톡 로그인에 성공하였습니다.");
+              navigate("/main");
+            }
           } else {
             setError("카카오톡 로그인 실패");
           }
@@ -171,6 +178,19 @@ export default function Login() {
       window.Kakao.init("e05c72e34a97a05070985a9422b9542f");
     }
   }, []);
+
+  useEffect(() => {
+    let token = sessionStorage.getItem("jwt");
+    if (!token) {
+      token = localStorage.getItem("jwt");
+    }
+
+    if (token) {
+      navigate("/main", {replace: true});
+      alert("이미 로그인 상태입니다.");
+      sessionStorage.removeItem("jwt");
+    }
+  }, [navigate]);
 
   return (
     <div className="Login-body-page">

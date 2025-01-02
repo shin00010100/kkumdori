@@ -69,11 +69,11 @@ public class MyOrderProduct {
     }
 
     public Goods getGoods() {
-        return goods;
+        return goods;  // Goods 객체 반환
     }
 
     public void setGoods(Goods goods) {
-        this.goods = goods;
+        this.goods = goods;  
     }
 }
 

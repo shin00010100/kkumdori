@@ -78,14 +78,11 @@ public class MyOrderProduct {
     }
 
     public void setGoods(Goods goods) {
-<<<<<<< HEAD
-        this.goods = goods;  
-=======
+
         this.goods = goods;
         if (goods != null) {
             this.goodsNo = goods.getGoodsNo();  // goods 객체가 설정되면 goodsNo도 설정
         }
->>>>>>> 890930708a9370a37055c37bd8729e25ee7b4ee6
     }
 
     public Long getGoodsNo() {

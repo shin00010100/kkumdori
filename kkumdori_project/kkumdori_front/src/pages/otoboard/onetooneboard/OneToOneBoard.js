@@ -40,22 +40,22 @@ function OneToOneBoard() {
     // 게시글 필터링
     useEffect(() => {
         const filtered = posts.filter((post) => {
-            const postDate = new Date(post.createdTime);
             const isAdmin = currentUser?.fullname === "관리자나리";
             const isAuthorMatch = currentUser?.fullname === post.userFullName;
-
-            // 관리자나리 또는 작성자와 일치할 경우 필터링
-            return (isAdmin || isAuthorMatch);
+            return isAdmin || isAuthorMatch;
         });
 
-        // 날짜 범위로 추가 필터링
         const dateFiltered = filtered.filter((post) => {
             const postDate = new Date(post.createdTime);
             return (!startDate || postDate >= startDate) && (!endDate || postDate <= endDate);
         });
 
-        setFilteredPosts(dateFiltered);
-    }, [startDate, endDate, posts, currentUser]);
+        // 상태 업데이트 조건 최적화
+        if (dateFiltered.length !== filteredPosts.length || 
+            !dateFiltered.every((post, index) => post.onetooneNo === filteredPosts[index]?.onetooneNo)) {
+            setFilteredPosts(dateFiltered);
+        }
+    }, [startDate, endDate, posts, currentUser?.fullname]);
 
     // 게시글 클릭 시 상세보기로 이동
     const handlePostClick = async (postId) => {

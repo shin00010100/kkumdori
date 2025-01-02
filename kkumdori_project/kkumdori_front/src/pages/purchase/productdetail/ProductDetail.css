@@ -97,6 +97,40 @@
   background-color: #0056b3;
 }
 
+.admin-product-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.admin-product-actions .product-edit-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-product-actions .product-edit-button:hover {
+  background-color: #0056b3;
+}
+
+.admin-product-actions .product-delete-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #e0190b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.admin-product-actions .product-delete-button:hover {
+  background-color: #af1501;
+}
+
 .product-tabs {
   margin-top: 20px;
 }

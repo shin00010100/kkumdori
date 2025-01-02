@@ -113,11 +113,6 @@ useEffect(() => {
 
   return (
     <div>
-      {/* 이달의 추천상품 광고 배너 */}
-      <div className="banner">
-        <p>이달의 추천상품 광고 배너</p>
-      </div>
-
       <header className="Header">
         {/* 소셜 미디어 링크와 네비게이션 */}
         <div className="header-container">

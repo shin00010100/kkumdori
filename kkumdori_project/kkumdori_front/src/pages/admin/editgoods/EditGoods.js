@@ -126,24 +126,6 @@ function EditGoods() {
     }
   };
 
-  // const handleDelete = async () => {
-  //   const confirmDelete = window.confirm("정말로 이 상품을 삭제하시겠습니까?");
-  //   if (!confirmDelete) return;
-  
-  //   try {
-  //     await axios.delete(`http://localhost:8090/api/goods/${goodsId}`, {
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
-  //       },
-  //     });
-  //     alert("상품이 성공적으로 삭제되었습니다.");
-  //     navigate(-1); // 이전 페이지로 이동
-  //   } catch (error) {
-  //     console.error("상품 삭제 실패:", error);
-  //     alert("상품 삭제 중 오류가 발생했습니다.");
-  //   }
-  // };
-
   return (
     <div className="edit-goods-container">
       <h2>상품 수정</h2>

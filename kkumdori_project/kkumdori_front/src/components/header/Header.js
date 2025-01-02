@@ -84,8 +84,8 @@ useEffect(() => {
     // 카카오 로그아웃 URL 생성
     const kakaoLogoutUrl = `https://kauth.kakao.com/oauth/logout?client_id=${kakaoClientId}&logout_redirect_uri=${encodeURIComponent(logoutRedirectUri)}`;
   
-    // Google 로그아웃 URL 생성
-    const googleLogoutUrl = `https://accounts.google.com/Logout?continue=https://appengine.google.com/_ah/logout?continue=${encodeURIComponent(logoutRedirectUri)}`;
+    // // Google 로그아웃 URL 생성
+    // const googleLogoutUrl = `https://accounts.google.com/Logout?continue=https://appengine.google.com/_ah/logout?continue=${encodeURIComponent(logoutRedirectUri)}`;
   
     // 일반 로그아웃 처리 (JWT 제거)
     localStorage.removeItem("jwt");  // JWT 토큰 제거
@@ -102,8 +102,8 @@ useEffect(() => {
       if (naverPopup) {
         naverPopup.close(); // 팝업을 자동으로 닫기
       }
-      // Google 로그아웃 URL로 리디렉션
-      window.location.href = googleLogoutUrl;
+      // // Google 로그아웃 URL로 리디렉션
+      // window.location.href = googleLogoutUrl;
       // 카카오 로그아웃 URL로 리디렉션
       setTimeout(() => {
         window.location.href = kakaoLogoutUrl;

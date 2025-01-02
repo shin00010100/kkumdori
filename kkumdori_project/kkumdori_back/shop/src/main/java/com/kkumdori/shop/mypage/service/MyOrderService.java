@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import com.kkumdori.shop.mypage.dto.MyOrderDto;
 import com.kkumdori.shop.mypage.dto.MyOrderProductDto;
@@ -65,6 +65,9 @@ public class MyOrderService {
                                 productDto.setQuantity(orderProduct.getQuantity());
                                 productDto.setPrice(orderProduct.getPrice());
 
+                                // 상품 고유 번호 추가
+                                productDto.setGoodsNo(orderProduct.getGoods().getGoodsNo());  // goodsNo 가져오기
+
                                 // 상품 정보 로그 출력
                                 if (orderProduct.getGoods() != null) {
                                     logger.info("Goods found: " + orderProduct.getGoods().getGoodsName());
@@ -85,3 +88,4 @@ public class MyOrderService {
                 .collect(Collectors.toList());
     }
 }
+

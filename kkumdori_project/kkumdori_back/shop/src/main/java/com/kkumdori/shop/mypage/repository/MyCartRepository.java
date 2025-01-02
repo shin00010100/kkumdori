@@ -12,4 +12,6 @@ public interface MyCartRepository extends JpaRepository<MyCart, Integer> {
 
     // 상품 번호로 장바구니 조회
     MyCart findByGoodsNoAndUserNo(Long goodsNo, Long userNo);
+    
+    
 }

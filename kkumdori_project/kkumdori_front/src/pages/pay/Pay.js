@@ -211,6 +211,21 @@ if (!response.ok) {
       if (response.ok) {
         const data = await response.json();
         console.log('사용자 상세 정보:', data);
+
+        // 조건 확인: 임시 데이터가 포함되어 있는지
+      if (
+        data.email?.includes("@example.com") ||
+        data.bank === "SampleBank" ||
+        data.account === "0000000000" ||
+        // data.zipcode === "00000" ||
+        data.address === "Sample Address" ||
+        (data.tel && (data.tel.includes("kakao") || data.tel.includes("naver")))
+      ) {
+        // 리디렉션 응답을 받은 경우
+        alert('간편 로그인, 회원 정보를 수정 후 이용해주세요');
+        navigate('/MemberInfoEdit');
+        return; // 리디렉션 후 더 이상 진행하지 않음
+      }
         
         // 전화번호에서 앞의 두 자리를 제외한 나머지 부분만 저장
       const formattedPhone = data.tel ? data.tel.slice(2) : ''; 

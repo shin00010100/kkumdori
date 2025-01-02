@@ -36,6 +36,10 @@ public class MyOrderProduct {
     @JoinColumn(name = "goods_no", referencedColumnName = "goods_no", foreignKey = @ForeignKey(name = "FK_GOODS_MY_ORDER_ITEM"))
     private Goods goods;
 
+    // goods_no 필드 추가
+    @Column(name = "goods_no", insertable = false, updatable = false)
+    private Long goodsNo;
+
     // Getter 및 Setter
     public Long getOrderProductNo() {
         return orderProductNo;
@@ -70,11 +74,23 @@ public class MyOrderProduct {
     }
 
     public Goods getGoods() {
-        return goods;
+        return goods;  // Goods 객체 반환
     }
 
     public void setGoods(Goods goods) {
+
         this.goods = goods;
+        if (goods != null) {
+            this.goodsNo = goods.getGoodsNo();  // goods 객체가 설정되면 goodsNo도 설정
+        }
+    }
+
+    public Long getGoodsNo() {
+        return goodsNo;
+    }
+
+    public void setGoodsNo(Long goodsNo) {
+        this.goodsNo = goodsNo;
     }
 
     public String getGoodsImage() {

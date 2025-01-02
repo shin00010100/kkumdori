@@ -7,16 +7,19 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "banner")
 public class Banner {
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "banner_id")
     private Long bannerId;
 
-    @Column(nullable = false)
+    @Column(name = "image_path", nullable = false)
     private String imagePath;
 
+    @Column(name = "link", nullable = true)
     private String link;
 
-    @Column(nullable = false)
-    private int displayOrder;
+    @Column(name = "display_order", nullable = true)
+    private Integer displayOrder;
 }

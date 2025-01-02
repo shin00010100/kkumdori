@@ -179,10 +179,10 @@ const SummaryContainer = () => {
                   {/* 상품 이미지 확인 및 대체 이미지 처리 */}
                   {post.orderProducts && post.orderProducts.length > 0 && (
                     <img
-                    src={post.orderProducts[0].imagePath ? `http://localhost:8090/api/images/${post.orderProducts[0].imagePath.split('uploads/images/')[1]}` : "path/to/default/image.png"}
-                    alt=""
-                    className="product-image"
-                  />
+                      src={post.orderProducts[0].imagePath ? `http://localhost:8090/api/images/${post.orderProducts[0].imagePath.split('uploads/images/')[1]}` : "path/to/default/image.png"}
+                      alt="상품 이미지"
+                      className="product-image"
+                    />
                   )}
                 </div>
 
@@ -201,13 +201,15 @@ const SummaryContainer = () => {
                   {/* 주문에 포함된 상품들 */}
                   {post.orderProducts && post.orderProducts.length > 0 ? (
                     <div className="productList">
-                      {post.orderProducts.map((product, index) => (
-                        <div key={index} className="productInfo">
-                          <div>상품명: {product.productName}</div>
-                          <div>상품 가격: {product.price}원</div>
-                          <div>수량: {product.quantity}</div>
-                        </div>
-                      ))}
+                      {post.orderProducts.map((product, index) => {
+                        return (
+                          <div key={index} className="productInfo">
+                            <div>상품명: {product.productName}</div>
+                            <div>상품 가격: {product.price}원</div>
+                            <div>수량: {product.quantity}</div>
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <p>상품 정보가 없습니다.</p>
@@ -226,7 +228,7 @@ const SummaryContainer = () => {
                     <Link to="/Returnpage">
                       <button className="actionBtn">교환/반품</button>
                     </Link>
-                    <Link to="/Review">
+                    <Link to="/Review" state={{ product: post.orderProducts[0] }}>
                       <button className="actionBtn">리뷰작성</button>
                     </Link>
                   </div>

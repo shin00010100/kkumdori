@@ -1,35 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import './makestar.css';
 
 const MakeStar = () => {
-  const [userInfo, setUserInfo] = useState(null);  // 사용자 정보 상태
+  const location = useLocation();
+  const product = location.state?.product; // location에서 product 정보 가져오기
+  const navigate = useNavigate();  // useNavigate 훅 사용
+
+  const [userInfo, setUserInfo] = useState(null);
   const [selectedRating, setSelectedRating] = useState(null);
   const [reviewText, setReviewText] = useState('');
   const [file, setFile] = useState(null);
   const [isDragActive, setIsDragActive] = useState(false);
   const [title, setTitle] = useState('');
+  
+  // 미리보기 이미지
+  const previewImage = file ? URL.createObjectURL(file) : null;
 
-  // JWT 토큰에서 사용자 정보 가져오기 (useEffect 사용)
   useEffect(() => {
     const fetchUserData = async () => {
       let token = sessionStorage.getItem('jwt') || localStorage.getItem('jwt');
       if (token) {
         try {
-          // 첫 번째 API 호출: 사용자 정보 가져오기
           const response = await axios.get('http://localhost:8090/api/auth/getuser', {
             headers: { 'Authorization': `Bearer ${token}` },
           });
-
-          setUserInfo(response.data);  // 사용자 정보 상태 업데이트
+          setUserInfo(response.data);
           const userNo = response.data.userNo;
-
-          // 두 번째 API 호출: 사용자 상세 정보 가져오기
           const userResponse = await axios.get(`http://localhost:8090/api/user/${userNo}`, {
             headers: { 'Authorization': `Bearer ${token}` },
           });
-
-          // 사용자 정보 상태 업데이트 (기존 데이터와 합침)
           setUserInfo((prevState) => ({ ...prevState, ...userResponse.data }));
         } catch (error) {
           console.error('데이터를 가져오는 데 실패했습니다.', error);
@@ -40,8 +41,9 @@ const MakeStar = () => {
     };
 
     fetchUserData();
-  }, []);  // 의존성 배열이 비어 있으므로, 컴포넌트 마운트 시 한 번만 실행됨
+  }, []);
 
+  // 별점 선택 이벤트
   const handleStarHover = (rating) => {
     setSelectedRating(rating);
   };
@@ -51,6 +53,7 @@ const MakeStar = () => {
     console.log('Selected Rating:', rating);
   };
 
+  // 파일 업로드 처리
   const handleFileChange = (e) => {
     const uploadedFile = e.target.files[0];
     setFile(uploadedFile);
@@ -76,9 +79,11 @@ const MakeStar = () => {
     setIsDragActive(false);
   };
 
+  // 리뷰 제출 처리
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 유효성 검사
     if (!selectedRating) {
       alert('평점을 선택해주세요.');
       return;
@@ -93,58 +98,76 @@ const MakeStar = () => {
     }
 
     const formData = new FormData();
-    formData.append('title', title);  // 제목
-    formData.append('content', reviewText);  // 내용
-    formData.append('starRank', selectedRating);  // 별점
+    formData.append('title', title);
+    formData.append('content', reviewText);
+    formData.append('starRank', selectedRating);
     if (file) {
-      formData.append('file', file);  // 파일
+      formData.append('file', file);
     }
 
-    // userNo는 userInfo에서 가져오기
-    const authorNo = userInfo ? userInfo.userNo : null;  // userInfo가 있으면 userNo 사용
+    const authorNo = userInfo ? userInfo.userNo : null;
     if (authorNo) {
-      formData.append('authorNo', authorNo);  // 작성자 번호 추가
+      formData.append('authorNo', authorNo);
+    }
+
+    // 상품 번호 체크
+    const goodsNo = product && product.goodsNo ? product.goodsNo : null;
+
+    console.log('상품 정보:', product); // 상품 객체 전체 출력
+    console.log('상품 번호:', goodsNo); // 상품 번호 출력
+
+    if (goodsNo) {
+      formData.append('goodsNo', goodsNo);
+    } else {
+      console.error("상품 번호가 누락되었습니다.");
+      alert("상품 번호가 누락되었습니다.");
+      return;  // 상품 번호가 없으면 리뷰를 제출하지 않음
     }
 
     try {
-      const token = localStorage.getItem('jwt');  // JWT 토큰 가져오기
+      const token = localStorage.getItem('jwt');
 
-      // 백엔드 URL 수정
       const response = await axios.post('http://localhost:8090/api/reviews', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`,  // Authorization 헤더에 JWT 추가
+          'Authorization': `Bearer ${token}`,
         },
-        withCredentials: true,  // 쿠키 포함
+        withCredentials: true,
       });
 
-      console.log('Review Submitted:', response.data);
+      console.log('리뷰 제출 성공:', response.data);
       alert('리뷰가 등록되었습니다.');
 
+      // 폼 초기화
       setSelectedRating(null);
       setReviewText('');
       setFile(null);
       setTitle('');
+
+      // 'mypage'으로 리디렉션
+      navigate('/mypage'); 
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error('리뷰 제출 실패:', error);
       alert('리뷰 등록에 실패했습니다.');
     }
   };
 
-  const previewImage = file ? URL.createObjectURL(file) : null;
-
   return (
     <div className="text-center py-20">
       <div className="star-product-info mb-8">
-        <img
-          src="/img/ex01.png"
-          alt="상품 이미지"
-          className="star-img"
-        />
-        <h2 className="font-semibold text-xl mt-4">상품명: 꿈카롱</h2>
-        <p className="text-gray-500">구매일: 2024년 11월 8일</p>
+        {product ? (
+          <>
+            <img
+              src={`http://localhost:8090/api/images/${product.imagePath.split('uploads/images/')[1]}`}
+              alt="상품 이미지"
+              className="star-img"
+            />
+            <h2 className="font-semibold text-xl mt-4">상품명: {product.productName}</h2>
+          </>
+        ) : (
+          <p>상품 정보가 없습니다.</p>
+        )}
       </div>
-
       <p>구매하신 상품은 어떠셨나요?</p>
       <p>평점을 남겨주세요</p>
       <div className="flex justify-center items-center">
@@ -170,6 +193,7 @@ const MakeStar = () => {
       </div>
 
       {/* 제목 입력 필드 */}
+      <div className="mb-4">
       <label htmlFor="title" className="block mb-2 font-medium text-gray-900">
         리뷰 제목을 작성해주세요
       </label>
@@ -181,6 +205,7 @@ const MakeStar = () => {
         className="star-title-input mb-4 p-2 border rounded w-full"
         placeholder="리뷰 제목을 작성해주세요"
       />
+      </div>
 
       {/* 리뷰 내용 */}
       <label htmlFor="message" className="block mb-2 font-medium text-gray-900">
@@ -229,11 +254,11 @@ const MakeStar = () => {
         </div>
 
         {/* 파일 미리보기 */}
-        {previewImage && (
-          <div className="mt-4">
-            <img src={previewImage} alt="Uploaded preview" className="w-48 h-48 object-cover" />
-          </div>
-        )}
+{previewImage && (
+  <div className="mt-4">
+    <img src={previewImage} alt="Uploaded preview" className="star-preview-image" />
+  </div>
+)}
       </div>
 
       {/* 리뷰 등록 버튼 */}

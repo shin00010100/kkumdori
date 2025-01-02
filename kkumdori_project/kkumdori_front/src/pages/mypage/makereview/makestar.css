@@ -124,9 +124,9 @@ svg path {
   align-items: center;
 }
 
-.hidden input[type="file"] {
+/* .hidden input[type="file"] {
   display: none;
-}
+} */
 
 /* 미리보기 이미지 */
 .star-img {
@@ -267,11 +267,11 @@ label[for="upload"]:active {
   transform: scale(0.98);
 }
 
-input[type="file"]:active + .input-container,
+/* input[type="file"]:active + .input-container,
 .input-container:hover {
   background-color: #d0e5ff;
   border-color: #4a90e2;
-}
+} */
 
 /* 상품 정보 스타일 */
 .star-product-info {
@@ -310,13 +310,13 @@ input[type="file"]:active + .input-container,
 }
 
 /* 실제 파일 선택 input 숨기기 */
-input[type="file"] {
+/* input[type="file"] {
   position: absolute;
   width: 0;
   height: 0;
   opacity: 0;
-  pointer-events: none; /* 클릭 이벤트가 전달되지 않도록 설정 */
-}
+  pointer-events: none; 클릭 이벤트가 전달되지 않도록 설정
+} */
 
 /* 파일 선택을 유도하는 글씨와 스타일 */
 label[for="upload"] {

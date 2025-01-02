@@ -1,6 +1,8 @@
 package com.kkumdori.shop.mypage.entity;
 
 import com.kkumdori.shop.goods.entity.Goods;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -10,21 +12,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 
 @Entity
-@Table(name = "order_product")  // 동일한 테이블 사용
+@Table(name = "order_product")
 public class MyOrderProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_product_no")  // 물리적 컬럼 이름을 명시적으로 지정
-    private Long orderProductNo;  // 필드명은 'orderProductNo'로 그대로 사용
+    @Column(name = "order_product_no")
+    private Long orderProductNo;
 
-    @Column(name = "order_product_quantity")  // 동일한 컬럼명 사용
+    @Column(name = "order_product_quantity")
     private Integer quantity;
 
-    @Column(name = "order_price")  // 동일한 컬럼명 사용
+    @Column(name = "order_price")
     private Integer price;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,6 +35,10 @@ public class MyOrderProduct {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "goods_no", referencedColumnName = "goods_no", foreignKey = @ForeignKey(name = "FK_GOODS_MY_ORDER_ITEM"))
     private Goods goods;
+
+    // goods_no 필드 추가
+    @Column(name = "goods_no", insertable = false, updatable = false)
+    private Long goodsNo;
 
     // Getter 및 Setter
     public Long getOrderProductNo() {
@@ -73,7 +78,29 @@ public class MyOrderProduct {
     }
 
     public void setGoods(Goods goods) {
+<<<<<<< HEAD
         this.goods = goods;  
+=======
+        this.goods = goods;
+        if (goods != null) {
+            this.goodsNo = goods.getGoodsNo();  // goods 객체가 설정되면 goodsNo도 설정
+        }
+>>>>>>> 890930708a9370a37055c37bd8729e25ee7b4ee6
     }
-}
 
+    public Long getGoodsNo() {
+        return goodsNo;
+    }
+
+    public void setGoodsNo(Long goodsNo) {
+        this.goodsNo = goodsNo;
+    }
+
+    public String getGoodsImage() {
+        if (goods != null) {
+            return goods.getImagePath(); // 이미지 경로 반환
+        }
+        return null; // goods가 없으면 null 반환
+    }
+
+}

@@ -1,21 +1,29 @@
 package com.kkumdori.shop.banner.controller;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kkumdori.shop.banner.dto.BannerDto;
 import com.kkumdori.shop.banner.entity.Banner;
 import com.kkumdori.shop.banner.service.BannerService;
 import com.kkumdori.shop.goods.service.ImageService;
@@ -23,56 +31,57 @@ import com.kkumdori.shop.goods.service.ImageService;
 @RestController
 @RequestMapping("/api/banners")
 public class BannerController {
-//	@Autowired
-//    private BannerService bannerService;
-//
-//    @Autowired
-//    private ImageService imageService;
-//
-//    // 기존 배너 불러오기
-//    @GetMapping
-//    public ResponseEntity<List<Banner>> getBanners() {
-//        return ResponseEntity.ok(bannerService.getAllBanners());
-//    }
-//    
-//    @PostMapping
-//    public ResponseEntity<?> saveOrUpdateBanners(
-//            @ModelAttribute List<Banner> banners,
-//            @RequestParam("bannerFiles") List<MultipartFile> images) {
-//        try {
-//            bannerService.saveOrUpdateBanners(banners, images);
-//            return ResponseEntity.ok("배너가 성공적으로 저장되었습니다.");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("배너 저장 중 오류 발생: " + e.getMessage());
-//        }
-//    }
+	private final Logger log = LoggerFactory.getLogger(getClass());
+	
+	private final BannerService bannerService;
+	private final ImageService imageService;
 
-//    @PostMapping
-//    public ResponseEntity<?> saveBanners(
-//        @RequestParam List<MultipartFile> images,
-//        @RequestParam List<String> links,
-//        @RequestParam List<Integer> orders) throws IOException {
-//        
-//        if (images.size() != links.size() || images.size() != orders.size()) {
-//            return ResponseEntity.badRequest().body("데이터 크기가 일치하지 않습니다.");
-//        }
-//
-//        for (int i = 0; i < images.size(); i++) {
-//            MultipartFile image = images.get(i);
-//            String link = links.get(i);
-//            int order = orders.get(i);
-//
-//            // 이미지 저장 및 배너 생성 로직
-//            String imagePath = imageService.saveImage(image);
-//
-//            Banner banner = new Banner();
-//            banner.setImagePath(imagePath);
-//            banner.setLink(link);
-//            banner.setDisplayOrder(order);
-//
-//            bannerService.saveBanner(banner);
-//        }
-//
-//        return ResponseEntity.ok("배너가 저장되었습니다.");
-//    }
+    @Autowired
+    public BannerController(BannerService bannerService, ImageService imageService) {
+        this.bannerService = bannerService;
+        this.imageService = imageService; // 의존성 주입
+    }
+    
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> createBanners(
+    	@RequestPart("files") List<MultipartFile> files,
+        @RequestParam("links") List<String> links,
+        @RequestParam("orders") List<Integer> orders) {
+        try {
+            for (int i = 0; i < files.size(); i++) {
+                String imagePath = imageService.saveImage(files.get(i));
+                Banner banner = new Banner();
+                banner.setImagePath(imagePath);
+                banner.setLink(links.get(i));
+                banner.setDisplayOrder(orders.get(i));
+                bannerService.saveBanner(banner);
+            }
+            return ResponseEntity.ok("Banners created successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving banners");
+        }
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<Banner>> getAllBanners() {
+        List<Banner> banners = bannerService.getAllBanners();
+        return ResponseEntity.ok(banners);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Banner> updateBanner(
+    		@PathVariable Long id,
+    	    @ModelAttribute BannerDto bannerDto) throws IOException {
+
+    	log.debug("Received BannerDto: {}", bannerDto);
+    	Banner updatedBanner = bannerService.updateBanner(id, bannerDto);
+    	return ResponseEntity.ok(updatedBanner);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBanner(@PathVariable Long id) {
+        bannerService.deleteBanner(id);
+        return ResponseEntity.noContent().build();
+    }
 }

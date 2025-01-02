@@ -28,10 +28,16 @@ public class ReviewController {
                                @RequestParam("authorNo") Long authorNo,
                                @RequestParam(value = "goodsNo", required = false) Long goodsNo) throws IOException {
 
-        ReviewDto reviewRequestDto = new ReviewDto(title, content, starRank, file, authorNo, goodsNo);
+        // `goodsNo`가 제대로 전달되었는지 확인
+        if (goodsNo == null) {
+            return "상품 번호가 누락되었습니다.";
+        }
+
+        // `ReviewDto` 객체 생성
+        ReviewDto reviewRequestDto = new ReviewDto(title, content, starRank, file, authorNo, goodsNo, null); // ImagePath는 필요없음
         reviewService.submitReview(reviewRequestDto);
 
         return "리뷰가 등록되었습니다.";
     }
-}
 
+}

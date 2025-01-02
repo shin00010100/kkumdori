@@ -11,33 +11,51 @@ import com.kkumdori.shop.banner.entity.Popup;
 import com.kkumdori.shop.banner.repository.PopupRepository;
 import com.kkumdori.shop.goods.service.ImageService;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class PopupService {
-//	@Autowired
-//	private PopupRepository popupRepository;
-//	
-//	@Autowired
-//    private ImageService imageService;
-//	
-//	// 팝업 데이터 가져오기
-//    public Popup getPopup() {
-//        return popupRepository.findFirstByOrderByPopupIdDesc().orElse(null);
-//    }
-//    
-//    public void saveOrUpdatePopup(Popup popup, MultipartFile image) throws IOException {
-//        Popup existingPopup = getPopup();
-//
-//        // 기존 팝업 이미지 삭제
-//        if (existingPopup != null) {
-//            imageService.deleteImage(existingPopup.getImagePath());
-//            popupRepository.delete(existingPopup); // 기존 팝업 삭제
-//        }
-//
-//        // 새 팝업 저장
-//        if (image != null) {
-//            String imagePath = imageService.saveImage(image);
-//            popup.setImagePath(imagePath);
-//        }
-//        popupRepository.save(popup);
-//    }
+	private final PopupRepository popupRepository;
+    private final ImageService imageService;
+
+    @Autowired
+    public PopupService(PopupRepository popupRepository, ImageService imageService) {
+        this.popupRepository = popupRepository;
+        this.imageService = imageService;
+    }
+	
+    public Popup savePopup(Popup popup) {
+        return popupRepository.save(popup);
+    }
+
+    public List<Popup> getAllPopups() {
+        return popupRepository.findAll();
+    }
+
+    public Popup updatePopup(Long id, Popup newPopupData, MultipartFile imageFile) throws IOException {
+        // 기존 팝업 데이터 조회
+        Popup existingPopup = popupRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Popup not found with id: " + id));
+
+        // 기존 데이터와 병합
+        if (newPopupData.getLink() != null && !newPopupData.getLink().isEmpty()) {
+            existingPopup.setLink(newPopupData.getLink());
+        }
+        if (newPopupData.getIsActive() != null) {
+            existingPopup.setIsActive(newPopupData.getIsActive());
+        }
+
+        // 이미지 파일이 있는 경우 새로운 파일로 대체
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String newImagePath = imageService.saveImage(imageFile); // ImageService 활용
+            existingPopup.setImagePath(newImagePath);
+        }
+
+        // 병합된 데이터를 저장
+        return popupRepository.save(existingPopup);
+    }
+
+    public void deletePopup(Long id) {
+        popupRepository.deleteById(id);
+    }
 }

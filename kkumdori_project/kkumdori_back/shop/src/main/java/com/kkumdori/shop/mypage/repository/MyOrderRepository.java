@@ -17,7 +17,7 @@ public interface MyOrderRepository extends JpaRepository<MyOrder, Long> {
     @Query("SELECT m FROM MyOrder m WHERE m.orderTime BETWEEN :startDate AND :endDate")
     List<MyOrder> findMyOrdersByDateRange(LocalDateTime startDate, LocalDateTime endDate);
 
-    // 검색어로 주문 내역 조회 (예시로 주소에 대한 검색)
-    @Query("SELECT m FROM MyOrder m WHERE m.user.userNo = :userNo AND m.orderAddress LIKE %:searchQuery%")
-    List<MyOrder> findMyOrdersByUserNoAndSearchQuery(Long userNo, String searchQuery);
+    // 상품명으로 주문 내역 조회
+    @Query("SELECT m FROM MyOrder m JOIN m.orderProducts p JOIN p.goods g WHERE m.user.userNo = :userNo AND g.goodsName LIKE %:searchQuery%")
+    List<MyOrder> findMyOrdersByUserNoAndProductName(Long userNo, String searchQuery);
 }

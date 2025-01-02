@@ -4,6 +4,8 @@ public class MyOrderProductDto {
     private String productName;
     private Integer quantity;
     private Integer price;
+    private String imagePath;
+    private Long goodsNo;  // 상품 고유 번호를 Long으로 변경
 
     // Getters and Setters
     public String getProductName() {
@@ -29,4 +31,21 @@ public class MyOrderProductDto {
     public void setPrice(Integer price) {
         this.price = price;
     }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Long getGoodsNo() {
+        return goodsNo;  // 상품 고유 번호를 가져오는 메소드
+    }
+
+    public void setGoodsNo(Long goodsNo) {  // Long 타입으로 수정
+        this.goodsNo = goodsNo;  // 상품 고유 번호를 설정하는 메소드
+    }
 }
+

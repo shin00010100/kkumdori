@@ -201,6 +201,7 @@ const App = () => {
             {/*purchase*/}
             <Route path="/productDetail/:goods_no" element={<ProductDetail />} /> {/* 상품 상세 페이지 */}
             <Route path="/productlist" element={<ProductList />} /> {/* 상품 리스트 페이지 */}
+            <Route path="/productlist/:categoryNo" element={<ProductList />} /> {/* 카테고리별 상품 리스트 */}
           </Routes>
         </Layout>
       </Router>

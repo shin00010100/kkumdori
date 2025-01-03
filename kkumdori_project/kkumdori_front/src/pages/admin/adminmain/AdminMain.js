@@ -47,9 +47,9 @@ const AdminMain = () => {
                     </div>
                 </div>
                 <div className="sub-section">
-                    <h3>SMS</h3>
+                    <h3>이메일</h3>
                     <Button
-                        text={"메시지 발송"}
+                        text={"이메일 발송"}
                         onClick={() => navigate("/sendmessage")}
                     />
                 </div>

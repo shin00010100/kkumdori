@@ -141,6 +141,21 @@ public class GoodsService {
         return new ProductListResponse(totalItems, totalPages, products);
     }
     
+    // 상품 리스트 카테고리별로 띄우기
+    public ProductListResponse getProductsByCategory(Long categoryNo, String query, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size); // 페이지는 0부터 시작
+        Page<Goods> goodsPage = goodsRepository.findByCategory_CategoryNoAndGoodsNameContaining(categoryNo, query, pageable);
+
+        List<GoodsDTO> products = goodsPage.getContent().stream()
+                .map(GoodsDTO::new) // Goods 객체를 GoodsDTO로 변환
+                .collect(Collectors.toList());
+
+        long totalItems = goodsPage.getTotalElements(); // 총 데이터 개수
+        int totalPages = goodsPage.getTotalPages(); // 총 페이지 수
+
+        return new ProductListResponse(totalItems, totalPages, products);
+    }
+    
     // 상품 번호로 상품 조회
     public Goods getGoodsByGoodsNo(Long goods_no) {
         return goodsRepository.findById(goods_no).orElse(null);  // 상품 번호로 조회

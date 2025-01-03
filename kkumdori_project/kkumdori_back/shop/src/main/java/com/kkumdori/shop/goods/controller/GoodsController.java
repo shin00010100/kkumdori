@@ -173,12 +173,20 @@ public class GoodsController {
     }
     
     // 상품 목록 가져오기 (검색어와 페이지네이션 포함)
-    @GetMapping("/goodslist")
+    @GetMapping({"/goodslist", "/goodslist/{categoryNo}"})
     public ResponseEntity<ProductListResponse> getProducts(
             @RequestParam(required = false, defaultValue = "") String query,
             @RequestParam(required = false, defaultValue = "1") int page,
-            @RequestParam(required = false, defaultValue = "10") int size) {
-        ProductListResponse response = goodsService.getProducts(query, page, size);
+            @RequestParam(required = false, defaultValue = "10") int size,
+    		@PathVariable(required = false) Long categoryNo){
+    	ProductListResponse response;
+        if (categoryNo != null) {
+            // 카테고리 번호로 상품 조회
+            response = goodsService.getProductsByCategory(categoryNo, query, page, size);
+        } else {
+            // 전체 상품 조회
+            response = goodsService.getProducts(query, page, size);
+        }
         return ResponseEntity.ok(response);
     }
     

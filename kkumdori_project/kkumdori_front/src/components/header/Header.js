@@ -4,6 +4,7 @@ import './Header.css';
 import { useAuth } from '../../utils/AuthContext';
 
 const Header = () => {
+  const [categories, setCategories] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const { isAuth, setIsAuth, setUser, user } = useAuth(); // setIsAuth, setUser 사용
 
@@ -111,6 +112,27 @@ useEffect(() => {
     }, 100); // 0.1초 후 자동으로 팝업 닫기
   };
 
+  // 카테고리 데이터 가져오기
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:8090/api/categories", {
+          method: "GET",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setCategories(data); // 카테고리 데이터를 상태에 저장
+        } else {
+          console.error("Failed to fetch categories");
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <div>
       <header className="Header">
@@ -190,12 +212,17 @@ useEffect(() => {
         {/* 카테고리 바 */}
         <div className="category-bar">
           <ul className="category-list">
-            <li><Link to="/category/electronics">카테고리A</Link></li>
-            <li><Link to="/category/fashion">카테고리B</Link></li>
-            <li><Link to="/category/books">카테고리C</Link></li>
-            <li><Link to="/category/home">카테고리D</Link></li>
-            <li><Link to="/category/toys">카테고리E</Link></li>
-            <li><Link to="/category/beauty">카테고리F</Link></li>
+          {categories.length > 0 ? (
+              categories.map((category) => (
+                <li key={category.categoryNo}>
+                  <Link to={`/productlist/${category.categoryNo}`}>
+                    {category.categoryName}
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <li>카테고리를 불러오는 중...</li>
+            )}
           </ul>
         </div>
         </div>

@@ -124,9 +124,9 @@ svg path {
   align-items: center;
 }
 
-.hidden input[type="file"] {
+/* .hidden input[type="file"] {
   display: none;
-}
+} */
 
 /* 미리보기 이미지 */
 .star-img {
@@ -267,11 +267,7 @@ label[for="upload"]:active {
   transform: scale(0.98);
 }
 
-input[type="file"]:active + .input-container,
-.input-container:hover {
-  background-color: #d0e5ff;
-  border-color: #4a90e2;
-}
+
 
 /* 상품 정보 스타일 */
 .star-product-info {
@@ -308,8 +304,6 @@ input[type="file"]:active + .input-container,
   color: #666;
   margin-top: 5px;
 }
-
-
 
 /* 파일 선택을 유도하는 글씨와 스타일 */
 label[for="upload"] {

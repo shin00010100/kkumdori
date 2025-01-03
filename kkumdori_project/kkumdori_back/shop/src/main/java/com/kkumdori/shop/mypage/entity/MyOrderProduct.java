@@ -74,10 +74,11 @@ public class MyOrderProduct {
     }
 
     public Goods getGoods() {
-        return goods;
+        return goods;  // Goods 객체 반환
     }
 
     public void setGoods(Goods goods) {
+
         this.goods = goods;
         if (goods != null) {
             this.goodsNo = goods.getGoodsNo();  // goods 객체가 설정되면 goodsNo도 설정

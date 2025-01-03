@@ -44,6 +44,16 @@ const SummaryContainer = () => {
           console.log(orderResponse.data); // API 응답 구조 확인
           setPosts(orderResponse.data);
           setFilteredPosts(orderResponse.data); // 필터링된 데이터 초기화
+
+
+          // 각 주문의 상품 정보 콘솔에 출력
+          orderResponse.data.forEach(post => {
+            if (post.orderProducts && post.orderProducts.length > 0) {
+              post.orderProducts.forEach(product => {
+                console.log('상품 정보:', product); // 각 상품 정보를 콘솔에 출력
+              });
+            }
+          });
           
         } catch (error) {
           console.error('사용자 정보를 가져오는 데 실패했습니다.', error);

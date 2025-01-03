@@ -1,39 +1,74 @@
-/* 리뷰 리스트 */
+/* 리뷰 리스트 스타일 */
 .review-list {
     width: 80%;
-    margin: 0 auto; /* 리스트 자체는 중앙에 정렬 */
+    margin: 0 auto;
     padding: 20px;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column; /* 리스트 아이템을 세로로 정렬 */
+    flex-direction: column;
 }
 
-/* 각 리뷰 항목 */
+/* 각 리뷰 항목 스타일 */
 .review {
-    width: 100%;
-    max-width: 600px; /* 최대 너비를 600px로 설정 */
+    display: flex;
+    flex-direction: column;
+    max-width: 600px;
     margin-bottom: 20px;
-    text-align: left; /* 텍스트 왼쪽 정렬 */
+    padding: 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 15px;
     background-color: #f9f9f9;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-
-    /* 리뷰 항목을 왼쪽으로 정렬 */
-    display: block; /* 기본값인 block으로 설정, 수평 정렬을 위한 스타일 제거 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
 
-/* 리뷰 사진 스타일 */
+/* 리뷰 이미지와 별점을 나란히 배치하기 */
+.review-content-wrapper {
+    display: flex;
+    align-items: center; /* 세로 정렬 */
+    gap: 10px; /* 이미지와 별점 사이 간격 */
+}
+
+/* 이미지 스타일 */
 .review-photo {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-    margin-bottom: 10px;
-    border-radius: 5px;
+    width: 75px;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
-/* 반응형 디자인 - 작은 화면에서는 리뷰의 너비를 줄여줌 */
+/* 별점 스타일 */
+.review-rating {
+    display: flex;
+    gap: 5px;
+}
+
+/* 별점 색상 */
+.star {
+    color: #ccc; /* 빈 별은 회색 */
+    font-size: 20px;
+}
+
+.star.filled {
+    color: #ff9900; /* 채워진 별은 노란색 */
+}
+
+/* 제목 스타일 */
+.review-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+}
+
+/* 리뷰 내용 스타일 */
+.review-content {
+    font-size: 16px;
+    color: #555;
+    margin-top: 10px;
+}
+
+/* 반응형 디자인 - 작은 화면에서 리뷰 카드 너비 조정 */
 @media (max-width: 768px) {
     .review {
         max-width: 90%;

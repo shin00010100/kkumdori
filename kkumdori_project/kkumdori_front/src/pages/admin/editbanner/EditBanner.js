@@ -121,7 +121,7 @@ const EditBanner = () => {
       // 팝업 데이터 처리
       const popupFormData = new FormData();
       if (popup.newImage) {
-        popupFormData.append("file", popup.newImage); // 팝업 파일 추가
+        popupFormData.append("imageFile", popup.newImage); // 팝업 파일 추가
       } else if (popup.currentImage) {
         popupFormData.append("currentImage", popup.currentImage); // 기존 이미지 유지
       }

@@ -5,6 +5,7 @@ import CartButton from '../cartbutton/CartButton';
 import ReviewList from '../reviewlist/ReviewList';
 import { useNavigate } from 'react-router-dom';
 import './ProductDetail.css';
+import { useAuth } from '../../../utils/AuthContext';
 
 function ProductDetail() {
     const { goods_no } = useParams();  // URL에서 상품 번호(goods_no) 추출
@@ -12,8 +13,10 @@ function ProductDetail() {
     const [reviewCount, setReviewCount] = useState(0);
     const [isWishlisted, setIsWishlisted] = useState(false);  // 찜 상태 관리
     const [userInfo, setUserInfo] = useState(null);  // 사용자 정보 관리
+    const { user } = useAuth(); // useAuth 훅으로 user와 isAuth 가져오기
     const navigate = useNavigate();
-
+    
+    
     // 상품 정보 및 사용자 정보 불러오기
     useEffect(() => {
         const fetchUserData = async () => {
@@ -131,6 +134,32 @@ function ProductDetail() {
         return stars;
     };
 
+    // 상품 삭제
+    const handleDelete = async () => {
+        const confirmDelete = window.confirm("정말로 이 상품을 삭제하시겠습니까?");
+        if (!confirmDelete) return;
+    
+        const token = sessionStorage.getItem("jwt") || localStorage.getItem("jwt");
+        if (!token) {
+            alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+            navigate('/login'); // 로그인 페이지로 이동
+            return;
+        }
+    
+        try {
+            await axios.delete(`http://localhost:8090/api/goods/${goods_no}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // JWT 토큰 포함
+                },
+            });
+            alert("상품이 성공적으로 삭제되었습니다.");
+            navigate(-1); // 이전 페이지로 이동
+        } catch (error) {
+            console.error("상품 삭제 실패:", error);
+            alert("상품 삭제 중 오류가 발생했습니다.");
+        }
+    };
+
     const price = product.price ? product.price.toLocaleString() : '가격 정보 없음';
 
     return (
@@ -163,6 +192,20 @@ function ProductDetail() {
                             <span className="wishlist-text">찜하기</span>
                         </button>
                     </div>
+                    {user?.role === "admin" && (
+                        <div className="admin-product-actions">
+                            <button
+                             onClick={() => navigate(`/editgoods/${goods_no}`)}
+                             className="product-edit-button">
+                                수정
+                            </button>
+                            <button
+                            onClick={handleDelete}
+                            className="product-delete-button">
+                                삭제
+                            </button>
+                        </div>
+                    )}
 
                     <div className="product-tabs">
                         <span>상품평({reviewCount})</span> |

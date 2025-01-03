@@ -309,14 +309,7 @@ input[type="file"]:active + .input-container,
   margin-top: 5px;
 }
 
-/* 실제 파일 선택 input 숨기기 */
-input[type="file"] {
-  position: absolute;
-  width: 0;
-  height: 0;
-  opacity: 0;
-  pointer-events: none; /* 클릭 이벤트가 전달되지 않도록 설정 */
-}
+
 
 /* 파일 선택을 유도하는 글씨와 스타일 */
 label[for="upload"] {

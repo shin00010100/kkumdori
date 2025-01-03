@@ -2,38 +2,8 @@ import React, { useState } from "react";
 import './myreview.css';
 
 function MyReview() {
-  // 초기 리뷰 데이터 (상품명, 별점, 이미지, 판매자 답변, 가격, 수량 포함)
-  const initialReviews = [
-    {
-      productName: "꿈카롱",
-      rating: 1,
-      reviewText: "이거 너무 달아서 못먹겠어용... ㅠㅜ",
-      imageUrl: '/img/ex01.png',
-      sellerReply: "그러면 마카롱이 달지 안 달겠냐? 너는 평생 건빵이나 먹어라~~~ 카악~ 퉷!!",
-      price: 10000,  // 가격
-      quantity: 2,   // 구매 수량
-    },
-    {
-      productName: "꿈돌이 인형",
-      rating: 5,
-      reviewText: "스트레스 받을 때 샌드백으로 짱입니당",
-      imageUrl: "https://via.placeholder.com/100",
-      sellerReply: "감사합니다! 고객님의 만족을 위해 더욱 노력하겠습니다.",
-      price: 25000,  // 가격
-      quantity: 1,   // 구매 수량
-    },
-    {
-      productName: "꿈돌이 공책",
-      rating: 3,
-      reviewText: "무난~ 무난~",
-      imageUrl: "https://via.placeholder.com/100",
-      sellerReply: "이럴 거면 리뷰 쓰지 마라. 내 별점만 깎인다.",
-      price: 5000,   // 가격
-      quantity: 5,   // 구매 수량
-    },
-  ];
-
-  const [reviews, setReviews] = useState(initialReviews); // 리뷰 목록 상태
+  // 빈 리뷰 목록 상태
+  const [reviews, setReviews] = useState([]); // 리뷰 목록 상태
   const [editIndex, setEditIndex] = useState(null); // 수정할 리뷰의 인덱스
   const [editReview, setEditReview] = useState(""); // 수정할 리뷰 내용
   const [editRating, setEditRating] = useState(5); // 수정할 별점
@@ -65,7 +35,7 @@ function MyReview() {
         index === editIndex
           ? {
               ...review,
-              productName: editProductName,
+              productName: editProductName,  // 상품명은 수정하지 않음
               rating: editRating,
               reviewText: editReview,
               imageUrl: editImageUrl, // 이미지 URL 수정
@@ -129,7 +99,7 @@ function MyReview() {
 
       {/* 리뷰 목록 */}
       <div>
-        <ul className="review-list">
+        <ul className="my-review-list">
           {reviews.map((review, index) => (
             <li key={index} className="review-item">
               <div className="review-header">
@@ -148,7 +118,7 @@ function MyReview() {
                     type="text"
                     value={editProductName}
                     onChange={(e) => setEditProductName(e.target.value)}
-                    disabled
+                    disabled // 상품명 수정 불가
                     className="edit-input"
                   />
                   <textarea

@@ -169,7 +169,8 @@ function ProductDetail() {
                         <Link to="/customer-inquiry">상품 문의</Link> |
                         <Link to="/shipping-returns">배송/교환/반품 안내</Link>
                     </div>
-                    <ReviewList onReviewCountChange={setReviewCount} />
+                    <ReviewList onReviewCountChange={setReviewCount} goodsNo={goods_no} />
+
                 </div>
             </div>
         </div>

@@ -68,6 +68,7 @@ public class SecurityConfig {
                     "/api/auth/login/google",
                     "/api/auth/getuser",
                     "/api/cart/**",
+                    "/api/reviewlists/**",
                     "/api/wishlist/**",
                     "/api/images/**", // 이미지 경로 허용 추가,
                     "/qna/**",

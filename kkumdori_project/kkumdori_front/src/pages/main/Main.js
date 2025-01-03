@@ -103,7 +103,7 @@ const Main = () => {
       )}
 
       {/* 2x2 배열의 상품 이미지들 */}
-      <div className="main-product-grid">
+      {/* <div className="main-product-grid">
         <div className="main-product-item">
           <Link to="/productList">
             <img src="/img/recommended.jpg" alt="추천 상품" />
@@ -127,7 +127,14 @@ const Main = () => {
             <img src="/img/discount-product.jpg" alt="할인 상품" />
             <div className="product-label">할인 상품</div>
           </Link>
-        </div>
+        </div>    
+      </div> */}
+
+      <div className="main-product-item">
+          <Link to="/productList">
+            <img src="/img/kkumdori_mainpage.png" alt="상품" />
+            <div className="product-label">모든 상품 보러가기!</div>
+          </Link>
       </div>
 
       {/* 팝업 배너 */}

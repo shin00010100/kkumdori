@@ -81,28 +81,44 @@
 }
 
 /* 각 상품 이미지 항목 */
+/* .main-product-item {
+  position: relative;
+  overflow: hidden; 이미지가 영역을 넘지 않도록 설정
+  border-radius: 10px; 둥근 모서리
+  width: 20vw; 각 이미지의 가로 크기를 창의 20%로 설정
+  height: 20vw; 세로 크기도 가로 크기와 동일하게 설정
+} */
+
+/* 임시 */
 .main-product-item {
   position: relative;
   overflow: hidden; /* 이미지가 영역을 넘지 않도록 설정 */
   border-radius: 10px; /* 둥근 모서리 */
-  width: 20vw; /* 각 이미지의 가로 크기를 창의 20%로 설정 */
-  height: 20vw; /* 세로 크기도 가로 크기와 동일하게 설정 */
+  width: 50vw; /* 각 이미지의 가로 크기를 창의 20%로 설정 */
+  height: 50vw; /* 세로 크기도 가로 크기와 동일하게 설정 */
+}
+
+.main-product-item img {
+  width: 100%;
+  height: 75%;
+  object-fit: fill;
+  border-radius: 10px;
 }
 
 /* 상품 이미지 스타일 */
-.main-product-item img {
+/* .main-product-item img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 이미지 크기를 영역에 맞게 조정 */
-  border-radius: 10px; /* 이미지의 모서리도 둥글게 처리 */
-}
+  object-fit: cover; 이미지 크기를 영역에 맞게 조정
+  border-radius: 10px; 이미지의 모서리도 둥글게 처리
+} */
 
 /* 상품 레이블 스타일 */
 .product-label {
   position: absolute;
-  bottom: 10px;
+  bottom: 25%;
   left: 10px;
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
   color: white;
   background-color: rgba(0, 0, 0, 0.5); /* 배경을 살짝 어두운 반투명으로 */
